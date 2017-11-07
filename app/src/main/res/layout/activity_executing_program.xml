@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.android.mufflefurnace.ProgramViewActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/main_screen_item_height"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.jjoe64.graphview.GraphView
+                android:id="@+id/executing_program_graph_view"
+                android:layout_width="match_parent"
+                android:layout_height="300dp" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/Program_view_edit_time_temperature"
+                android:text="@string/program_view_edit_time" />
+
+            <TextView
+                style="@style/Program_view_edit_time_temperature"
+                android:text="@string/program_view_edit_temperature" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/stop"
+        style="@style/MainScreenMenu"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorAccent"
+        android:drawSelectorOnTop="true">
+
+        <TextView
+            android:id="@+id/stop1"
+            style="@style/MainScreenMenuText"
+            android:text="@string/executing_program_view_stop"
+            android:textAllCaps="true" />
+    </RelativeLayout>
+
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay"></android.support.design.widget.AppBarLayout>
+
+
+</RelativeLayout>

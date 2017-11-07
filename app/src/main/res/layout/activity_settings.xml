@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.android.mufflefurnace.SettingsActivity">
+
+    <LinearLayout
+        android:id="@+id/settings_hearing"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/settings_hearing_description_short"
+            style="@style/SettingsScreenTextTopic"
+            android:text="@string/settings_max_heating_rate"
+            />
+        <TextView
+            android:id="@+id/settings_hearing_value"
+            style="@style/SettingsScreenTextValue"
+            android:text="0"/>
+
+        <View style="@style/Divider"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/settings_cooling"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/settings_cooling_description_short"
+            style="@style/SettingsScreenTextTopic"
+            android:text="@string/settings_max_cooling_rate"
+            />
+        <TextView
+            android:id="@+id/settings_cooling_value"
+            style="@style/SettingsScreenTextValue"
+            android:text="0"/>
+
+        <View style="@style/Divider"/>
+    </LinearLayout>
+
+
+
+</LinearLayout>

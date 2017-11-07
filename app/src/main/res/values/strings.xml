@@ -1,0 +1,71 @@
+<resources>
+    <string name="app_name">Muffle furnace</string>
+
+    <string name="main_menu_connect">Connect</string>
+    <string name="main_menu_programs">Programs</string>
+    <string name="main_menu_archive">Archive</string>
+    <string name="main_menu_settings">Settings</string>
+
+
+    <string name="program_view_create_program">Create program</string>
+    <string name="program_view_menu_edit">Edit</string>
+    <string name="program_view_menu_delete">Delete</string>
+    <string name="program_edit_menu_edit_program">Edit program name</string>
+    <string name="add_point_add_point">Add point</string>
+    <string name="add_point_edit_point">Edit point</string>
+    <string name="add_point_placeholder_time">HH:MM</string>
+
+
+    <string name="settings_max_heating_rate">Max heating rate</string>
+    <string name="settings_max_cooling_rate">Max cooling rate</string>
+
+
+    <string name="settings_max_heating_rate_text">You should set a max heating rate parameters to app could check your programs</string>
+
+    <string name="settings_max_cooling_rate_text">You should set a max cooling rate parameters to app could check your programs</string>
+    <string name="title_activity_programs">ProgramsActivity</string>
+
+    <string name="hint_program_name">Program name</string>
+
+    <string name="hint_point_time">Time</string>
+    <string name="hint_point_temperature">Temperature</string>
+
+    <!-- Label for editor menu option to save pet and leave editor [CHAR LIMIT=20] -->
+    <string name="action_save">Save</string>
+
+    <!-- Label for editor overflow menu option that deletes the current pet [CHAR LIMIT=20] -->
+    <string name="action_delete">Delete</string>
+
+    <!-- Label for programs activity -->
+    <string name="created_at">Created at:</string>
+
+    <!-- Title text for the empty view, which describes the empty dog house image [CHAR LIMIT=50] -->
+    <string name="empty_view_title_text">It\'s a bit lonely here...</string>
+
+    <!-- Subtitle text for the empty view that prompts the user to add a profram [CHAR LIMIT=50] -->
+    <string name="empty_view_subtitle_text">Get started by adding a program</string>
+
+    <!-- Subtitle text for the empty view that prompts the user to add a points [CHAR LIMIT=50] -->
+    <string name="empty_view_points_subtitle_text">Get started by adding a point</string>
+
+
+    <string name="program_view_start">Start</string>
+    <string name="title_activity_program_edit">Edit Program</string>
+
+    <!-- Activity ProgramView ProgramEdit -->
+    <string name="program_view_edit_time">Time </string>
+    <string name="program_view_edit_temperature">Temperature  °C </string>
+
+    <!-- AddProgram Title -->
+    <string name="add_program_title_edit_program">Edit Program</string>
+    <string name="add_program_title_add_program">Add Program</string>
+
+    <!-- AddPoint Title -->
+    <string name="add_point_title_edit_point">Edit Point</string>
+    <string name="add_point_title_add_point">Add Point</string>
+
+    <string name="executing_program_view_stop">Stop</string>
+
+
+
+</resources>
