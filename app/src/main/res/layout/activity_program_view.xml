@@ -17,7 +17,8 @@
         <com.jjoe64.graphview.GraphView
             android:id="@+id/graph_view"
             android:layout_width="match_parent"
-            android:layout_height="300dp" />
+            android:layout_height="150dp"
+            />
 
 
 
@@ -25,8 +26,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:orientation="horizontal">
 
             <TextView

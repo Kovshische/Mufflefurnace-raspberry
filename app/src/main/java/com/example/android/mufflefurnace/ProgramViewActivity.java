@@ -40,6 +40,8 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
 
 
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,8 +88,24 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
         GraphView graph = (GraphView) findViewById(R.id.graph_view);
 */
 
+
+// try to fix accelerated mode
+
+
         graph = (GraphView) findViewById(R.id.graph_view);
 
+
+/*
+        Bitmap bitmap = Bitmap.createBitmap(graph.getWidth(), graph.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap) {
+            @Override
+            public boolean isHardwareAccelerated() {
+                return true;
+            }
+        };
+        graph.draw(canvas);
+
+ */
         getSupportLoaderManager().initLoader(EXISTING_PROGRAM_ID_LOADER, null, this);
     }
 
