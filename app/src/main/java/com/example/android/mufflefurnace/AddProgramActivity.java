@@ -52,6 +52,7 @@ public class AddProgramActivity extends AppCompatActivity implements LoaderManag
         // Find all relevant views that we will need to read user input from
         mProgramNameTextView = (EditText) findViewById(R.id.edit_program_name);
 
+
         getSupportLoaderManager().initLoader(EXISTING_PROGRAM_LOADER, null, this);
 
     }

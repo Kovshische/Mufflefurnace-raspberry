@@ -38,14 +38,12 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
     private GraphView graph;
 
 
-
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_program_view);
+
+
 
 
         //find the ListView which will be populated with the program data
@@ -95,17 +93,9 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
         graph = (GraphView) findViewById(R.id.graph_view);
 
 
-/*
-        Bitmap bitmap = Bitmap.createBitmap(graph.getWidth(), graph.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap) {
-            @Override
-            public boolean isHardwareAccelerated() {
-                return true;
-            }
-        };
-        graph.draw(canvas);
 
- */
+
+
         getSupportLoaderManager().initLoader(EXISTING_PROGRAM_ID_LOADER, null, this);
     }
 
