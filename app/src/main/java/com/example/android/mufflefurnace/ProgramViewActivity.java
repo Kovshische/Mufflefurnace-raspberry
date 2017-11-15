@@ -234,6 +234,7 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
                 int length = dataPoint.length;
                 DataPoint lastDataPoint = dataPoint[length-1];
                 double maxTime = lastDataPoint.getX();
+                
 
                 //Set max time
                 graph.addSeries(series);
