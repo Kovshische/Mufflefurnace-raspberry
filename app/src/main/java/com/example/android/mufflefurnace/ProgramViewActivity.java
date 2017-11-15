@@ -230,7 +230,15 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
 
                 LineGraphSeries<DataPoint> series = new LineGraphSeries<>(dataPoint);
 
+                //Get mat time
+                int length = dataPoint.length;
+                DataPoint lastDataPoint = dataPoint[length-1];
+                double maxTime = lastDataPoint.getX();
+
+                //Set max time
                 graph.addSeries(series);
+                graph.getViewport().setXAxisBoundsManual(true);
+                graph.getViewport().setMaxX(maxTime);
 
 
                 mPointCursorAdapter.swapCursor(cursor);

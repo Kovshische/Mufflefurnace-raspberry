@@ -11,40 +11,49 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginBottom="@dimen/main_screen_item_height">
+        android:layout_marginBottom="@dimen/main_screen_item_height"
+        android:orientation="horizontal">
 
         <com.jjoe64.graphview.GraphView
             android:id="@+id/graph_view"
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
-            />
-
-
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3" />
 
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:orientation="horizontal">
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-            <TextView
-                style="@style/Program_view_edit_time_temperature"
-                android:text="@string/program_view_edit_time" />
 
-            <TextView
-                style="@style/Program_view_edit_time_temperature"
-                android:text="@string/program_view_edit_temperature" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/Program_view_edit_time_temperature"
+                    android:text="@string/program_view_edit_time" />
+
+                <TextView
+                    style="@style/Program_view_edit_time_temperature"
+                    android:text="@string/program_view_edit_temperature" />
+
+            </LinearLayout>
+
+            <ListView
+                android:id="@+id/list_view_points"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"/>
+                 <!-- android:padding="@dimen/activity_margin"  -->
+
 
         </LinearLayout>
-
-        <ListView
-            android:id="@+id/list_view_points"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/activity_margin" />
 
     </LinearLayout>
 

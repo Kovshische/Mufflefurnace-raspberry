@@ -32,6 +32,7 @@ public class SettingValueCoolingActivity extends AppCompatActivity {
 
         EditText settingValue = (EditText) findViewById(R.id.setting_value);
 
+
         sharedPreferences = getSharedPreferences(Setting.APP_SETTINGS, Context.MODE_PRIVATE);
         final Setting settings = new Setting(sharedPreferences);
 
@@ -63,6 +64,7 @@ public class SettingValueCoolingActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Setting mSettings = settings;
                 EditText settingValue = (EditText) findViewById(R.id.setting_value);
+
 
                 String a = "0";
                  a = settingValue.getText().toString();

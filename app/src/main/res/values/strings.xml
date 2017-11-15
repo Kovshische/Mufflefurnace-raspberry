@@ -54,7 +54,7 @@
 
     <!-- Activity ProgramView ProgramEdit -->
     <string name="program_view_edit_time">Time </string>
-    <string name="program_view_edit_temperature">Temperature  °C </string>
+    <string name="program_view_edit_temperature">T°C </string>
 
     <!-- AddProgram Title -->
     <string name="add_program_title_edit_program">Edit Program</string>

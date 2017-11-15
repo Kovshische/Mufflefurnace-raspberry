@@ -53,9 +53,9 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
+        //startActivityForResult( new Intent( android.provider.Settings.ACTION_INPUT_METHOD_SETTINGS), 0 );
 
         TextView settingValue = (TextView) findViewById(R.id.settings_hearing_value);
-
 
 
 

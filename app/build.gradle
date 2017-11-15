@@ -26,4 +26,8 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.jjoe64:graphview:4.0.1'
     testCompile 'junit:junit:4.12'
+
+    provided 'com.google.android.things:androidthings:0.5.1-devpreview'
+
+
 }
