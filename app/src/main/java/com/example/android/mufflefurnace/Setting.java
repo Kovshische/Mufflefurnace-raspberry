@@ -1,6 +1,5 @@
 package com.example.android.mufflefurnace;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 
 /**
@@ -9,12 +8,14 @@ import android.content.SharedPreferences;
 public class Setting {
     float heatingSpeed = 0;
     float coolingSpeed = 0;
+    int maxTemperature =  1200;
 
     //File name
     public static final String APP_SETTINGS = "app_settings";
     //Setting name
     public static final String HEATING_SPEED = "heating_speed";
     public static final String COOLING_SPEED = "cooling_speed";
+    public static final String MAX_TEMPERATURE = "max_temperature";
     // instance of the class
     private SharedPreferences sSettings;
 
@@ -42,14 +43,26 @@ public class Setting {
         return coolingSpeed;
     }
 
+    public int getMaxTemperature(){
+        if (sSettings.contains(MAX_TEMPERATURE)){
+            maxTemperature = sSettings.getInt(MAX_TEMPERATURE, maxTemperature  );
+        }
+        return maxTemperature;
+    }
+
     //Edit setting
+    public void editMaxTemperature (int maxTemperature){
+        SharedPreferences.Editor editor = sSettings.edit();
+        editor.putInt(MAX_TEMPERATURE, maxTemperature);
+        editor.apply();
+    }
+
     public void editHeatingSpeed(float heatingSpeed){
         //sSettings = getSharedPreferences(APP_SETTINGS, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sSettings.edit();
         editor.putFloat(HEATING_SPEED, heatingSpeed);
         editor.apply();
     }
-
 
 
     public void editCoolingSpeed(float heatingSpeed){

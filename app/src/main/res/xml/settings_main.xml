@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="@string/settings_title">
+
+    <EditTextPreference
+        android:defaultValue="@string/settings_max_temperature_default"
+        android:inputType="numberSigned"
+        android:key="@string/settings_max_temperature_key"
+        android:selectAllOnFocus="true"
+        android:title="@string/settings_max_temperature"
+        />
+    <EditTextPreference
+        android:defaultValue="@string/settings_max_heating_rate_default"
+        android:inputType="numberSigned"
+        android:key="@string/settings_max_heating_rate_key"
+        android:selectAllOnFocus="true"
+        android:title="@string/settings_max_heating_rate"
+        />
+    <EditTextPreference
+        android:defaultValue="@string/settings_max_cooling_rate_default"
+        android:inputType="numberSigned"
+        android:key="@string/settings_max_cooling_rate_key"
+        android:selectAllOnFocus="true"
+        android:title="@string/settings_max_cooling_rate"
+        />
+
+</PreferenceScreen>

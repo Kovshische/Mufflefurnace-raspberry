@@ -81,7 +81,7 @@ public class SettingValueHeatingActivity extends AppCompatActivity {
 
                 //Go to the settings page
 
-                Intent i = new Intent(SettingValueHeatingActivity.this, SettingsActivity.class);
+                Intent i = new Intent(SettingValueHeatingActivity.this, SettingsActivityOld.class);
                 startActivity(i);
             }
         });

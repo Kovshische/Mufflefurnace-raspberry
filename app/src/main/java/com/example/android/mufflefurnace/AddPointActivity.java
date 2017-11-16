@@ -3,10 +3,12 @@ package com.example.android.mufflefurnace;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.CursorLoader;
@@ -27,29 +29,14 @@ import static com.example.android.mufflefurnace.Data.ProgramDbHelper.LOG_TAG;
 
 public class AddPointActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private Uri mCurrentUri;
-    private Uri mCurrentProgramUri;
-    private Uri mCurrentPointUri;
-
-    private int mCurrentProgramID;
-
-    private EditText timeTextView;
-    private EditText temperatureTextView;
-
-    private View deleteItem;
-
     private static final String TIME_SEPARATOR = ":";
-    private static int LENGTH_SEPARATOR = 1;
-
-
-    private String addPointMessage;
-    private String editPointMessage;
-
     //For URI matcher
     private static final int PROGRAM = 100;
     private static final int POINT = 101;
-
     private static final UriMatcher mUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+    private static final int EXISTING_PROGRAM_ID_LOADER = 1;
+    private static final int EXISTING_POINT_LOADER = 2;
+    private static int LENGTH_SEPARATOR = 1;
 
     static {
         // The calls to addURI() go here, for all of the content URI patterns that the provider
@@ -64,9 +51,17 @@ public class AddPointActivity extends AppCompatActivity implements LoaderManager
     }
 
     int matchAddEditPoint;
+    private Uri mCurrentUri;
+    private Uri mCurrentProgramUri;
+    private Uri mCurrentPointUri;
+    private int mCurrentProgramID;
+    private EditText timeTextView;
+    private EditText temperatureTextView;
+    private View deleteItem;
+    private String addPointMessage;
+    private String editPointMessage;
+    private boolean ifInsertPointSuccess;
 
-    private static final int EXISTING_PROGRAM_ID_LOADER = 1;
-    private static final int EXISTING_POINT_LOADER = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,8 +80,9 @@ public class AddPointActivity extends AppCompatActivity implements LoaderManager
 
 
         final Button deleteButton = (Button) findViewById(R.id.button_delete);
-        deleteButton.setOnClickListener(new View.OnClickListener(){
-            @Override   public void onClick(View view) {
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 deletePoint();
                 Intent i = new Intent(AddPointActivity.this, ProgramEditActivity.class);
                 i.setData(mCurrentProgramUri);
@@ -137,25 +133,40 @@ public class AddPointActivity extends AppCompatActivity implements LoaderManager
         String timeString = timeTextView.getText().toString().trim();
         int timeInteger = timeToInteger(timeString);
 
-        // Create a new map of values, where column names are the keys
-        ContentValues values = new ContentValues();
-        values.put(ProgramContract.ProgramEntry.COLUMN_TEMPERATURE, temperatureInteger);
-        values.put(ProgramContract.ProgramEntry.COLUMN_TIME, timeInteger);
-        values.put(ProgramContract.ProgramEntry.COLUMN_PROGRAM_ID, mCurrentProgramID);
+        //Check to max temperature
 
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        Uri newUri = getContentResolver().insert(ProgramContract.ProgramEntry.CONTENT_URI_POINTS, values);
-        if (newUri == null) {
-            //If the  new content URI is null, then there was an error with insertion
-            displayToast("Error with saving point");
-            Log.i(LOG_TAG, "Error with saving point");
+        String maxTemperature = sharedPreferences.getString(
+                getString(R.string.settings_max_temperature_key),
+                getString(R.string.settings_max_temperature_default)
+        );
+
+        if (temperatureInteger > Integer.parseInt(maxTemperature)) {
+            displayToast("temperature can not be more than " + maxTemperature);
+            ifInsertPointSuccess = false;
         } else {
-            addPointMessage = "Point saved successful";
-            displayToast(addPointMessage);
-            Log.i(LOG_TAG, "New row is " + newUri.toString());
+
+            // Create a new map of values, where column names are the keys
+            ContentValues values = new ContentValues();
+            values.put(ProgramContract.ProgramEntry.COLUMN_TEMPERATURE, temperatureInteger);
+            values.put(ProgramContract.ProgramEntry.COLUMN_TIME, timeInteger);
+            values.put(ProgramContract.ProgramEntry.COLUMN_PROGRAM_ID, mCurrentProgramID);
+
+
+            Uri newUri = getContentResolver().insert(ProgramContract.ProgramEntry.CONTENT_URI_POINTS, values);
+            if (newUri == null) {
+                //If the  new content URI is null, then there was an error with insertion
+                displayToast("Error with saving point");
+                Log.i(LOG_TAG, "Error with saving point");
+            } else {
+                addPointMessage = "Point saved successful";
+                displayToast(addPointMessage);
+                Log.i(LOG_TAG, "New row is " + newUri.toString());
+            }
+
+            ifInsertPointSuccess = true;
         }
-
-
     }
 
     private void updatePoint() {
@@ -167,29 +178,47 @@ public class AddPointActivity extends AppCompatActivity implements LoaderManager
         String timeString = timeTextView.getText().toString().trim();
         int timeInteger = timeToInteger(timeString);
 
-        // Create a new map of values, where column names are the keys
-        ContentValues values = new ContentValues();
-        values.put(ProgramContract.ProgramEntry.COLUMN_TEMPERATURE, temperatureInteger);
-        values.put(ProgramContract.ProgramEntry.COLUMN_TIME, timeInteger);
+
+        //Check to max temperature
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        String maxTemperature = sharedPreferences.getString(
+                getString(R.string.settings_max_temperature_key),
+                getString(R.string.settings_max_temperature_default)
+        );
+
+        if (temperatureInteger > Integer.parseInt(maxTemperature)) {
+            displayToast("temperature can not be more than " + maxTemperature);
+            ifInsertPointSuccess = false;
+        } else {
+
+            // Create a new map of values, where column names are the keys
+            ContentValues values = new ContentValues();
+            values.put(ProgramContract.ProgramEntry.COLUMN_TEMPERATURE, temperatureInteger);
+            values.put(ProgramContract.ProgramEntry.COLUMN_TIME, timeInteger);
 //        values.put(ProgramContract.ProgramEntry.COLUMN_PROGRAM_ID, mCurrentProgramID);
 
-        int update = getContentResolver().update(mCurrentPointUri, values, null, null);
+            int update = getContentResolver().update(mCurrentPointUri, values, null, null);
 
 //        int update1 = getContentResolver().update(mCurrentPointUri, values,);
 
-        if (update == 0) {
-            //If the  new content URI is null, then there was an error with insertion
-            displayToast("Error with update program");
-            Log.i(LOG_TAG, "Error with update program");
-        } else {
-            editPointMessage = "Program updated successful";
-            displayToast(editPointMessage);
-            Log.i(LOG_TAG, "Updated row is " + Integer.toString(update));
+            if (update == 0) {
+                //If the  new content URI is null, then there was an error with insertion
+                displayToast("Error with update program");
+                Log.i(LOG_TAG, "Error with update program");
+            } else {
+                editPointMessage = "Program updated successful";
+                displayToast(editPointMessage);
+                Log.i(LOG_TAG, "Updated row is " + Integer.toString(update));
+            }
+
+            ifInsertPointSuccess = true;
         }
     }
 
-    public void deletePoint(){
-        int delete = getContentResolver().delete(mCurrentPointUri,null,null);
+    public void deletePoint() {
+        int delete = getContentResolver().delete(mCurrentPointUri, null, null);
 
         if (delete == 0) {
             //If the  new content URI is null, then there was an error with insertion
@@ -250,7 +279,6 @@ public class AddPointActivity extends AppCompatActivity implements LoaderManager
         getMenuInflater().inflate(R.menu.menu_point_add, menu);
 
 
-
         return true;
     }
 
@@ -262,18 +290,21 @@ public class AddPointActivity extends AppCompatActivity implements LoaderManager
             case R.id.action_save:
 
                 if (matchAddEditPoint == PROGRAM) {
-                        // Save point to the data base
-                        insertPoint();
+                    // Save point to the data base
+                    insertPoint();
+                    if (ifInsertPointSuccess == true) {
                         finish();
                         return true;
+                    }
                 }
-                    if (matchAddEditPoint == POINT){
-                        updatePoint();
+                if (matchAddEditPoint == POINT) {
+                    updatePoint();
+                    if (ifInsertPointSuccess == true) {
                         finish();
                         return true;
+                    }
                 }
                 return true;
-
 
 
             // Respond to a click on the "Delete" menu option

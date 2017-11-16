@@ -75,7 +75,7 @@ public class SettingValueCoolingActivity extends AppCompatActivity {
 
 
                 // go to the settings
-                Intent i = new Intent(SettingValueCoolingActivity.this, SettingsActivity.class);
+                Intent i = new Intent(SettingValueCoolingActivity.this, SettingsActivityOld.class);
                 startActivity(i);
 
             }

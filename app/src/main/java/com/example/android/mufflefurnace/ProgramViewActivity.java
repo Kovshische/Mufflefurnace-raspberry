@@ -242,6 +242,9 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
                 graph.getViewport().setMaxX(maxTime);
 
 
+                //graph.setTitle("Название графика");
+                //graph.getGridLabelRenderer().setVerticalAxisTitle("°C");
+
                 mPointCursorAdapter.swapCursor(cursor);
         }
     }
