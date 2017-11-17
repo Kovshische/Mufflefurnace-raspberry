@@ -12,23 +12,10 @@
         android:layout_height="100dp"
         android:text="LOGO" />
 
-    <TextView
-        android:id="@+id/displayWidth"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 
-    <TextView
-        android:id="@+id/displayHeight"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:id="@+id/displayDencity"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 
     <RelativeLayout
-        android:id="@+id/MenuConnect"
+        android:id="@+id/menu_connect"
         style="@style/MainScreenMenu"
         android:drawSelectorOnTop="true">
 
@@ -38,7 +25,7 @@
             android:text="@string/main_menu_connect" />
 
         <ImageView
-            android:id="@+id/menu_connect"
+            android:id="@+id/menu_connect_image"
             style="@style/MaineScreenIcon"
             android:layout_toLeftOf="@id/menu_connect_text"
             android:src="@drawable/ic_settings_ethernet_white_36dp" />

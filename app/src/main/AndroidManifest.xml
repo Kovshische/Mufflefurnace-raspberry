@@ -9,8 +9,19 @@
         android:name="android.permission.CHANGE_WIFI_STATE"
         android:required="true" />
     <uses-permission
+        android:name="android.permission.ACCESS_NETWORK_STATE"
+        android:required="true"/>
+    <uses-permission
+        android:name="android.permission.ACCESS_FINE_LOCATION"
+        android:required="true"/>
+
+    <uses-permission
         android:name="android.permission.INTERNET"
         android:required="true" />
+
+
+
+    <uses-feature android:name="android.hardware.wifi" />
 
     <application
         android:allowBackup="true"
@@ -83,6 +94,12 @@
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
             android:parentActivityName=".MainActivity">
+
+        </activity>
+        <activity android:name=".ConnectActivity"
+            android:label="WIFI"
+            android:parentActivityName=".MainActivity">
+
         </activity>
     </application>
 
