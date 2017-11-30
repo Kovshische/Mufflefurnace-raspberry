@@ -1,6 +1,7 @@
 package com.example.android.mufflefurnace;
 
 import android.content.Intent;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -37,8 +38,32 @@ public class MainActivity extends AppCompatActivity {
         connect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(MainActivity.this, ConnectActivity.class);
-                startActivity(i);
+
+
+                Intent intent = new Intent(WifiManager.ACTION_PICK_WIFI_NETWORK);
+                //intent.putExtra("only_access_points", true);
+                intent.putExtra("extra_prefs_show_button_bar", true);
+                //intent.putExtra("wifi_enable_next_on_connect", true);
+                startActivityForResult(intent, 1);
+
+
+
+/*
+                Intent intent = new Intent(Intent.ACTION_MAIN, null);
+                intent.addCategory(Intent.CATEGORY_LAUNCHER);
+                ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.wifi.WifiSettings" );
+                intent.setComponent(cn);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                intent.putExtra("extra_prefs_show_button_bar", true);
+
+                startActivity( intent);
+*/
+
+
+               // startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                //Intent i = new Intent(MainActivity.this, ConnectActivity.class);
+                //startActivity(i);
             }
         });
     }

@@ -80,7 +80,6 @@
 
         <activity
             android:name=".ProgramViewActivity"
-            android:hardwareAccelerated="true"
             android:parentActivityName=".ProgramsActivity" />
         <activity
             android:name=".ProgramEditActivity"
@@ -89,7 +88,10 @@
         <activity
             android:name=".AddPointActivity"
             android:parentActivityName=".ProgramEditActivity" />
-        <activity android:name=".ExecutionProgram.ExecutingProgramActivity" />
+        <activity
+            android:name=".ExecutionProgram.ExecutingProgramActivity"
+            android:parentActivityName=".ProgramViewActivity"/>
+
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
@@ -99,8 +101,9 @@
         <activity android:name=".ConnectActivity"
             android:label="WIFI"
             android:parentActivityName=".MainActivity">
-
         </activity>
+
+
     </application>
 
 </manifest>

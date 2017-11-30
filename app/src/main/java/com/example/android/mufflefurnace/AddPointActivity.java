@@ -231,6 +231,7 @@ public class AddPointActivity extends AppCompatActivity implements LoaderManager
         }
     }
 
+    //Get time in minutes.
     private int timeToInteger(String timeString) {
         int timeInSeconds;
         int hours;

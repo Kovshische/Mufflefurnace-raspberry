@@ -2,9 +2,11 @@ package com.example.android.mufflefurnace;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -25,20 +28,12 @@ public class ConnectActivity extends AppCompatActivity {
 
     private static String LOG_TAG = ProgramsActivity.class.getSimpleName();
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connect);
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -53,6 +48,19 @@ public class ConnectActivity extends AppCompatActivity {
         }
 
         detectWifi();
+
+        RelativeLayout wifiRefreshRelativeLayout = (RelativeLayout) findViewById(R.id.wifi_refresh);
+        wifiRefreshRelativeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               // detectWifi();
+                Log.i(LOG_TAG, "refresh wifi");
+
+
+
+                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+            }
+        });
     }
 
     class AdapterElements extends ArrayAdapter<Object> {
@@ -113,6 +121,7 @@ public class ConnectActivity extends AppCompatActivity {
         AdapterElements adapterElements = new AdapterElements(this);
         ListView netList = (ListView) findViewById(R.id.list_view_wifi);
         netList.setAdapter(adapterElements);
+
 
     }
 }

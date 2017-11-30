@@ -5,12 +5,15 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.app.NavUtils;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 
 import com.example.android.mufflefurnace.Data.ProgramContract;
+import com.example.android.mufflefurnace.ProgramViewActivity;
 import com.example.android.mufflefurnace.R;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
@@ -49,6 +52,13 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
         getSupportLoaderManager().initLoader(EXISTING_PROGRAM_ID_LOADER, null, this);
     }
 
+    private void executeProgram(){
+        float eTemperature = graph.getY();
+        //graph.getSeries().
+
+
+
+    }
 
     private void initPointLoader() {
         getSupportLoaderManager().initLoader(POINTS_LOADER, null, this);
@@ -151,6 +161,17 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
 
                 LineGraphSeries<DataPoint> series = new LineGraphSeries<>(dataPoint);
 
+                //Get mat time
+                int length = dataPoint.length;
+                DataPoint lastDataPoint = dataPoint[length-1];
+                double maxTime = lastDataPoint.getX();
+
+
+                //Set max time
+                graph.addSeries(series);
+                graph.getViewport().setXAxisBoundsManual(true);
+                graph.getViewport().setMaxX(maxTime);
+
                 graph.addSeries(series);
 
 
@@ -162,5 +183,19 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected (MenuItem item){
+        // User clicked on a menu option in the app bar overflow menu
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                // Navigate back to parent activity (ProgramViewActivity)
+                Intent intent1 = new Intent(ExecutingProgramActivity.this, ProgramViewActivity.class);
+                intent1.setData(mCurrentProgramUri);
+                NavUtils.navigateUpTo(this, intent1);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

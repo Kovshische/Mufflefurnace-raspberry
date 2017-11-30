@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.android.mufflefurnace.ProgramViewActivity">
+    tools:context="com.example.android.mufflefurnace.ExecutionProgram.ExecutingProgramActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
