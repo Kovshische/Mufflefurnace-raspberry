@@ -50,6 +50,12 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
         graph = (GraphView) findViewById(R.id.executing_program_graph_view);
 
         getSupportLoaderManager().initLoader(EXISTING_PROGRAM_ID_LOADER, null, this);
+
+
+        //Check that PointManager works
+        PointManager pointManager = new PointManager(dataPointArrayList);
+         int enteredTime;
+
     }
 
     private void executeProgram(){
@@ -149,6 +155,7 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
                     int time = cursor.getInt(timeColumnIndex);
                     int temperature = cursor.getInt(temperatureColumnIndex);
 
+                    //time in hours
                     double timeDouble = (double) time/60;
 
                     dataPointArrayList.add(new DataPoint(timeDouble,temperature));

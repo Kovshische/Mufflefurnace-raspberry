@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -13,81 +13,91 @@
         android:text="LOGO" />
 
 
-
-    <RelativeLayout
-        android:id="@+id/menu_connect"
-        style="@style/MainScreenMenu"
-        android:drawSelectorOnTop="true">
-
-        <TextView
-            android:id="@+id/menu_connect_text"
-            style="@style/MainScreenMenuText"
-            android:text="@string/main_menu_connect" />
-
-        <ImageView
-            android:id="@+id/menu_connect_image"
-            style="@style/MaineScreenIcon"
-            android:layout_toLeftOf="@id/menu_connect_text"
-            android:src="@drawable/ic_settings_ethernet_white_36dp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true">
 
 
-    </RelativeLayout>
+        <LinearLayout
+            android:id="@+id/menu_connect"
+            style="@style/MainScreenMenu"
+            >
 
-    <RelativeLayout
-        android:id="@+id/menu_programs"
-        style="@style/MainScreenMenu"
-        >
+            <ImageView
+                android:id="@+id/menu_connect_image"
+                style="@style/MaineScreenIcon"
+                android:src="@drawable/ic_settings_ethernet_white_36dp"
+                />
 
-        <TextView
-            android:id="@+id/menu_programs_text"
-            style="@style/MainScreenMenuText"
-            android:text="@string/main_menu_programs" />
+            <TextView
+                android:id="@+id/menu_connect_text"
+                style="@style/MainScreenMenuText"
 
-        <ImageView
-            android:id="@+id/menu_programs_image"
-            style="@style/MaineScreenIcon"
-            android:layout_toLeftOf="@id/menu_programs_text"
-            android:src="@drawable/ic_format_list_bulleted_white_36dp" />
+                android:text="@string/main_menu_connect" />
 
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/menu_archive"
-        style="@style/MainScreenMenu"
-        android:drawSelectorOnTop="true">
-
-        <TextView
-            android:id="@+id/menu_archive_text"
-            style="@style/MainScreenMenuText"
-            android:text="@string/main_menu_archive" />
-
-        <ImageView
-            android:id="@+id/menu_archive_image"
-            style="@style/MaineScreenIcon"
-            android:layout_toLeftOf="@id/menu_archive_text"
-            android:src="@drawable/ic_archive_white_36dp" />
+        </LinearLayout>
 
 
-    </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/menu_settings"
-        style="@style/MainScreenMenu"
-        android:drawSelectorOnTop="true">
+        <LinearLayout
+            android:id="@+id/menu_programs"
+            style="@style/MainScreenMenu">
 
-        <TextView
-            android:id="@+id/menu_settings_text"
-            style="@style/MainScreenMenuText"
-            android:text="@string/main_menu_settings" />
-
-        <ImageView
-            android:id="@+id/menu_settings_image"
-            style="@style/MaineScreenIcon"
-            android:layout_toLeftOf="@id/menu_settings_text"
-            android:src="@drawable/ic_settings_white_36dp" />
+            <ImageView
+                android:id="@+id/menu_programs_image"
+                style="@style/MaineScreenIcon"
+                android:layout_toLeftOf="@id/menu_programs_text"
+                android:src="@drawable/ic_format_list_bulleted_white_36dp" />
 
 
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/menu_programs_text"
+                style="@style/MainScreenMenuText"
+                android:text="@string/main_menu_programs" />
 
-</LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/menu_archive"
+            style="@style/MainScreenMenu"
+            android:drawSelectorOnTop="true">
+
+            <ImageView
+                android:id="@+id/menu_archive_image"
+                style="@style/MaineScreenIcon"
+                android:src="@drawable/ic_archive_white_36dp" />
+
+            <TextView
+                android:id="@+id/menu_archive_text"
+                style="@style/MainScreenMenuText"
+                android:text="@string/main_menu_archive" />
+
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/menu_settings"
+            style="@style/MainScreenMenu"
+            android:drawSelectorOnTop="true">
+
+            <ImageView
+                android:id="@+id/menu_settings_image"
+                style="@style/MaineScreenIcon"
+                android:layout_toLeftOf="@id/menu_settings_text"
+                android:src="@drawable/ic_settings_white_36dp" />
+
+            <TextView
+                android:id="@+id/menu_settings_text"
+                style="@style/MainScreenMenuText"
+                android:text="@string/main_menu_settings" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</RelativeLayout>

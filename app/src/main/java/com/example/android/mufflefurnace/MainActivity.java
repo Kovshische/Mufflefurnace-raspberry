@@ -5,7 +5,7 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        RelativeLayout settings = (RelativeLayout) findViewById(R.id.menu_settings);
+        LinearLayout settings = (LinearLayout) findViewById(R.id.menu_settings);
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        RelativeLayout programs = (RelativeLayout) findViewById(R.id.menu_programs);
+        LinearLayout programs = (LinearLayout) findViewById(R.id.menu_programs);
         programs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        RelativeLayout connect = (RelativeLayout) findViewById(R.id.menu_connect);
+        LinearLayout connect = (LinearLayout) findViewById(R.id.menu_connect);
         connect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

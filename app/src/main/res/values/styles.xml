@@ -12,16 +12,19 @@
 
     <style name="MainScreenMenu">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/main_screen_item_height</item>
-        <item name="android:orientation">horizontal</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:drawSelectorOnTop">true</item>
         <item name="android:background">@color/menuPrimary</item>
     </style>
 
     <style name="MaineScreenIcon">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_centerVertical">true</item>
-        <item name="android:layout_marginRight">@dimen/main_screen_item_height_half</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:padding">18dp</item>
+
 
     </style>
 
@@ -33,7 +36,8 @@
         <item name="android:textAppearance">?android:textAppearanceMedium</item>
         <item name="android:padding">18dp</item>
         <item name="android:gravity">center_vertical</item>
-        <item name="android:layout_centerInParent">true</item>
+        <item name="android:layout_gravity">center</item>
+
     </style>
 
     <style name="SettingsScreenTextTopic">

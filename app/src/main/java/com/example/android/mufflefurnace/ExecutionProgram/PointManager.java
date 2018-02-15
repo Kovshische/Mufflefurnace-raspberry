@@ -37,6 +37,7 @@ public class PointManager {
     }
 
     // currentTime should be in seconds
+    //dataPointArrayList - time should ne in hours (doble)
     public int getTemperature (int currentTimeSeconds){
 
         //check that graph contain at least 2 points.
@@ -52,13 +53,13 @@ public class PointManager {
 
 
         while (isContainTime == false & ii < dataPointArrayList.size()){
-            startTime = (int) dataPointArrayList.get(ii).getX();
+            double startTimeDouble = dataPointArrayList.get(ii).getX();
             //time in seconds
-            startTime = startTime*60;
+            startTime = (int) startTimeDouble*360;
 
-            finishTime = (int) dataPointArrayList.get((ii+1)).getX();
+            double finishTimeDouble = dataPointArrayList.get((ii+1)).getX();
             //time in seconds
-            finishTime = finishTime*60;
+            finishTime = (int) finishTimeDouble*360;
 
 
 

@@ -42,6 +42,31 @@
                 android:text="@string/program_view_edit_temperature" />
 
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/Program_view_edit_time_temperature"
+                android:text="Enter time in seconds" />
+
+            <EditText
+                style="@style/Program_view_edit_time_temperature"
+                android:inputType="textCapWords"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="enter"/>
+
+            <TextView
+                style="@style/Program_view_edit_time_temperature"
+                android:id="@+id/temperatureOnTime"/>
+
+        </LinearLayout>
     </LinearLayout>
 
     <RelativeLayout
