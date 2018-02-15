@@ -34,8 +34,8 @@
             <TextView
                 android:id="@+id/menu_connect_text"
                 style="@style/MainScreenMenuText"
-
-                android:text="@string/main_menu_connect" />
+                android:text="@string/main_menu_connect"
+                />
 
         </LinearLayout>
 
@@ -48,7 +48,6 @@
             <ImageView
                 android:id="@+id/menu_programs_image"
                 style="@style/MaineScreenIcon"
-                android:layout_toLeftOf="@id/menu_programs_text"
                 android:src="@drawable/ic_format_list_bulleted_white_36dp" />
 
 
@@ -87,7 +86,6 @@
             <ImageView
                 android:id="@+id/menu_settings_image"
                 style="@style/MaineScreenIcon"
-                android:layout_toLeftOf="@id/menu_settings_text"
                 android:src="@drawable/ic_settings_white_36dp" />
 
             <TextView
