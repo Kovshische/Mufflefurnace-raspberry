@@ -7,10 +7,11 @@
     android:orientation="vertical"
     tools:context="com.example.android.mufflefurnace.MainActivity">
 
-    <TextView
+    <ImageView
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:text="LOGO" />
+        android:layout_height="400dp"
+        android:src="@drawable/logo_white"
+         />
 
 
     <LinearLayout
