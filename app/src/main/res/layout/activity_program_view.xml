@@ -59,13 +59,13 @@
 
     <RelativeLayout
         android:id="@+id/start"
-        style="@style/MainScreenMenu"
+        style="@style/ProgramMenu"
         android:layout_alignParentBottom="true"
         android:drawSelectorOnTop="true">
 
         <TextView
             android:id="@+id/start1"
-            style="@style/MainScreenMenuText"
+            style="@style/ProgramMenuText"
             android:text="@string/program_view_start"
             android:textAllCaps="true" />
     </RelativeLayout>

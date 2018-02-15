@@ -18,14 +18,14 @@
 
     <RelativeLayout
         android:id="@+id/wifi_refresh"
-        style="@style/MainScreenMenu"
+        style="@style/ProgramMenu"
         android:layout_alignParentBottom="true"
         android:drawSelectorOnTop="true"
         android:background="@color/white">
 
         <ImageView
             android:id="@+id/wifi_refresh_image"
-            style="@style/MaineScreenIcon"
+            style="@style/ProgramIcon"
             android:layout_centerHorizontal="true"
             android:layout_toLeftOf="@id/menu_archive_text"
             android:src="@drawable/ic_refresh_black_36dp" />

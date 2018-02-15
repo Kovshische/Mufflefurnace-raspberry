@@ -71,14 +71,14 @@
 
     <RelativeLayout
         android:id="@+id/stop"
-        style="@style/MainScreenMenu"
+        style="@style/ProgramMenu"
         android:layout_alignParentBottom="true"
         android:background="@color/colorAccent"
         android:drawSelectorOnTop="true">
 
         <TextView
             android:id="@+id/stop1"
-            style="@style/MainScreenMenuText"
+            style="@style/ProgramMenuText"
             android:text="@string/executing_program_view_stop"
             android:textAllCaps="true" />
     </RelativeLayout>
