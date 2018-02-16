@@ -11,6 +11,10 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.example.android.mufflefurnace.Data.ProgramContract;
 import com.example.android.mufflefurnace.ProgramViewActivity;
@@ -33,6 +37,13 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
 
     ArrayList<DataPoint> dataPointArrayList = new ArrayList<DataPoint>();
     private GraphView graph;
+    EditText enterTimeEditText;
+    Button enterButton;
+    TextView expectedTemperatureTextView;
+
+    //For check how pointManager works
+    private int currentTime;
+    private int expectedTempera;
 
 
     @Override
@@ -48,21 +59,31 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
         mCurrentProgramUri = intent.getData();
 
         graph = (GraphView) findViewById(R.id.executing_program_graph_view);
-
         getSupportLoaderManager().initLoader(EXISTING_PROGRAM_ID_LOADER, null, this);
 
-
         //Check that PointManager works
-        PointManager pointManager = new PointManager(dataPointArrayList);
-         int enteredTime;
+        enterTimeEditText = (EditText) findViewById(R.id.enteredTime);
+        enterButton = (Button) findViewById(R.id.enterButton);
+        expectedTemperatureTextView = (TextView) findViewById(R.id.temperatureOnTime);
+
+        enterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PointManager pointManager = new PointManager(dataPointArrayList);
+                currentTime = Integer.parseInt(enterTimeEditText.getText().toString().trim());
+                expectedTempera = pointManager.getTemperature(currentTime);
+                expectedTemperatureTextView.setText(Integer.toString(expectedTempera));
+
+            }
+        });
+
+
 
     }
 
     private void executeProgram(){
         float eTemperature = graph.getY();
         //graph.getSeries().
-
-
 
     }
 
@@ -159,8 +180,10 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
                     double timeDouble = (double) time/60;
 
                     dataPointArrayList.add(new DataPoint(timeDouble,temperature));
-                    Log.i("array for graphView", time + "/" + temperature);
+                    Log.i("array for graphView min", time + "/" + temperature);
+                  //  Log.i("array for graphView", timeDouble + "/" + temperature);
                 }
+
 
                 DataPoint[] dataPoint = dataPointArrayList.toArray(new DataPoint[]{});
 //                DataPoint[] dataPoint = (DataPoint[]) dataPointArrayList.toArray(new DataPoint[0]);

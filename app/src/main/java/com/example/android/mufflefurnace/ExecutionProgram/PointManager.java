@@ -1,5 +1,7 @@
 package com.example.android.mufflefurnace.ExecutionProgram;
 
+import android.util.Log;
+
 import com.jjoe64.graphview.series.DataPoint;
 
 import java.sql.Time;
@@ -26,7 +28,6 @@ public class PointManager {
 
     private boolean isContainTime = false;
 
-    private int ii = 0;
     private int startTime;
     private int finishTime;
     private int startTemperature;
@@ -47,19 +48,22 @@ public class PointManager {
         }
 
         //check that time < max time
-        if ( currentTimeSeconds > (int) 60*dataPointArrayList.get(i).getX()){
-            throw new IllegalArgumentException("Time is out of range");
+        if ( currentTimeSeconds > (int) 3600*dataPointArrayList.get(i-1).getX()){
+            throw new IllegalArgumentException("Time is out of range, your time = " + currentTimeSeconds + "max time =" + 3600*dataPointArrayList.get(i-1).getX() );
         }
 
 
-        while (isContainTime == false & ii < dataPointArrayList.size()){
+        int ii = 0;
+        while (isContainTime == false & ii < dataPointArrayList.size()-1){
             double startTimeDouble = dataPointArrayList.get(ii).getX();
             //time in seconds
-            startTime = (int) startTimeDouble*360;
+            startTime = (int) (startTimeDouble*3600);
+            Log.i("Start time", "" + startTime);
 
-            double finishTimeDouble = dataPointArrayList.get((ii+1)).getX();
+            double finishTimeDouble = dataPointArrayList.get(ii+1).getX();
             //time in seconds
-            finishTime = (int) finishTimeDouble*360;
+            finishTime = (int) (finishTimeDouble*3600);
+            Log.i("Finish time", "" + finishTime);
 
 
 
@@ -67,13 +71,15 @@ public class PointManager {
                 isContainTime = true;
 
                 startTemperature = (int) dataPointArrayList.get(ii).getY();
+                Log.i("Start temperature", "" + startTemperature);
                 finishTemperature = (int) dataPointArrayList.get((ii+1)).getY();
+                Log.i("Finish temperature", "" + finishTemperature);
 
                 temperature = startTemperature + (currentTimeSeconds - startTime) * (finishTemperature - startTemperature)/(finishTime - startTime);
 
                 return temperature;
             }
-            ii = ii +1;
+            ii = ii+1;
         }
 
         return temperature;
