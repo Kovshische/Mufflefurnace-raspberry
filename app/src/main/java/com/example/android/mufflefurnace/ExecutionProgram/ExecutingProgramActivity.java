@@ -1,6 +1,9 @@
 package com.example.android.mufflefurnace.ExecutionProgram;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,6 +29,7 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import java.util.ArrayList;
 
 public class ExecutingProgramActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
+    private final String LOG_TAG = PointManager.class.getSimpleName();
 
 
     private static final int EXISTING_PROGRAM_ID_LOADER = 1;
@@ -44,6 +48,8 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
     //For check how pointManager works
     private int currentTime;
     private int expectedTempera;
+
+    private Intent controlServiceIntent;
 
 
     @Override
@@ -77,15 +83,32 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
             }
         });
 
+        //service test
+         controlServiceIntent = new Intent(this, ControlService.class);
 
 
     }
 
-    private void executeProgram(){
-        float eTemperature = graph.getY();
-        //graph.getSeries().
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            updateUI(intent);
+        }
+    };
+
+    private void updateUI(Intent intent) {
+        String counter = intent.getStringExtra("counter");
+        String time = intent.getStringExtra("time");
+        Log.d(LOG_TAG, counter);
+        Log.d(LOG_TAG, time);
+
+        TextView timeTextView = (TextView) findViewById(R.id.executing_program_time);
+        timeTextView.setText(time);
+        TextView targetTempTextView = (TextView)findViewById(R.id.executing_program_target_temp);
+        targetTempTextView.setText(counter);
 
     }
+
 
     private void initPointLoader() {
         getSupportLoaderManager().initLoader(POINTS_LOADER, null, this);
@@ -227,5 +250,12 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        startService(controlServiceIntent);
+        registerReceiver(broadcastReceiver, new IntentFilter(ControlService.CONTROL_ACTION));
     }
 }

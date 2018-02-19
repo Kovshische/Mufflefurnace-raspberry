@@ -39,7 +39,22 @@
 
             <TextView
                 style="@style/Program_view_edit_time_temperature"
-                android:text="@string/program_view_edit_temperature" />
+                android:id="@+id/executing_program_time" />
+
+            <TextView
+                style="@style/Program_view_edit_time_temperature"
+                android:text="@string/executing_program_sensor_temp" />
+
+            <TextView
+                style="@style/Program_view_edit_time_temperature"
+                android:id="@+id/executing_program_sensor_temp" />
+
+            <TextView
+                style="@style/Program_view_edit_time_temperature"
+                android:text="@string/executing_program_target_temp" />
+            <TextView
+                style="@style/Program_view_edit_time_temperature"
+                android:id="@+id/executing_program_target_temp" />
 
         </LinearLayout>
 

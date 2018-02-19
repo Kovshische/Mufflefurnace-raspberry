@@ -1,7 +1,5 @@
 package com.example.android.mufflefurnace.ExecutionProgram;
 
-import android.util.Log;
-
 import com.jjoe64.graphview.series.DataPoint;
 
 import java.sql.Time;
@@ -58,12 +56,12 @@ public class PointManager {
             double startTimeDouble = dataPointArrayList.get(ii).getX();
             //time in seconds
             startTime = (int) (startTimeDouble*3600);
-            Log.i("Start time", "" + startTime);
+            //Log.i("Start time", "" + startTime);
 
             double finishTimeDouble = dataPointArrayList.get(ii+1).getX();
             //time in seconds
             finishTime = (int) (finishTimeDouble*3600);
-            Log.i("Finish time", "" + finishTime);
+            //Log.i("Finish time", "" + finishTime);
 
 
 
@@ -71,9 +69,9 @@ public class PointManager {
                 isContainTime = true;
 
                 startTemperature = (int) dataPointArrayList.get(ii).getY();
-                Log.i("Start temperature", "" + startTemperature);
+                //Log.i("Start temperature", "" + startTemperature);
                 finishTemperature = (int) dataPointArrayList.get((ii+1)).getY();
-                Log.i("Finish temperature", "" + finishTemperature);
+                //Log.i("Finish temperature", "" + finishTemperature);
 
                 temperature = startTemperature + (currentTimeSeconds - startTime) * (finishTemperature - startTemperature)/(finishTime - startTime);
 

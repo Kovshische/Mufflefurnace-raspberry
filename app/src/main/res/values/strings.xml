@@ -76,4 +76,10 @@
     <string name="title_activity_settings">Settings</string>
 
 
+    <!-- Activity ExexcutingProgram -->
+    <string name="executing_program_time">Time </string>
+    <string name="executing_program_sensor_temp">Sensor T °C </string>
+    <string name="executing_program_target_temp">Target T °C </string>
+
+
 </resources>
