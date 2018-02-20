@@ -60,7 +60,7 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
 
 
         //Examine the intent that was used to launch this activity
-        //in order to figure out if we're creating a new pet or editing existing one.
+        //in order to figure out if we're creating a new program or editing existing one.
         Intent intent = getIntent();
         mCurrentProgramUri = intent.getData();
 
@@ -83,9 +83,9 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
             }
         });
 
-        //service test
-         controlServiceIntent = new Intent(this, ControlService.class);
-
+        //Create control service
+        //controlServiceIntent = new Intent(this, ControlService.class);
+      //
 
     }
 
@@ -99,13 +99,15 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
     private void updateUI(Intent intent) {
         String counter = intent.getStringExtra("counter");
         String time = intent.getStringExtra("time");
+        String temp = intent.getStringExtra("temp");
         Log.d(LOG_TAG, counter);
         Log.d(LOG_TAG, time);
+        Log.d(LOG_TAG, temp);
 
         TextView timeTextView = (TextView) findViewById(R.id.executing_program_time);
         timeTextView.setText(time);
         TextView targetTempTextView = (TextView)findViewById(R.id.executing_program_target_temp);
-        targetTempTextView.setText(counter);
+        targetTempTextView.setText(temp);
 
     }
 
@@ -227,7 +229,11 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
 
                 graph.addSeries(series);
 
+                //Create control service
+                controlServiceIntent = new Intent(ExecutingProgramActivity.this, ControlService.class);
+                controlServiceIntent.putExtra("pointsArray", dataPointArrayList);
 
+                startService(controlServiceIntent);
 
         }
 
@@ -255,7 +261,9 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
     @Override
     public void onResume() {
         super.onResume();
-        startService(controlServiceIntent);
+
+       // startService(controlServiceIntent);
         registerReceiver(broadcastReceiver, new IntentFilter(ControlService.CONTROL_ACTION));
+
     }
 }
