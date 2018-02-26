@@ -76,20 +76,31 @@ public class ControlService extends Service {
             calculateTimeFromSrart();
             calculateTemp();
            displayTempTime();
+            //control power
+            controlPower(sensorTemp, targetTemp);
            handler.postDelayed(this, 1000); // 1 second
 
-            //control power
-           controlPower(sensorTemp, targetTemp);
+
+
         }
     };
 
-    private int calculateTemp() {
+    private void calculateTemp() {
 
         dataPointArrayList = (ArrayList<DataPoint>) myIntent.getSerializableExtra("pointsArray");
         PointManager pointManager = new PointManager(dataPointArrayList);
-        targetTemp = pointManager.getTemperature(timeFromStartSec);
+        try {
+            targetTemp = pointManager.getTemperature(timeFromStartSec);
 
-        return targetTemp;
+        } catch (IllegalArgumentException e){
+            Log.d(LOG_TAG, e.toString());
+
+            //when program end
+            targetTemp = 0;
+            heatingPowerWrapper.turnOff();
+
+        }
+
     }
 
     private int calculateTimeFromSrart() {

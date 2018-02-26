@@ -16,6 +16,7 @@ public class HeatingPowerWrapper {
 
     private @Nullable
     Gpio gpio;
+    private static boolean powerInstance;
 
     private final static String LOG_TAG = HeatingPowerWrapper.class.getSimpleName();
 
@@ -35,7 +36,8 @@ public class HeatingPowerWrapper {
         }
         try {
             gpio.setValue(true);
-            Log.d(LOG_TAG, "turn on");
+            powerInstance = true;
+            Log.d(LOG_TAG, "turn power on");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -47,6 +49,8 @@ public class HeatingPowerWrapper {
         }
         try {
             gpio.setValue(false);
+            powerInstance = false;
+            Log.d(LOG_TAG, "turn power off");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -60,6 +64,10 @@ public class HeatingPowerWrapper {
         } finally {
             gpio = null;
         }
+    }
+
+    public boolean getPowerInstance(){
+        return powerInstance;
     }
 
 }
