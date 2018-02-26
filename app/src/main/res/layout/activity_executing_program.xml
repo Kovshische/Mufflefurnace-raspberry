@@ -21,7 +21,7 @@
             <com.jjoe64.graphview.GraphView
                 android:id="@+id/executing_program_graph_view"
                 android:layout_width="match_parent"
-                android:layout_height="240dp" />
+                android:layout_height="320dp" />
 
 
         </LinearLayout>
@@ -58,32 +58,7 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:orientation="horizontal">
 
-            <TextView
-                style="@style/Program_view_edit_time_temperature"
-                android:text="Enter time in seconds" />
-
-            <EditText
-                android:id="@+id/enteredTime"
-                style="@style/Program_view_edit_time_temperature"
-                android:inputType="textCapWords"/>
-            <Button
-                android:id="@+id/enterButton"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="enter"/>
-
-            <TextView
-                style="@style/Program_view_edit_time_temperature"
-                android:id="@+id/temperatureOnTime"/>
-
-        </LinearLayout>
     </LinearLayout>
 
     <RelativeLayout

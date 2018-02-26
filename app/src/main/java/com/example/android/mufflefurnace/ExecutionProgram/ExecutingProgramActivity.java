@@ -14,7 +14,6 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -67,6 +66,7 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
         graph = (GraphView) findViewById(R.id.executing_program_graph_view);
         getSupportLoaderManager().initLoader(EXISTING_PROGRAM_ID_LOADER, null, this);
 
+        /*
         //Check that PointManager works
         enterTimeEditText = (EditText) findViewById(R.id.enteredTime);
         enterButton = (Button) findViewById(R.id.enterButton);
@@ -82,11 +82,7 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
 
             }
         });
-
-        //Create control service
-        //controlServiceIntent = new Intent(this, ControlService.class);
-      //
-
+      */
     }
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
