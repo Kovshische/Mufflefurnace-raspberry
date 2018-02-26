@@ -29,20 +29,23 @@ public class ControlService extends Service {
     long currentDate;
     int timeFromStartSec;
     ArrayList<DataPoint> dataPointArrayList;
-    int temp;
+    int targetTemp;
+    int sensorTemp;
 
     Intent myIntent;
 
+    //GPIO
+    private final static  String GPIO_PIN_HEATING_POWER = "BCM21";
+    private HeatingPowerWrapper heatingPowerWrapper;
 
     @Override
     public void onCreate(){
         super.onCreate();
-
         intent = new Intent(ControlService.CONTROL_ACTION);
         startDate = Calendar.getInstance().getTimeInMillis();
 
-
-
+        heatingPowerWrapper = new HeatingPowerWrapper(GPIO_PIN_HEATING_POWER);
+       // heatingPowerWrapper.turnOn();
     }
 
 
@@ -55,18 +58,30 @@ public class ControlService extends Service {
     @Override
     public void onStart(Intent intent, int startId) {
         myIntent = intent;
-
         handler.removeCallbacks(sendUpdatesToUI);
         handler.postDelayed(sendUpdatesToUI, 1000); // 1 second
 
+        heatingPowerWrapper.turnOn();
+
     }
+
+    @Override
+    public void onDestroy(){
+        heatingPowerWrapper.onDestroy();
+    }
+
+
 
     private Runnable sendUpdatesToUI = new Runnable() {
         public void run() {
             calculateTimeFromSrart();
             calculateTemp();
            displayTempTime();
-           handler.postDelayed(this, 1000); // 10 seconds
+           handler.postDelayed(this, 1000); // 1 second
+
+            //control power
+           sensorTemp = 20;
+           controlPower(sensorTemp, targetTemp);
         }
     };
 
@@ -74,9 +89,9 @@ public class ControlService extends Service {
 
         dataPointArrayList = (ArrayList<DataPoint>) myIntent.getSerializableExtra("pointsArray");
         PointManager pointManager = new PointManager(dataPointArrayList);
-        temp = pointManager.getTemperature(timeFromStartSec);
+        targetTemp = pointManager.getTemperature(timeFromStartSec);
 
-        return temp;
+        return targetTemp;
     }
 
     private int calculateTimeFromSrart() {
@@ -93,8 +108,9 @@ public class ControlService extends Service {
 
 
         intent.putExtra("time", mTimeToString(timeFromStartSec));
-        intent.putExtra("temp",Integer.toString(temp));
-        intent.putExtra("counter", String.valueOf(++counter));
+        intent.putExtra("targetTemp",Integer.toString(targetTemp));
+        intent.putExtra("sensorTemp", Integer.toString(sensorTemp));
+        
         sendBroadcast(intent);
     }
 
@@ -123,5 +139,14 @@ public class ControlService extends Service {
             timeString = Integer.toString(hours) + timeString;
         }
         return timeString;
+    }
+
+    private void controlPower ( int sensorTemp, int targetTemp){
+        if (sensorTemp < targetTemp){
+            heatingPowerWrapper.turnOn();
+        }
+        else {
+            heatingPowerWrapper.turnOff();
+        }
     }
 }

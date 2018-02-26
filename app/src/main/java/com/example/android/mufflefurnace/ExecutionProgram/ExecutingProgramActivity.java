@@ -93,17 +93,20 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
     };
 
     private void updateUI(Intent intent) {
-        String counter = intent.getStringExtra("counter");
+
         String time = intent.getStringExtra("time");
-        String temp = intent.getStringExtra("temp");
-        Log.d(LOG_TAG, counter);
+        String targetTemp = intent.getStringExtra("targetTemp");
+        String sensorTemp = intent.getStringExtra("sensorTemp");
+
         Log.d(LOG_TAG, time);
-        Log.d(LOG_TAG, temp);
+        Log.d(LOG_TAG, targetTemp);
 
         TextView timeTextView = (TextView) findViewById(R.id.executing_program_time);
         timeTextView.setText(time);
         TextView targetTempTextView = (TextView)findViewById(R.id.executing_program_target_temp);
-        targetTempTextView.setText(temp);
+        targetTempTextView.setText(targetTemp);
+        TextView sensorTempTextView = (TextView)findViewById(R.id.executing_program_sensor_temp);
+        sensorTempTextView.setText(sensorTemp);
 
     }
 
