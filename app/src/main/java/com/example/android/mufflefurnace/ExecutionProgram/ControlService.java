@@ -25,12 +25,12 @@ public class ControlService extends Service {
     private final Handler handler = new Handler();
     Intent intent;
     int counter =0;
-    long startDate;
-    long currentDate;
-    int timeFromStartSec;
+    static long startDate;
+    static long currentDate;
+    static int timeFromStartSec;
     ArrayList<DataPoint> dataPointArrayList;
     int targetTemp;
-    int sensorTemp;
+    int sensorTemp = 20;
 
     Intent myIntent;
 
@@ -42,7 +42,7 @@ public class ControlService extends Service {
     public void onCreate(){
         super.onCreate();
         intent = new Intent(ControlService.CONTROL_ACTION);
-        startDate = Calendar.getInstance().getTimeInMillis();
+
 
         heatingPowerWrapper = new HeatingPowerWrapper(GPIO_PIN_HEATING_POWER);
        // heatingPowerWrapper.turnOn();
@@ -57,16 +57,15 @@ public class ControlService extends Service {
 
     @Override
     public void onStart(Intent intent, int startId) {
+        startDate = Calendar.getInstance().getTimeInMillis();
         myIntent = intent;
         handler.removeCallbacks(sendUpdatesToUI);
         handler.postDelayed(sendUpdatesToUI, 1000); // 1 second
-
-        heatingPowerWrapper.turnOn();
-
     }
 
     @Override
     public void onDestroy(){
+        heatingPowerWrapper.turnOff();
         heatingPowerWrapper.onDestroy();
     }
 
@@ -80,7 +79,6 @@ public class ControlService extends Service {
            handler.postDelayed(this, 1000); // 1 second
 
             //control power
-           sensorTemp = 20;
            controlPower(sensorTemp, targetTemp);
         }
     };
@@ -110,7 +108,7 @@ public class ControlService extends Service {
         intent.putExtra("time", mTimeToString(timeFromStartSec));
         intent.putExtra("targetTemp",Integer.toString(targetTemp));
         intent.putExtra("sensorTemp", Integer.toString(sensorTemp));
-        
+
         sendBroadcast(intent);
     }
 

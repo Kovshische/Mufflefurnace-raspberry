@@ -100,6 +100,7 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
 
         Log.d(LOG_TAG, time);
         Log.d(LOG_TAG, targetTemp);
+        Log.d(LOG_TAG, sensorTemp);
 
         TextView timeTextView = (TextView) findViewById(R.id.executing_program_time);
         timeTextView.setText(time);
@@ -264,5 +265,11 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
        // startService(controlServiceIntent);
         registerReceiver(broadcastReceiver, new IntentFilter(ControlService.CONTROL_ACTION));
 
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(broadcastReceiver);
+        stopService(controlServiceIntent);
     }
 }
