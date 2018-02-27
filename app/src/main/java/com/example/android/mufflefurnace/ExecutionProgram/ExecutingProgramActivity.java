@@ -39,7 +39,7 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
     private String mCurrentProgramName;
     private int mCurrentProgramId;
 
-    ArrayList<DataPoint> dataPointArrayList = new ArrayList<DataPoint>();
+    ArrayList<DataPoint> dataPointArrayList;
     private GraphView graph;
     EditText enterTimeEditText;
     Button enterButton;
@@ -57,7 +57,7 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_executing_program);
 
-
+        dataPointArrayList = new ArrayList<DataPoint>();
 
         //Examine the intent that was used to launch this activity
         //in order to figure out if we're creating a new program or editing existing one.
@@ -235,8 +235,9 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
 
                 //Create control service
                 controlServiceIntent = new Intent(ExecutingProgramActivity.this, ControlService.class);
-                controlServiceIntent.putExtra("pointsArray", dataPointArrayList);
 
+                registerReceiver(broadcastReceiver, new IntentFilter(ControlService.BROADCAST_ACTION));
+                controlServiceIntent.putExtra("pointsArray", dataPointArrayList);
                 startService(controlServiceIntent);
 
         }
@@ -267,7 +268,7 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
         super.onResume();
 
        // startService(controlServiceIntent);
-        registerReceiver(broadcastReceiver, new IntentFilter(ControlService.CONTROL_ACTION));
+        registerReceiver(broadcastReceiver, new IntentFilter(ControlService.BROADCAST_ACTION));
 
     }
     @Override

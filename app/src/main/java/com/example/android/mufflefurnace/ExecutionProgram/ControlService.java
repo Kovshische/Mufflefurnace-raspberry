@@ -22,7 +22,7 @@ import java.util.TimeZone;
 public class ControlService extends Service {
 
     private final String LOG_TAG = PointManager.class.getSimpleName();
-    public static final String CONTROL_ACTION = "Control action";
+    public static final String BROADCAST_ACTION = "Control action";
     private final Handler handler = new Handler();
     Intent intent;
     int counter =0;
@@ -43,8 +43,9 @@ public class ControlService extends Service {
     @Override
     public void onCreate(){
         super.onCreate();
-        intent = new Intent(ControlService.CONTROL_ACTION);
+        intent = new Intent(ControlService.BROADCAST_ACTION);
         heatingPowerWrapper = new HeatingPowerWrapper(GPIO_PIN_HEATING_POWER);
+
     }
 
 
@@ -54,9 +55,10 @@ public class ControlService extends Service {
         return null;
     }
 
-    @Override
-    public void onStart(Intent intent, int startId) {
 
+
+    @Override
+    public void onStart (Intent intent, int startId) {
         startDate = Calendar.getInstance().getTimeInMillis();
         myIntent = intent;
         handler.removeCallbacks(sendUpdatesToUI);
@@ -67,6 +69,7 @@ public class ControlService extends Service {
     public void onDestroy(){
         heatingPowerWrapper.turnOff();
         heatingPowerWrapper.onDestroy();
+        handler.removeCallbacks(sendUpdatesToUI);
     }
 
 
