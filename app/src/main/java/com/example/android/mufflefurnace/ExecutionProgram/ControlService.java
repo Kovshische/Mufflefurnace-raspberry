@@ -32,7 +32,7 @@ public class ControlService extends Service {
     static boolean powerInstance;
     ArrayList<DataPoint> dataPointArrayList;
     int targetTemp;
-    int sensorTemp = 20;
+    float sensorTemp;
 
     Intent myIntent;
 
@@ -75,12 +75,13 @@ public class ControlService extends Service {
         public void run() {
             calculateTimeFromSrart();
             calculateTemp();
+            getSensorTemp();
             //control power
-            controlPower(sensorTemp, targetTemp);
+            controlPower(Math.round(sensorTemp), targetTemp);
             getPowerInstance();
             displayTempTime();
 
-           handler.postDelayed(this, 100); // 0.1 second
+           handler.postDelayed(this, 1000); // 0.1 second
         }
     };
 
@@ -106,7 +107,20 @@ public class ControlService extends Service {
         timeFromStartSec = Integer.valueOf(l.intValue());
         return timeFromStartSec;
     }
-     private void getPowerInstance () {
+    private void getSensorTemp () {
+        try {
+            Max6675 max6675 = new Max6675();
+            sensorTemp = max6675.getTemp();
+            Log.i(LOG_TAG, "SensorTemp: " + sensorTemp + " °C");
+           max6675.close();
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getPowerInstance () {
         try {
             powerInstance = heatingPowerWrapper.getPowerInstance();
         } catch (IOException e){
@@ -120,7 +134,7 @@ public class ControlService extends Service {
 
         intent.putExtra("time", mTimeToString(timeFromStartSec));
         intent.putExtra("targetTemp",Integer.toString(targetTemp));
-        intent.putExtra("sensorTemp", Integer.toString(sensorTemp));
+        intent.putExtra("sensorTemp", Float.toString(sensorTemp));
         intent.putExtra("powerInstance", powerInstance);
 
         sendBroadcast(intent);
