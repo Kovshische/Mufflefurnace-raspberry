@@ -81,9 +81,6 @@ public class PointManager {
                 ii = ii + 1;
             }
         }
-        else {
-            throw new IllegalArgumentException("Time is out of range, your time = " + currentTimeSeconds + "max time =" + 3600 * dataPointArrayList.get(i - 1).getX());
-        }
 
         throw new IllegalArgumentException("Time is out of range, your time = " + currentTimeSeconds + "max time =" + 3600 * dataPointArrayList.get(i - 1).getX());
     }

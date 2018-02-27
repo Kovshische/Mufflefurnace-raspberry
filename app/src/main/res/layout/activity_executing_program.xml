@@ -35,6 +35,7 @@
 
             <TextView
                 style="@style/Program_view_edit_time_temperature"
+                android:textAlignment="center"
                 android:text="@string/program_view_edit_time" />
 
             <TextView
@@ -55,7 +56,14 @@
             <TextView
                 style="@style/Program_view_edit_time_temperature"
                 android:id="@+id/executing_program_target_temp" />
-
+            <TextView
+                style="@style/Program_view_edit_time_temperature"
+                android:text="@string/executing_program_power" />
+            <RadioButton
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:id="@+id/executing_program_power_indicate"
+                android:paddingTop="0dp"/>
         </LinearLayout>
 
 

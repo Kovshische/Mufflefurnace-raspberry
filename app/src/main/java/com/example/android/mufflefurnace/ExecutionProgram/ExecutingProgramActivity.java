@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.example.android.mufflefurnace.Data.ProgramContract;
@@ -97,6 +98,7 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
         String time = intent.getStringExtra("time");
         String targetTemp = intent.getStringExtra("targetTemp");
         String sensorTemp = intent.getStringExtra("sensorTemp");
+        Boolean powerInstance = intent.getBooleanExtra("powerInstance",false);
 
         Log.d(LOG_TAG, time);
         Log.d(LOG_TAG, targetTemp);
@@ -108,6 +110,8 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
         targetTempTextView.setText(targetTemp);
         TextView sensorTempTextView = (TextView)findViewById(R.id.executing_program_sensor_temp);
         sensorTempTextView.setText(sensorTemp);
+        RadioButton powerRadioButton = (RadioButton)findViewById(R.id.executing_program_power_indicate);
+        powerRadioButton.setChecked(powerInstance);
 
     }
 
@@ -267,9 +271,12 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
 
     }
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
         unregisterReceiver(broadcastReceiver);
         stopService(controlServiceIntent);
+        Log.i(LOG_TAG, "stop service");
     }
+
+
 }

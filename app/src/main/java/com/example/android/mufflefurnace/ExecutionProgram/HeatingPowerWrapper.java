@@ -36,7 +36,7 @@ public class HeatingPowerWrapper {
         }
         try {
             gpio.setValue(true);
-            powerInstance = true;
+           // powerInstance = true;
             Log.d(LOG_TAG, "turn power on");
         } catch (IOException e) {
             e.printStackTrace();
@@ -49,7 +49,7 @@ public class HeatingPowerWrapper {
         }
         try {
             gpio.setValue(false);
-            powerInstance = false;
+           // powerInstance = false;
             Log.d(LOG_TAG, "turn power off");
         } catch (IOException e) {
             e.printStackTrace();
@@ -66,7 +66,11 @@ public class HeatingPowerWrapper {
         }
     }
 
-    public boolean getPowerInstance(){
+    public boolean getPowerInstance() throws IOException {
+            if (gpio.getValue()) {
+                powerInstance = true;
+            }
+            else powerInstance = false;
         return powerInstance;
     }
 

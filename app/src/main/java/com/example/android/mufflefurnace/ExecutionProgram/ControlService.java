@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.jjoe64.graphview.series.DataPoint;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -28,6 +29,7 @@ public class ControlService extends Service {
     static long startDate;
     static long currentDate;
     static int timeFromStartSec;
+    static boolean powerInstance;
     ArrayList<DataPoint> dataPointArrayList;
     int targetTemp;
     int sensorTemp = 20;
@@ -42,10 +44,7 @@ public class ControlService extends Service {
     public void onCreate(){
         super.onCreate();
         intent = new Intent(ControlService.CONTROL_ACTION);
-
-
         heatingPowerWrapper = new HeatingPowerWrapper(GPIO_PIN_HEATING_POWER);
-       // heatingPowerWrapper.turnOn();
     }
 
 
@@ -57,6 +56,7 @@ public class ControlService extends Service {
 
     @Override
     public void onStart(Intent intent, int startId) {
+
         startDate = Calendar.getInstance().getTimeInMillis();
         myIntent = intent;
         handler.removeCallbacks(sendUpdatesToUI);
@@ -75,13 +75,12 @@ public class ControlService extends Service {
         public void run() {
             calculateTimeFromSrart();
             calculateTemp();
-           displayTempTime();
             //control power
             controlPower(sensorTemp, targetTemp);
-           handler.postDelayed(this, 1000); // 1 second
+            getPowerInstance();
+            displayTempTime();
 
-
-
+           handler.postDelayed(this, 100); // 0.1 second
         }
     };
 
@@ -91,16 +90,12 @@ public class ControlService extends Service {
         PointManager pointManager = new PointManager(dataPointArrayList);
         try {
             targetTemp = pointManager.getTemperature(timeFromStartSec);
-
         } catch (IllegalArgumentException e){
             Log.d(LOG_TAG, e.toString());
-
             //when program end
             targetTemp = 0;
             heatingPowerWrapper.turnOff();
-
         }
-
     }
 
     private int calculateTimeFromSrart() {
@@ -111,14 +106,22 @@ public class ControlService extends Service {
         timeFromStartSec = Integer.valueOf(l.intValue());
         return timeFromStartSec;
     }
+     private void getPowerInstance () {
+        try {
+            powerInstance = heatingPowerWrapper.getPowerInstance();
+        } catch (IOException e){
+            Log.i(LOG_TAG, e.toString());
+        }
+
+     }
 
     private void displayTempTime() {
         Log.d(LOG_TAG, "entered DisplayInfo");
 
-
         intent.putExtra("time", mTimeToString(timeFromStartSec));
         intent.putExtra("targetTemp",Integer.toString(targetTemp));
         intent.putExtra("sensorTemp", Integer.toString(sensorTemp));
+        intent.putExtra("powerInstance", powerInstance);
 
         sendBroadcast(intent);
     }

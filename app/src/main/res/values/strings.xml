@@ -80,6 +80,7 @@
     <string name="executing_program_time">Time </string>
     <string name="executing_program_sensor_temp">Sensor T °C </string>
     <string name="executing_program_target_temp">Target T °C </string>
+    <string name="executing_program_power">Power</string>
 
 
 </resources>
