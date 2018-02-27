@@ -10,7 +10,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/main_screen_item_height"
         android:orientation="vertical">
 
         <LinearLayout
@@ -21,7 +20,7 @@
             <com.jjoe64.graphview.GraphView
                 android:id="@+id/executing_program_graph_view"
                 android:layout_width="match_parent"
-                android:layout_height="320dp" />
+                android:layout_height="340dp" />
 
 
         </LinearLayout>
@@ -33,55 +32,82 @@
             android:layout_marginRight="16dp"
             android:orientation="horizontal">
 
-            <TextView
-                style="@style/Program_view_edit_time_temperature"
-                android:textAlignment="center"
-                android:text="@string/program_view_edit_time" />
-
-            <TextView
-                style="@style/Program_view_edit_time_temperature"
-                android:id="@+id/executing_program_time" />
-
-            <TextView
-                style="@style/Program_view_edit_time_temperature"
-                android:text="@string/executing_program_sensor_temp" />
-
-            <TextView
-                style="@style/Program_view_edit_time_temperature"
-                android:id="@+id/executing_program_sensor_temp" />
-
-            <TextView
-                style="@style/Program_view_edit_time_temperature"
-                android:text="@string/executing_program_target_temp" />
-            <TextView
-                style="@style/Program_view_edit_time_temperature"
-                android:id="@+id/executing_program_target_temp" />
-            <TextView
-                style="@style/Program_view_edit_time_temperature"
-                android:text="@string/executing_program_power" />
-            <RadioButton
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:id="@+id/executing_program_power_indicate"
-                android:paddingTop="0dp"/>
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/Program_view_edit_time_temperature"
+
+                    android:text="@string/program_view_edit_time" />
+
+                <TextView
+                    android:id="@+id/executing_program_time"
+                    style="@style/Program_view_edit_time_temperature"
+                    android:paddingTop="8dp"
+                    tools:text="02:30:32" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/Program_view_edit_time_temperature"
+                    android:text="@string/executing_program_sensor_temp" />
+
+                <TextView
+                    android:id="@+id/executing_program_sensor_temp"
+                    style="@style/Program_view_edit_time_temperature"
+                    android:paddingTop="8dp"
+                    tools:text="112" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/Program_view_edit_time_temperature"
+                    android:text="@string/executing_program_target_temp" />
+
+                <TextView
+                    android:id="@+id/executing_program_target_temp"
+                    style="@style/Program_view_edit_time_temperature"
+                    android:paddingTop="8dp"
+                    tools:text="150"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/Program_view_edit_time_temperature"
+                    android:text="@string/executing_program_power" />
+
+                <RadioButton
+                    android:id="@+id/executing_program_power_indicate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingTop="16dp" />
+            </LinearLayout>
         </LinearLayout>
 
 
     </LinearLayout>
-
-    <RelativeLayout
-        android:id="@+id/stop"
-        style="@style/ProgramMenu"
-        android:layout_alignParentBottom="true"
-        android:background="@color/colorAccent"
-        android:drawSelectorOnTop="true">
-
-        <TextView
-            android:id="@+id/stop1"
-            style="@style/ProgramMenuText"
-            android:text="@string/executing_program_view_stop"
-            android:textAllCaps="true" />
-    </RelativeLayout>
 
 
     <android.support.design.widget.AppBarLayout

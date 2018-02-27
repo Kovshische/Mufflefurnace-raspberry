@@ -114,7 +114,6 @@ public class ControlService extends Service {
             Log.i(LOG_TAG, "SensorTemp: " + sensorTemp + " °C");
            max6675.close();
 
-
         } catch (IOException e) {
             e.printStackTrace();
         }
