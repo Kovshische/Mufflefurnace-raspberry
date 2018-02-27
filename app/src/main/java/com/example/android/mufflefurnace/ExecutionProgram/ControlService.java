@@ -120,12 +120,7 @@ public class ControlService extends Service {
     }
 
     private void getPowerInstance () {
-        try {
             powerInstance = heatingPowerWrapper.getPowerInstance();
-        } catch (IOException e){
-            Log.i(LOG_TAG, e.toString());
-        }
-
      }
 
     private void displayTempTime() {

@@ -66,12 +66,15 @@ public class HeatingPowerWrapper {
         }
     }
 
-    public boolean getPowerInstance() throws IOException {
-            if (gpio.getValue()) {
-                powerInstance = true;
-            }
-            else powerInstance = false;
-        return powerInstance;
+    public boolean getPowerInstance()  {
+        try{
+            powerInstance = gpio.getValue();
+            return powerInstance;
+        } catch (Exception e){
+            Log.i(LOG_TAG, e.toString());
+            return powerInstance;
+        }
+
     }
 
 }
