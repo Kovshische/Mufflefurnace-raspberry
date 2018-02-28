@@ -40,8 +40,8 @@
 
                 <TextView
                     style="@style/Program_view_edit_time_temperature"
-
-                    android:text="@string/program_view_edit_time" />
+                    android:text="@string/program_view_edit_time"
+                    android:textStyle="bold"/>
 
                 <TextView
                     android:id="@+id/executing_program_time"
@@ -60,7 +60,8 @@
 
                 <TextView
                     style="@style/Program_view_edit_time_temperature"
-                    android:text="@string/executing_program_sensor_temp" />
+                    android:text="@string/executing_program_sensor_temp"
+                    android:textStyle="bold"/>
 
                 <TextView
                     android:id="@+id/executing_program_sensor_temp"
@@ -78,7 +79,8 @@
 
                 <TextView
                     style="@style/Program_view_edit_time_temperature"
-                    android:text="@string/executing_program_target_temp" />
+                    android:text="@string/executing_program_target_temp"
+                    android:textStyle="bold"/>
 
                 <TextView
                     android:id="@+id/executing_program_target_temp"
@@ -95,7 +97,8 @@
 
                 <TextView
                     style="@style/Program_view_edit_time_temperature"
-                    android:text="@string/executing_program_power" />
+                    android:text="@string/executing_program_power"
+                    android:textStyle="bold"/>
 
                 <RadioButton
                     android:id="@+id/executing_program_power_indicate"
