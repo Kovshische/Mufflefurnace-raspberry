@@ -117,11 +117,14 @@
         android:layout_height="wrap_content"
         android:id="@+id/executing_program_end_program"
         android:layout_centerInParent="true"
-        android:text="PROGRAM END"
+        android:text="@string/executing_program_program_is_finished"
+        android:textAllCaps="true"
+        android:textSize="32dp"
         android:textAlignment="center"
         android:fontFamily="sans-serif-medium"
         android:textColor="@color/black"
-        android:visibility="invisible"/>
+        android:visibility="invisible"
+        android:background="@color/absoluteWhite"/>
 
     <android.support.design.widget.AppBarLayout
 
