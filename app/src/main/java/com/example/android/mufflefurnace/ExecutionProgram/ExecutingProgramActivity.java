@@ -14,6 +14,7 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -95,10 +96,11 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
 
     private void updateUI(Intent intent) {
 
-        String time = intent.getStringExtra("time");
-        String targetTemp = intent.getStringExtra("targetTemp");
-        String sensorTemp = intent.getStringExtra("sensorTemp");
-        Boolean powerInstance = intent.getBooleanExtra("powerInstance",false);
+        String time = intent.getStringExtra(ControlService.TIME);
+        String targetTemp = intent.getStringExtra(ControlService.TARGET_TEMP);
+        String sensorTemp = intent.getStringExtra(ControlService.SENSOR_TEMP);
+        Boolean powerInstance = intent.getBooleanExtra(ControlService.POWER_INSTANCE,false);
+        int programStatus = intent.getIntExtra(ControlService.PROGRAM_STATUS,0);
 
         Log.d(LOG_TAG, time);
         Log.d(LOG_TAG, targetTemp);
@@ -112,6 +114,11 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
         sensorTempTextView.setText(sensorTemp);
         RadioButton powerRadioButton = (RadioButton)findViewById(R.id.executing_program_power_indicate);
         powerRadioButton.setChecked(powerInstance);
+        //set end program
+        TextView programEndTextView = (TextView)findViewById(R.id.executing_program_end_program);
+        if (programStatus == ControlService.PROGRAM_END){
+            programEndTextView.setVisibility(View.VISIBLE);
+        }
 
     }
 

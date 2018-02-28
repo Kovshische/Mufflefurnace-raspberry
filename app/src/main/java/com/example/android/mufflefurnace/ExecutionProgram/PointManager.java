@@ -30,6 +30,10 @@ public class PointManager {
     private int finishTime;
     private int startTemperature;
     private int finishTemperature;
+    private int programStatus;
+
+    public static final int PROGRAM_END = 1;
+    public static final int PROGRAM_EXECUTING = 2;
 
     public PointManager(ArrayList<DataPoint> dataPointArrayList) {
         this.dataPointArrayList = dataPointArrayList;
@@ -48,11 +52,13 @@ public class PointManager {
         //check that time < max time
         if (currentTimeSeconds > (int) 3600 * dataPointArrayList.get(i - 1).getX()) {
             Log.i(LOG_TAG, "program end");
+            programStatus = PROGRAM_END;
             throw new IllegalArgumentException("Time is out of range, your time = " + currentTimeSeconds + "max time =" + 3600 * dataPointArrayList.get(i - 1).getX());
             //return 0;
         }
 
         if((currentTimeSeconds <= (int) 3600 * dataPointArrayList.get(i - 1).getX())) {
+            programStatus = PROGRAM_EXECUTING;
             int ii = 0;
             while (isContainTime == false & ii < dataPointArrayList.size() - 1) {
                 double startTimeDouble = dataPointArrayList.get(ii).getX();
@@ -83,5 +89,8 @@ public class PointManager {
         }
 
         throw new IllegalArgumentException("Time is out of range, your time = " + currentTimeSeconds + "max time =" + 3600 * dataPointArrayList.get(i - 1).getX());
+    }
+    public int getProgramStatus(){
+        return programStatus;
     }
 }
