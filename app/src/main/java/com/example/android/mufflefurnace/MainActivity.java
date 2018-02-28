@@ -3,14 +3,29 @@ package com.example.android.mufflefurnace;
 import android.content.Intent;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.example.android.mufflefurnace.ExecutionProgram.Max6675;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
+    private static double sensorTemp;
+    private final Handler handler = new Handler();
+    Runnable sendUpdatesToUI;
+    Date currentTime;
+    String timeString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +85,43 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+         Runnable sendUpdatesToUI = new Runnable() {
+            public void run() {
+                getSensorTemp();
+                currentTime = Calendar.getInstance().getTime();
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                timeString = sdf.format(currentTime );
 
+                TextView temperatureTextView = (TextView) findViewById(R.id.main_activity_temperature);
+                temperatureTextView.setText(String.valueOf(Math.round(sensorTemp))+ " °C");
+
+                TextView timeTextView = (TextView) findViewById(R.id.main_activity_time);
+                timeTextView.setText(timeString);
+
+                handler.postDelayed(this, 1000); // 1 second
+            }
+        };
+        handler.postDelayed(sendUpdatesToUI, 1000); // 1 second
     }
+
+    @Override
+    public void onPause (){
+        super.onPause();
+        handler.removeCallbacks(sendUpdatesToUI);
+    }
+
+
+
+    private void getSensorTemp() {
+        try {
+            Max6675 max6675 = new Max6675();
+            sensorTemp = max6675.getTemp();
+            Log.i(LOG_TAG, "SensorTemp: " + sensorTemp + " °C");
+            max6675.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

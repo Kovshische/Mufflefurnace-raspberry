@@ -98,5 +98,24 @@
 
     </LinearLayout>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/main_activity_temperature"
+        android:textSize="64dp"
+        android:paddingTop="64dp"
+        android:paddingRight="64dp"
+        android:layout_alignParentRight="true"
+        tools:text="32 C"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/main_activity_time"
+        android:textSize="64dp"
+        android:paddingTop="64dp"
+        android:paddingLeft="64dp"
+        tools:text="18:00"/>
+
 
 </RelativeLayout>

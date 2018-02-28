@@ -55,7 +55,7 @@ public class ControlService extends Service {
             getSensorTemp();
             getProgramStatus();
             //control power
-            controlPower(Math.round(sensorTemp), targetTemp);
+            controlPower(sensorTemp, targetTemp);
             getPowerInstance();
             sendProgramParam();
 
@@ -101,12 +101,6 @@ public class ControlService extends Service {
         return null;
     }
 
-    @Override
-    public int onStartCommand(Intent intent, int flag, int id) {
-        super.onStartCommand(intent, flag, id);{
-        }
-        return flag;
-    }
 
     @Override
     public void onStart(Intent intent, int startId) {
@@ -175,7 +169,7 @@ public class ControlService extends Service {
         sendBroadcast(intent);
     }
 
-    private void controlPower(int sensorTemp, int targetTemp) {
+    private void controlPower(double sensorTemp, int targetTemp) {
         if (sensorTemp < targetTemp) {
             heatingPowerWrapper.turnOn();
         } else {
