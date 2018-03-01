@@ -24,6 +24,7 @@ public class ControlService extends Service {
     public static final String BROADCAST_ACTION = "Control action";
     //for intent:
     public static final String TIME = "time";
+    public static final String TIME_SEC = "timeSec";
     public static final String TARGET_TEMP = "targetTemp";
     public static final String SENSOR_TEMP = "sensorTemp";
     public static final String POWER_INSTANCE = "powerInstance";
@@ -42,7 +43,7 @@ public class ControlService extends Service {
     int counter = 0;
     ArrayList<DataPoint> dataPointArrayList;
     int targetTemp;
-    float sensorTemp;
+    int sensorTemp;
     Intent myIntent;
     private HeatingPowerWrapper heatingPowerWrapper;
 
@@ -144,7 +145,7 @@ public class ControlService extends Service {
     private void getSensorTemp() {
         try {
             Max6675 max6675 = new Max6675();
-            sensorTemp = max6675.getTemp();
+            sensorTemp = Math.round(max6675.getTemp());
             Log.i(LOG_TAG, "SensorTemp: " + sensorTemp + " °C");
             max6675.close();
 
@@ -161,10 +162,12 @@ public class ControlService extends Service {
         Log.d(LOG_TAG, "entered DisplayInfo");
 
         intent.putExtra(TIME, mTimeToString(timeFromStartSec));
+        intent.putExtra(TIME_SEC, timeFromStartSec);
         intent.putExtra(TARGET_TEMP, Integer.toString(targetTemp));
-        intent.putExtra(SENSOR_TEMP, Float.toString(sensorTemp));
+        intent.putExtra(SENSOR_TEMP, sensorTemp);
         intent.putExtra(POWER_INSTANCE, powerInstance);
         intent.putExtra(PROGRAM_STATUS, programStatus);
+
 
         sendBroadcast(intent);
     }

@@ -43,6 +43,8 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
     private int mCurrentProgramId;
 
     ArrayList<DataPoint> dataPointArrayList;
+    ArrayList<DataPoint> dataPointArchiveArrayList;
+    LineGraphSeries<DataPoint> archiveSeries;
     private GraphView graph;
     EditText enterTimeEditText;
     Button enterButton;
@@ -68,6 +70,12 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
 
         dataPointArrayList = new ArrayList<DataPoint>();
 
+        dataPointArchiveArrayList = new ArrayList<DataPoint>();
+
+        archiveSeries = new LineGraphSeries<>();
+        archiveSeries.setColor(R.color.colorAccent);
+
+
         //Examine the intent that was used to launch this activity
         //in order to figure out if we're creating a new program or editing existing one.
         Intent intent = getIntent();
@@ -75,6 +83,7 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
 
         graph = (GraphView) findViewById(R.id.executing_program_graph_view);
         getSupportLoaderManager().initLoader(EXISTING_PROGRAM_ID_LOADER, null, this);
+
 
         /*
         //Check that PointManager works
@@ -105,21 +114,23 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
     private void updateUI(Intent intent) {
 
         String time = intent.getStringExtra(ControlService.TIME);
+        int timeInt = intent.getIntExtra(ControlService.TIME_SEC,0);
         String targetTemp = intent.getStringExtra(ControlService.TARGET_TEMP);
-        String sensorTemp = intent.getStringExtra(ControlService.SENSOR_TEMP);
+        int sensorTemp = intent.getIntExtra(ControlService.SENSOR_TEMP,0);
+        String sensorTempString = Integer.toString(sensorTemp);
         Boolean powerInstance = intent.getBooleanExtra(ControlService.POWER_INSTANCE, false);
         programStatus = intent.getIntExtra(ControlService.PROGRAM_STATUS, 0);
 
         Log.d(LOG_TAG, time);
         Log.d(LOG_TAG, targetTemp);
-        Log.d(LOG_TAG, sensorTemp);
+        Log.d(LOG_TAG, sensorTempString);
 
         TextView timeTextView = (TextView) findViewById(R.id.executing_program_time);
         timeTextView.setText(time);
         TextView targetTempTextView = (TextView) findViewById(R.id.executing_program_target_temp);
         targetTempTextView.setText(targetTemp);
         TextView sensorTempTextView = (TextView) findViewById(R.id.executing_program_sensor_temp);
-        sensorTempTextView.setText(sensorTemp);
+        sensorTempTextView.setText(sensorTempString);
         RadioButton powerRadioButton = (RadioButton) findViewById(R.id.executing_program_power_indicate);
         powerRadioButton.setChecked(powerInstance);
         //set end program
@@ -127,6 +138,10 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
         if (programStatus == ControlService.PROGRAM_END) {
             programEndTextView.setVisibility(View.VISIBLE);
         }
+
+        //graph in real time
+        double timeDouble = (double) timeInt /3600;
+        archiveSeries.appendData(new DataPoint(timeDouble, sensorTemp),false,100000000);
 
     }
 
@@ -244,8 +259,8 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
                 graph.getViewport().setXAxisBoundsManual(true);
                 graph.getViewport().setMaxX(maxTime);
 
-                graph.addSeries(series);
-
+                //Add series for real time temperature;
+                graph.addSeries(archiveSeries);
                 //Create control service
                 controlServiceIntent = new Intent(ExecutingProgramActivity.this, ControlService.class);
 
