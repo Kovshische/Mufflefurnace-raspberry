@@ -72,8 +72,8 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
 
         dataPointArchiveArrayList = new ArrayList<DataPoint>();
 
-        archiveSeries = new LineGraphSeries<>();
-        archiveSeries.setColor(R.color.colorAccent);
+//        archiveSeries = new LineGraphSeries<>();
+//        archiveSeries.setColor(R.color.colorAccent);
 
 
         //Examine the intent that was used to launch this activity
@@ -260,7 +260,10 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
                 graph.getViewport().setMaxX(maxTime);
 
                 //Add series for real time temperature;
+                archiveSeries = new LineGraphSeries<>();
+                archiveSeries.setColor(R.color.colorAccent);
                 graph.addSeries(archiveSeries);
+
                 //Create control service
                 controlServiceIntent = new Intent(ExecutingProgramActivity.this, ControlService.class);
 
