@@ -31,7 +31,7 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 
 import java.util.ArrayList;
 
-public class ExecutingProgramActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
+public class ExecutingProgramActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private final String LOG_TAG = PointManager.class.getSimpleName();
 
 
@@ -51,6 +51,7 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
     //For check how pointManager works
     private int currentTime;
     private int expectedTempera;
+    private int programStatus;
 
     private Intent controlServiceIntent;
 
@@ -106,8 +107,8 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
         String time = intent.getStringExtra(ControlService.TIME);
         String targetTemp = intent.getStringExtra(ControlService.TARGET_TEMP);
         String sensorTemp = intent.getStringExtra(ControlService.SENSOR_TEMP);
-        Boolean powerInstance = intent.getBooleanExtra(ControlService.POWER_INSTANCE,false);
-        int programStatus = intent.getIntExtra(ControlService.PROGRAM_STATUS,0);
+        Boolean powerInstance = intent.getBooleanExtra(ControlService.POWER_INSTANCE, false);
+        programStatus = intent.getIntExtra(ControlService.PROGRAM_STATUS, 0);
 
         Log.d(LOG_TAG, time);
         Log.d(LOG_TAG, targetTemp);
@@ -115,15 +116,15 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
 
         TextView timeTextView = (TextView) findViewById(R.id.executing_program_time);
         timeTextView.setText(time);
-        TextView targetTempTextView = (TextView)findViewById(R.id.executing_program_target_temp);
+        TextView targetTempTextView = (TextView) findViewById(R.id.executing_program_target_temp);
         targetTempTextView.setText(targetTemp);
-        TextView sensorTempTextView = (TextView)findViewById(R.id.executing_program_sensor_temp);
+        TextView sensorTempTextView = (TextView) findViewById(R.id.executing_program_sensor_temp);
         sensorTempTextView.setText(sensorTemp);
-        RadioButton powerRadioButton = (RadioButton)findViewById(R.id.executing_program_power_indicate);
+        RadioButton powerRadioButton = (RadioButton) findViewById(R.id.executing_program_power_indicate);
         powerRadioButton.setChecked(powerInstance);
         //set end program
-        TextView programEndTextView = (TextView)findViewById(R.id.executing_program_end_program);
-        if (programStatus == ControlService.PROGRAM_END){
+        TextView programEndTextView = (TextView) findViewById(R.id.executing_program_end_program);
+        if (programStatus == ControlService.PROGRAM_END) {
             programEndTextView.setVisibility(View.VISIBLE);
         }
 
@@ -156,8 +157,7 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
 
         }
 
-        if (id == POINTS_LOADER)
-        {
+        if (id == POINTS_LOADER) {
             String[] projectionForPoint = {
                     ProgramContract.ProgramEntry.COLUMN_PROGRAM_ID,
                     ProgramContract.ProgramEntry._ID,
@@ -179,8 +179,7 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
                     null,
                     ProgramContract.ProgramEntry.COLUMN_TIME
             );
-        }
-        else return null;
+        } else return null;
     }
 
 
@@ -215,16 +214,16 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
 
                 //Display graphView
 
-                while (cursor.moveToNext()){
+                while (cursor.moveToNext()) {
                     int time = cursor.getInt(timeColumnIndex);
                     int temperature = cursor.getInt(temperatureColumnIndex);
 
                     //time in hours
-                    double timeDouble = (double) time/60;
+                    double timeDouble = (double) time / 60;
 
-                    dataPointArrayList.add(new DataPoint(timeDouble,temperature));
+                    dataPointArrayList.add(new DataPoint(timeDouble, temperature));
                     Log.i("array for graphView min", time + "/" + temperature);
-                  //  Log.i("array for graphView", timeDouble + "/" + temperature);
+                    //  Log.i("array for graphView", timeDouble + "/" + temperature);
                 }
 
 
@@ -236,7 +235,7 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
 
                 //Get mat time
                 int length = dataPoint.length;
-                DataPoint lastDataPoint = dataPoint[length-1];
+                DataPoint lastDataPoint = dataPoint[length - 1];
                 double maxTime = lastDataPoint.getX();
 
 
@@ -264,9 +263,8 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
     }
 
     @Override
-    public boolean onOptionsItemSelected (MenuItem item){
+    public boolean onOptionsItemSelected(MenuItem item) {
         // User clicked on a menu option in the app bar overflow menu
-
 
 
         switch (item.getItemId()) {
@@ -278,25 +276,32 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
                 NavUtils.navigateUpTo(this, intent1);
                 return true;
 */
-            alert = new AlertDialog.Builder(context);
-            alert.setTitle(getString(R.string.execution_program_attention));
-            alert.setMessage(getString(R.string.execution_program_dangerous_text));
-            alert.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
+                if (programStatus == ControlService.PROGRAM_END) {
                     Intent intent1 = new Intent(ExecutingProgramActivity.this, ProgramViewActivity.class);
                     intent1.setData(mCurrentProgramUri);
-                    NavUtils.navigateUpTo(ExecutingProgramActivity.this, intent1);
+                    NavUtils.navigateUpTo(this, intent1);
+                    return true;
+                } else {
+                    alert = new AlertDialog.Builder(context);
+                    alert.setTitle(getString(R.string.execution_program_attention));
+                    alert.setMessage(getString(R.string.execution_program_dangerous_text));
+                    alert.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            Intent intent1 = new Intent(ExecutingProgramActivity.this, ProgramViewActivity.class);
+                            intent1.setData(mCurrentProgramUri);
+                            NavUtils.navigateUpTo(ExecutingProgramActivity.this, intent1);
+                        }
+                    });
+                    alert.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                        }
+                    });
+                    alert.setCancelable(true);
+                    alert.show();
+                    return true;
                 }
-            });
-            alert.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                }
-            });
-            alert.setCancelable(true);
-            alert.show();
-            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -305,10 +310,11 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
     public void onResume() {
         super.onResume();
 
-       // startService(controlServiceIntent);
+        // startService(controlServiceIntent);
         registerReceiver(broadcastReceiver, new IntentFilter(ControlService.BROADCAST_ACTION));
 
     }
+
     @Override
     public void onPause() {
         super.onPause();
@@ -316,8 +322,6 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
         stopService(controlServiceIntent);
         Log.i(LOG_TAG, "stop service");
     }
-
-
 
 
 }
