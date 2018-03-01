@@ -82,6 +82,10 @@
     <string name="executing_program_target_temp">Target T °C </string>
     <string name="executing_program_power">Power</string>
     <string name="executing_program_program_is_finished">The program is finished</string>
-
+    <!-- Activity ExexcutingProgram - DANGEROUS popup  -->
+    <string name="execution_program_attention">Attention !!!</string>
+    <string name="execution_program_dangerous_text">This action stop the program</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
 
 </resources>

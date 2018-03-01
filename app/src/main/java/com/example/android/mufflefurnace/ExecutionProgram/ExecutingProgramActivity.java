@@ -2,6 +2,7 @@ package com.example.android.mufflefurnace.ExecutionProgram;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
@@ -11,6 +12,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
@@ -52,11 +54,16 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
 
     private Intent controlServiceIntent;
 
+    //alert
+    AlertDialog.Builder alert;
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_executing_program);
+
+        context = ExecutingProgramActivity.this;
 
         dataPointArrayList = new ArrayList<DataPoint>();
 
@@ -259,13 +266,37 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
     @Override
     public boolean onOptionsItemSelected (MenuItem item){
         // User clicked on a menu option in the app bar overflow menu
+
+
+
         switch (item.getItemId()) {
             case android.R.id.home:
+                /*
                 // Navigate back to parent activity (ProgramViewActivity)
                 Intent intent1 = new Intent(ExecutingProgramActivity.this, ProgramViewActivity.class);
                 intent1.setData(mCurrentProgramUri);
                 NavUtils.navigateUpTo(this, intent1);
                 return true;
+*/
+            alert = new AlertDialog.Builder(context);
+            alert.setTitle(getString(R.string.execution_program_attention));
+            alert.setMessage(getString(R.string.execution_program_dangerous_text));
+            alert.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    Intent intent1 = new Intent(ExecutingProgramActivity.this, ProgramViewActivity.class);
+                    intent1.setData(mCurrentProgramUri);
+                    NavUtils.navigateUpTo(ExecutingProgramActivity.this, intent1);
+                }
+            });
+            alert.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                }
+            });
+            alert.setCancelable(true);
+            alert.show();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
