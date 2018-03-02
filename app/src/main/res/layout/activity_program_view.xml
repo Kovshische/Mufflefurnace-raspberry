@@ -49,8 +49,8 @@
                 android:id="@+id/list_view_points"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="8dp"/>
-                 <!-- android:padding="@dimen/activity_margin"  -->
+                android:padding="8dp" />
+            <!-- android:padding="@dimen/activity_margin"  -->
 
 
         </LinearLayout>
@@ -69,6 +69,23 @@
             android:text="@string/program_view_start"
             android:textAllCaps="true" />
     </RelativeLayout>
+
+    <TextView
+        android:layout_width="600dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/program_view_program_should_contain"
+        android:layout_centerInParent="true"
+        android:background="@color/absoluteWhite"
+        android:fontFamily="sans-serif-medium"
+        android:lines="2"
+        android:singleLine="false"
+        android:text="@string/program_view_program_should_contain"
+        android:textAlignment="center"
+        android:textAllCaps="true"
+        android:textColor="@color/black"
+        android:textSize="32dp"
+        android:visibility="invisible"
+        tools:text="program_view_program_should_contain" />
 
 
     <android.support.design.widget.AppBarLayout

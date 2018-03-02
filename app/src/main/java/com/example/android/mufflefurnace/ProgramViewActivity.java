@@ -14,6 +14,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.mufflefurnace.Data.ProgramContract;
 import com.example.android.mufflefurnace.ExecutionProgram.ExecutingProgramActivity;
@@ -22,6 +24,8 @@ import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
 import java.util.ArrayList;
+
+import static com.example.android.mufflefurnace.Data.ProgramDbHelper.LOG_TAG;
 
 public class ProgramViewActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
@@ -36,6 +40,8 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
 
     ArrayList<DataPoint> dataPointArrayList = new ArrayList<DataPoint>();
     private GraphView graph;
+    private TextView programShouldContainTextView;
+    private int pointsCounter = 0;
 
 
     @Override
@@ -65,32 +71,19 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
             public void onClick(View view) {
                 Intent i = new Intent(ProgramViewActivity.this, ExecutingProgramActivity.class);
                 i.setData(mCurrentProgramUri);
-                startActivity(i);
+                if (pointsCounter >=2){
+                    startActivity(i);
+                }
+                else {
+                    displayToast(getString(R.string.program_view_program_should_contain));
+                }
             }
         });
 
-/*
-        //Add graphView
-        GraphView graph = (GraphView) findViewById(R.id.graph_view);
-        LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[] {
-                new DataPoint(0, 1),
-                new DataPoint(1, 5),
-                new DataPoint(2, 3),
-                new DataPoint(3, 2),
-                new DataPoint(4, 6)
-        });
-        graph.addSeries(series);
-
-
-
-        GraphView graph = (GraphView) findViewById(R.id.graph_view);
-*/
-
-
-// try to fix accelerated mode
-
 
         graph = (GraphView) findViewById(R.id.graph_view);
+
+        programShouldContainTextView = (TextView) findViewById(R.id.program_view_program_should_contain);
 
 
 
@@ -206,6 +199,7 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
 
             case POINTS_LOADER:
                 if (cursor == null || cursor.getCount() < 1) {
+                    programShouldContainTextView.setVisibility(View.VISIBLE);
                     return;
                 }
 
@@ -214,16 +208,22 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
 
                 //Display graphView
 
-                while (cursor.moveToNext()){
+                while (cursor.moveToNext()) {
                     int time = cursor.getInt(timeColumnIndex);
                     int temperature = cursor.getInt(temperatureColumnIndex);
 
-                    double timeDouble = (double) time/60;
+                    double timeDouble = (double) time / 60;
 
-                    dataPointArrayList.add(new DataPoint(timeDouble,temperature));
+                    dataPointArrayList.add(new DataPoint(timeDouble, temperature));
                     Log.i("array for graphView", time + "/" + temperature);
+                    pointsCounter = pointsCounter + 1;
                 }
 
+                //Display text if there are less than 2 points
+                if (pointsCounter < +2) {
+                    programShouldContainTextView.setVisibility(View.VISIBLE);
+                } else {
+                    
                 DataPoint[] dataPoint = dataPointArrayList.toArray(new DataPoint[]{});
 //                DataPoint[] dataPoint = (DataPoint[]) dataPointArrayList.toArray(new DataPoint[0]);
                 Log.i("length of datapoint", Integer.toString(dataPoint.length));
@@ -232,9 +232,9 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
 
                 //Get mat time
                 int length = dataPoint.length;
-                DataPoint lastDataPoint = dataPoint[length-1];
+                DataPoint lastDataPoint = dataPoint[length - 1];
                 double maxTime = lastDataPoint.getX();
-                
+
 
                 //Set max time
                 graph.addSeries(series);
@@ -245,6 +245,7 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
                 //graph.setTitle("Название графика");
                 //graph.getGridLabelRenderer().setVerticalAxisTitle("°C");
 
+        }
                 mPointCursorAdapter.swapCursor(cursor);
         }
     }
@@ -252,5 +253,13 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mPointCursorAdapter.swapCursor(null);
+    }
+
+
+    void displayToast(String text) {
+        Toast toast = Toast.makeText(this, text, Toast.LENGTH_LONG);
+        toast.show();
+        Log.i(LOG_TAG, "toast displayed");
+        // toast.setGravity(Gravity.BOTTOM,0,0);
     }
 }
