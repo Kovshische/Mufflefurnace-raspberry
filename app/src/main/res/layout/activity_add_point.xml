@@ -20,17 +20,18 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             style="@style/SettingsScreenTextTopic"
-            android:text="@string/hint_point_temperature" />
+            android:text="@string/hint_point_time" />
 
         <EditText
-            android:id="@+id/add_point_temperature"
+            android:id="@+id/add_point_time"
             android:layout_width="0dp"
             android:layout_weight="1"
-            style="@style/EditorFieldStyle"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
-            android:inputType="number" />
-
-        >
+            android:hint="@string/add_point_placeholder_time"
+            android:ems="10"
+            android:inputType="time"
+            />
     </LinearLayout>
 
     <LinearLayout
@@ -43,21 +44,47 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             style="@style/SettingsScreenTextTopic"
-            android:text="@string/hint_point_time" />
+            android:text="@string/hint_point_temperature"
+            />
 
         <EditText
-            android:id="@+id/add_point_time"
+            android:id="@+id/add_point_temperature"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="wrap_content"
+            style="@style/EditorFieldStyle"
             android:layout_marginLeft="16dp"
-            android:hint="@string/add_point_placeholder_time"
-            android:ems="10"
-            android:inputType="time" />
+            android:inputType="number"
+            android:focusableInTouchMode="true"
+            android:focusedByDefault="false"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/vent_option"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            style="@style/SettingsScreenTextTopic"
+            android:text="@string/add_point_vent"
+            />
+        <Spinner
+            android:layout_width="0dp"
+            android:layout_height="64dp"
+            android:layout_weight="1"
+            style="@style/EditorFieldStyle">
+        </Spinner>
+
+
     </LinearLayout>
 
 
-       <Button
+    <Button
            android:id="@+id/button_delete"
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"

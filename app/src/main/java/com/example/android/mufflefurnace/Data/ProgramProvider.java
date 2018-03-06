@@ -256,13 +256,13 @@ public class ProgramProvider  extends ContentProvider{
     private Uri insertPoint(Uri uri, ContentValues contentValues){
         //Check that the time is not null
         Integer time = contentValues.getAsInteger(ProgramContract.ProgramEntry.COLUMN_TIME);
-        if (time == null && time < 0){
+        if (time == null || time < 0){
             throw new IllegalArgumentException("Point requires a valid time");
         }
 
         //Check that the temperature is not null
         Integer temperature = contentValues.getAsInteger(ProgramContract.ProgramEntry.COLUMN_TEMPERATURE);
-        if (temperature == null && temperature < 0){
+        if (temperature == null || temperature < 0){
             throw new IllegalArgumentException("Point requires a valid temperature");
         }
 
@@ -270,6 +270,12 @@ public class ProgramProvider  extends ContentProvider{
         Integer programId = contentValues.getAsInteger(ProgramContract.ProgramEntry.COLUMN_PROGRAM_ID);
         if (programId == null ){
             throw new IllegalArgumentException("Program Id require a ID (integer)");
+        }
+
+        //Check that the VENT is 0 or 1;
+        Integer vent = contentValues.getAsInteger(ProgramContract.ProgramEntry.COLUMN_VENT);
+        if ( vent != null && (vent != ProgramContract.ProgramEntry.VENT_CLOSE || vent != ProgramContract.ProgramEntry.VENT_CLOSE) ){
+            throw new IllegalArgumentException("Point vent required a valid state (int 1 or 2 or null)");
         }
 
         SQLiteDatabase database = mDbHelper.getWritableDatabase();
@@ -317,13 +323,13 @@ public class ProgramProvider  extends ContentProvider{
     private Uri insertArchivePoint(Uri uri, ContentValues contentValues){
         //Check that the time is not null
         Integer time = contentValues.getAsInteger(ProgramContract.ProgramEntry.COLUMN_TIME);
-        if (time == null && time < 0){
+        if (time == null || time < 0){
             throw new IllegalArgumentException("Point requires a valid time");
         }
 
         //Check that the temperature is not null
         Integer temperature = contentValues.getAsInteger(ProgramContract.ProgramEntry.COLUMN_TEMPERATURE);
-        if (temperature == null && temperature < 0){
+        if (temperature == null || temperature < 0){
             throw new IllegalArgumentException("Point requires a valid temperature");
         }
 
@@ -474,7 +480,7 @@ public class ProgramProvider  extends ContentProvider{
         //Check that the time value is not null, <0.
         if (values.containsKey(ProgramContract.ProgramEntry.COLUMN_TIME)){
             Integer time = values.getAsInteger(ProgramContract.ProgramEntry.COLUMN_TIME);
-            if (time == null && time < 0){
+            if (time == null || time < 0){
                 throw new IllegalArgumentException("Point requires a valid time");
             }
         }
@@ -483,7 +489,7 @@ public class ProgramProvider  extends ContentProvider{
         //Check that the temperature value is not null, <0.
         if (values.containsKey(ProgramContract.ProgramEntry.COLUMN_TEMPERATURE)){
             Integer temperature = values.getAsInteger(ProgramContract.ProgramEntry.COLUMN_TEMPERATURE);
-            if (temperature == null && temperature < 0){
+            if (temperature == null || temperature < 0){
                 throw new IllegalArgumentException("Point required a valid Temperature");
             }
         }
@@ -491,8 +497,16 @@ public class ProgramProvider  extends ContentProvider{
         //Check that the program ID is not null
         if (values.containsKey(ProgramContract.ProgramEntry.COLUMN_PROGRAM_ID)){
             Integer programId = values.getAsInteger(ProgramContract.ProgramEntry.COLUMN_PROGRAM_ID);
-            if (programId == null && programId <= 0 ){
+            if (programId == null || programId <= 0 ){
                 throw new IllegalArgumentException("Point required a valid program Id");
+            }
+        }
+        // If the {@link ProgramEntry#COLUMN_PROGRAM_ID} Key is present
+        //Check that the vent is open or closed (1 or 2)
+        if (values.containsKey(ProgramContract.ProgramEntry.COLUMN_VENT)){
+            Integer vent = values.getAsInteger(ProgramContract.ProgramEntry.COLUMN_VENT);
+            if ( vent != null && (vent != ProgramContract.ProgramEntry.VENT_CLOSE || vent != ProgramContract.ProgramEntry.VENT_CLOSE) ){
+                throw new IllegalArgumentException("Point vent required a valid state (int 1 or 2 or null)");
             }
         }
 
@@ -545,7 +559,7 @@ public class ProgramProvider  extends ContentProvider{
         //Check that the time value is not null, <0.
         if (values.containsKey(ProgramContract.ProgramEntry.COLUMN_TIME)){
             Integer time = values.getAsInteger(ProgramContract.ProgramEntry.COLUMN_TIME);
-            if (time == null && time < 0){
+            if (time == null || time < 0){
                 throw new IllegalArgumentException("Archive Point requires a valid time");
             }
         }
@@ -554,7 +568,7 @@ public class ProgramProvider  extends ContentProvider{
         //Check that the temperature value is not null, <0.
         if (values.containsKey(ProgramContract.ProgramEntry.COLUMN_TEMPERATURE)){
             Integer temperature = values.getAsInteger(ProgramContract.ProgramEntry.COLUMN_TEMPERATURE);
-            if (temperature == null && temperature < 0){
+            if (temperature == null || temperature < 0){
                 throw new IllegalArgumentException("Archive point required a valid temperature");
             }
         }

@@ -61,6 +61,8 @@ public class AddPointActivity extends AppCompatActivity implements LoaderManager
     private String addPointMessage;
     private String editPointMessage;
     private boolean ifInsertPointSuccess;
+    private View ventOptionView;
+    private SharedPreferences sharedPreferences;
 
 
     @Override
@@ -68,11 +70,15 @@ public class AddPointActivity extends AppCompatActivity implements LoaderManager
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_point);
 
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
 //        setTitle(R.string.add_point_add_point);
 
         timeTextView = (EditText) findViewById(R.id.add_point_time);
         temperatureTextView = (EditText) findViewById(R.id.add_point_temperature);
+        ventOptionView =(View)findViewById(R.id.vent_option);
+
+        setVentOptionVisibility();
 
         //Examine the intent that was used to launch this activity
         Intent intent = getIntent();
@@ -114,6 +120,13 @@ public class AddPointActivity extends AppCompatActivity implements LoaderManager
 
     }
 
+    private void setVentOptionVisibility (){
+        boolean ifVentEnabled = sharedPreferences.getBoolean(getString(R.string.settings_vent_options_key),false);
+        if (ifVentEnabled == false){
+            ventOptionView.setVisibility(View.INVISIBLE);
+        }
+    }
+
     //Show toast
     void displayToast(String text) {
 
@@ -134,8 +147,6 @@ public class AddPointActivity extends AppCompatActivity implements LoaderManager
         int timeInteger = timeToInteger(timeString);
 
         //Check to max temperature
-
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         String maxTemperature = sharedPreferences.getString(
                 getString(R.string.settings_max_temperature_key),

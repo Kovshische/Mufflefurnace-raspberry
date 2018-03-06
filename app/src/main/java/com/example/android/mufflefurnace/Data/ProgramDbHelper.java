@@ -34,6 +34,7 @@ public class ProgramDbHelper extends SQLiteOpenHelper {
                 + ProgramEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + ProgramEntry.COLUMN_PROGRAM_ID + " INTEGER NOT NULL, "
                 + ProgramEntry.COLUMN_TEMPERATURE + " INTEGER NOT NULL, "
+                + ProgramEntry.COLUMN_VENT + "INTEGER, "
                 + ProgramEntry.COLUMN_TIME + " INTEGER NOT NULL" +");";
         db.execSQL(SQL_CREATE_POINTS_TABLE);
 
@@ -47,8 +48,10 @@ public class ProgramDbHelper extends SQLiteOpenHelper {
         String SQL_CREATE_A_POINTS_TABLE = "CREATE TABLE " + ProgramEntry.TABLE_A_POINTS + " ("
                 + ProgramEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + ProgramEntry.COLUMN_A_PROGRAM_ID + " INTEGER NOT NULL, "
-                + ProgramEntry.COLUMN_TEMPERATURE + " INTEGER NOT NULL, "
-                + ProgramEntry.COLUMN_TIME + " INTEGER NOT NULL" +");";
+                + ProgramEntry.COLUMN_A_TARGET_TEMPERATURE + " INTEGER NOT NULL, "
+                + ProgramEntry.COLUMN_A_SENSOR_TEMPERATURE + " INTEGER NOT NULL, "
+                + ProgramEntry.COLUMN_A_VENT + " INTEGER, "
+                + ProgramEntry.COLUMN_A_TIME + " INTEGER NOT NULL" +");";
         db.execSQL(SQL_CREATE_A_POINTS_TABLE);
 
     }

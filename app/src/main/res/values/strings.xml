@@ -39,6 +39,9 @@
 
     <string name="hint_point_time">Time</string>
     <string name="hint_point_temperature">Temperature</string>
+    <string name="add_point_set_temp">Set temperature</string>
+    <string name="add_point_set_vent">Set vent</string>
+    <string name="add_point_vent">Vent</string>
 
     <!-- Label for editor menu option to save pet and leave editor [CHAR LIMIT=20] -->
     <string name="action_save">Save</string>
