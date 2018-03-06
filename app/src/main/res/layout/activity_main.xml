@@ -63,7 +63,7 @@
         <LinearLayout
             android:id="@+id/menu_archive"
             style="@style/MainScreenMenu"
-            android:drawSelectorOnTop="true">
+            >
 
             <ImageView
                 android:id="@+id/menu_archive_image"

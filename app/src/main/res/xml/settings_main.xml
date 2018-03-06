@@ -9,6 +9,13 @@
         android:selectAllOnFocus="true"
         android:title="@string/settings_max_temperature"
         />
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="@string/settings_vent_options_key"
+        android:title="@string/settings_vent_options"
+        android:summaryOn="Enabled"
+        android:summaryOff="Disabled"
+        />
     <EditTextPreference
         android:defaultValue="@string/settings_max_heating_rate_default"
         android:inputType="numberSigned"

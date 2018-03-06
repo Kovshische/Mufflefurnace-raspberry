@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -56,11 +57,13 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 
 
+                //This is WORKS !!!
                 Intent intent = new Intent(WifiManager.ACTION_PICK_WIFI_NETWORK);
                 //intent.putExtra("only_access_points", true);
                 intent.putExtra("extra_prefs_show_button_bar", true);
                 //intent.putExtra("wifi_enable_next_on_connect", true);
                 startActivityForResult(intent, 1);
+
 
 
 
@@ -80,12 +83,25 @@ public class MainActivity extends AppCompatActivity {
                // startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                 //Intent i = new Intent(MainActivity.this, ConnectActivity.class);
                 //startActivity(i);
+
+
+            }
+        });
+
+        LinearLayout archive = (LinearLayout) findViewById(R.id.menu_archive);
+        archive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent1 = new Intent(Settings.ACTION_SETTINGS);
+                intent1.putExtra("extra_prefs_show_button_bar", true);
+                startActivity(intent1);
+              //  startActivityForResult(intent1,0);
             }
         });
 
 
 
-         Runnable sendUpdatesToUI = new Runnable() {
+        Runnable sendUpdatesToUI = new Runnable() {
             public void run() {
                 getSensorTemp();
                 currentTime = Calendar.getInstance().getTime();

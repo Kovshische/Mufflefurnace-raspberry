@@ -22,8 +22,18 @@ public class SettingsActivity extends AppCompatActivity {
         private void bindPreferenceSummaryToValue(Preference preference){
             preference.setOnPreferenceChangeListener(this);
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(preference.getContext());
-            String preferenceString = preferences.getString(preference.getKey(),"");
-            onPreferenceChange(preference,preferenceString);
+            String preferenceSorter = preference.getKey();
+            if (preferenceSorter.equals(getString(R.string.settings_max_temperature_key)) ||
+                    preferenceSorter.equals(getString(R.string.settings_max_heating_rate_key)) ||
+                    preferenceSorter.equals(getString(R.string.settings_max_cooling_rate_key))){
+                String preferenceString = preferences.getString(preference.getKey(),"");
+                onPreferenceChange(preference,preferenceString);
+            }
+            if (preferenceSorter.equals(getString(R.string.settings_vent_options_key))){
+                Boolean preferenceBoolean = preferences.getBoolean(preference.getKey(), false);
+                onPreferenceChange(preference,preferenceBoolean);
+            }
+
         }
 
         @Override
@@ -39,6 +49,9 @@ public class SettingsActivity extends AppCompatActivity {
 
             Preference maxCoolingRate = findPreference(getString(R.string.settings_max_cooling_rate_key));
             bindPreferenceSummaryToValue(maxCoolingRate);
+
+            Preference ventControl = findPreference(getString(R.string.settings_vent_options_key));
+            bindPreferenceSummaryToValue(ventControl);
 
         }
 
