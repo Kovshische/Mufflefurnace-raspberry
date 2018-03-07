@@ -10,7 +10,7 @@
         android:title="@string/settings_max_temperature"
         />
     <CheckBoxPreference
-        android:defaultValue="true"
+        android:defaultValue="false"
         android:key="@string/settings_vent_options_key"
         android:title="@string/settings_vent_options"
         android:summaryOn="Enabled"

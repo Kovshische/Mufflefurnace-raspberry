@@ -66,7 +66,8 @@ public class AddPointActivity extends AppCompatActivity implements LoaderManager
     private boolean ifInsertPointSuccess;
     private View ventOptionView;
     private SharedPreferences sharedPreferences;
-    private int vent;
+    private Integer vent;
+    private boolean ifVentEnabled;
 
     String[]ventOptions = {"None","Open","Close"};
 
@@ -77,6 +78,7 @@ public class AddPointActivity extends AppCompatActivity implements LoaderManager
         setContentView(R.layout.activity_add_point);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        ifVentEnabled = sharedPreferences.getBoolean(getString(R.string.settings_vent_options_key),false);
 
 //        setTitle(R.string.add_point_add_point);
 
@@ -97,6 +99,10 @@ public class AddPointActivity extends AppCompatActivity implements LoaderManager
         ventSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (i == 0){
+                    vent = null;
+                    Log.i(LOG_TAG, "ventilation in position " + vent );
+                }
                if (i==1){
                    vent = ProgramContract.ProgramEntry.VENT_OPEN;
                    Log.i(LOG_TAG, "ventilation in position " + vent );
@@ -105,6 +111,7 @@ public class AddPointActivity extends AppCompatActivity implements LoaderManager
                    vent = ProgramContract.ProgramEntry.VENT_CLOSE;
                    Log.i(LOG_TAG, "ventilation in position " + vent );
                }
+
             }
             @Override
             public void onNothingSelected(AdapterView<?> arg0){
@@ -152,7 +159,7 @@ public class AddPointActivity extends AppCompatActivity implements LoaderManager
     }
 
     private void setVentOptionVisibility (){
-        boolean ifVentEnabled = sharedPreferences.getBoolean(getString(R.string.settings_vent_options_key),false);
+
         if (ifVentEnabled == false){
             ventOptionView.setVisibility(View.INVISIBLE);
         }
@@ -171,11 +178,27 @@ public class AddPointActivity extends AppCompatActivity implements LoaderManager
     private void insertPoint() {
         //get data from the fields
         // Use trim to eliminate leading or trailing white space
+        Integer temperatureInteger;
+        Integer timeInteger;
+
+
         String temperatureString = temperatureTextView.getText().toString().trim();
-        int temperatureInteger = Integer.parseInt(temperatureString);
+        if (temperatureString.equals("")){
+            temperatureInteger = null;
+//            Log.i(LOG_TAG,"temperature Integer = " + temperatureInteger);
+        } else {
+            temperatureInteger = Integer.parseInt(temperatureString);
+        }
+
 
         String timeString = timeTextView.getText().toString().trim();
-        int timeInteger = timeToInteger(timeString);
+        if (timeString.equals("")){
+            timeInteger = null;
+//            Log.i(LOG_TAG,"temperature Integer = " + timeInteger);
+        } else {
+            timeInteger = timeToInteger(timeString);
+        }
+
 
         //Check to max temperature
 
@@ -184,7 +207,17 @@ public class AddPointActivity extends AppCompatActivity implements LoaderManager
                 getString(R.string.settings_max_temperature_default)
         );
 
-        if (temperatureInteger > Integer.parseInt(maxTemperature)) {
+        if (timeInteger == null){
+            displayToast("Please, add time" );
+            ifInsertPointSuccess = false;
+        } else if(ifVentEnabled == false && temperatureInteger == null){
+            displayToast("Please, add temperature" );
+            ifInsertPointSuccess = false;
+        }else if(ifVentEnabled == true && temperatureInteger == null && vent == null ){
+            displayToast("Please, add temperature or vent option");
+            ifInsertPointSuccess = false;
+        }
+        else if (temperatureInteger != null && temperatureInteger > Integer.parseInt(maxTemperature)) {
             displayToast("temperature can not be more than " + maxTemperature);
             ifInsertPointSuccess = false;
         } else {
@@ -194,6 +227,10 @@ public class AddPointActivity extends AppCompatActivity implements LoaderManager
             values.put(ProgramContract.ProgramEntry.COLUMN_TEMPERATURE, temperatureInteger);
             values.put(ProgramContract.ProgramEntry.COLUMN_TIME, timeInteger);
             values.put(ProgramContract.ProgramEntry.COLUMN_PROGRAM_ID, mCurrentProgramID);
+            if (vent != null ){
+                Log.i(LOG_TAG, "Vent is open or closed");
+             //   values.put(ProgramContract.ProgramEntry.COLUMN_VENT, vent);
+            }
 
 
             Uri newUri = getContentResolver().insert(ProgramContract.ProgramEntry.CONTENT_URI_POINTS, values);
@@ -214,8 +251,16 @@ public class AddPointActivity extends AppCompatActivity implements LoaderManager
     private void updatePoint() {
         //get data from the fields
         // Use trim to eliminate leading or trailing white space
+        Integer temperatureInteger;
         String temperatureString = temperatureTextView.getText().toString().trim();
-        int temperatureInteger = Integer.parseInt(temperatureString);
+
+        if (temperatureString.equals("")){
+            temperatureInteger = null;
+            Log.i(LOG_TAG,"temperature Integer = " + temperatureInteger);
+        } else {
+             temperatureInteger = Integer.parseInt(temperatureString);
+        }
+
 
         String timeString = timeTextView.getText().toString().trim();
         int timeInteger = timeToInteger(timeString);
@@ -230,7 +275,12 @@ public class AddPointActivity extends AppCompatActivity implements LoaderManager
                 getString(R.string.settings_max_temperature_default)
         );
 
-        if (temperatureInteger > Integer.parseInt(maxTemperature)) {
+      //  if (temperatureInteger.)
+        if(temperatureInteger == null){
+            displayToast("temperature should be present " );
+            ifInsertPointSuccess = false;
+        }
+        else if ( temperatureInteger > Integer.parseInt(maxTemperature)) {
             displayToast("temperature can not be more than " + maxTemperature);
             ifInsertPointSuccess = false;
         } else {
@@ -240,6 +290,9 @@ public class AddPointActivity extends AppCompatActivity implements LoaderManager
             values.put(ProgramContract.ProgramEntry.COLUMN_TEMPERATURE, temperatureInteger);
             values.put(ProgramContract.ProgramEntry.COLUMN_TIME, timeInteger);
 //        values.put(ProgramContract.ProgramEntry.COLUMN_PROGRAM_ID, mCurrentProgramID);
+            if (vent == ProgramContract.ProgramEntry.VENT_CLOSE || vent == ProgramContract.ProgramEntry.VENT_OPEN){
+                values.put(ProgramContract.ProgramEntry.COLUMN_VENT, vent);
+            }
 
             int update = getContentResolver().update(mCurrentPointUri, values, null, null);
 

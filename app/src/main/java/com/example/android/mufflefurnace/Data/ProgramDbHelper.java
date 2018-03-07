@@ -33,7 +33,7 @@ public class ProgramDbHelper extends SQLiteOpenHelper {
         String SQL_CREATE_POINTS_TABLE = "CREATE TABLE " + ProgramEntry.TABLE_POINTS + " ("
                 + ProgramEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + ProgramEntry.COLUMN_PROGRAM_ID + " INTEGER NOT NULL, "
-                + ProgramEntry.COLUMN_TEMPERATURE + " INTEGER NOT NULL, "
+                + ProgramEntry.COLUMN_TEMPERATURE + " INTEGER, "
                 + ProgramEntry.COLUMN_VENT + "INTEGER, "
                 + ProgramEntry.COLUMN_TIME + " INTEGER NOT NULL" +");";
         db.execSQL(SQL_CREATE_POINTS_TABLE);

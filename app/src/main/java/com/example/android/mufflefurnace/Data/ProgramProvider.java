@@ -262,7 +262,7 @@ public class ProgramProvider  extends ContentProvider{
 
         //Check that the temperature is not null
         Integer temperature = contentValues.getAsInteger(ProgramContract.ProgramEntry.COLUMN_TEMPERATURE);
-        if (temperature == null || temperature < 0){
+        if ( temperature != null && temperature < 0){
             throw new IllegalArgumentException("Point requires a valid temperature");
         }
 
