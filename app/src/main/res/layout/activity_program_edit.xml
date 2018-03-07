@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.example.android.mufflefurnace.ProgramEditActivity"
-    >
+    tools:context="com.example.android.mufflefurnace.ProgramEditActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,83 +13,92 @@
         android:orientation="vertical">
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:orientation="horizontal"
-        >
-
-        <TextView
-            style="@style/Program_view_edit_time_temperature"
-            android:text="@string/program_view_edit_time"/>
-
-        <TextView
-            style="@style/Program_view_edit_time_temperature"
-            android:text="@string/program_view_edit_temperature"/>
-
-    </LinearLayout>
-
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".ProgramsEditActivity">
-
-        <ListView
-            android:id="@+id/list_view_points"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="@dimen/activity_margin" />
-
-        <RelativeLayout
-            android:id="@+id/empty_view"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true">
-
-            <ImageView
-                android:id="@+id/empty_shelter_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:src="@drawable/ic_empty_shelter" />
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/empty_title_text"
-                android:layout_width="wrap_content"
+                style="@style/Program_view_edit_time_temperature"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/empty_shelter_image"
-                android:layout_centerHorizontal="true"
-                android:fontFamily="sans-serif-medium"
-                android:paddingTop="16dp"
-                android:text="@string/empty_view_title_text"
-                android:textAppearance="?android:textAppearanceMedium"
-                tools:text="Some text" />
+                android:text="@string/program_view_edit_time"
+                android:textAlignment="gravity"
+                android:paddingLeft="16dp"/>
 
             <TextView
-                android:id="@+id/empty_subtitle_text"
+                style="@style/Program_view_edit_time_temperature"
+                android:layout_height="wrap_content"
+                android:text="@string/program_view_edit_temperature"
+                android:textAlignment="gravity"/>
+
+            <TextView
+                style="@style/Program_view_edit_time_temperature"
+                android:layout_height="wrap_content"
+                android:text="@string/program_view_edit_vent"
+                android:textAlignment="gravity"/>
+
+        </LinearLayout>
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:context=".ProgramsEditActivity">
+
+            <ListView
+                android:id="@+id/list_view_points"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="@dimen/activity_margin" />
+
+            <RelativeLayout
+                android:id="@+id/empty_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/empty_title_text"
-                android:layout_centerHorizontal="true"
-                android:fontFamily="sans-serif-medium"
-                android:paddingTop="8dp"
-                android:text="@string/empty_view_points_subtitle_text"
-                android:textAppearance="?android:textAppearanceSmall"
-                android:textColor="#A2AAB0"
-                tools:text="Subtitle" />
+                android:layout_centerInParent="true">
+
+                <ImageView
+                    android:id="@+id/empty_shelter_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:src="@drawable/ic_empty_shelter" />
+
+                <TextView
+                    android:id="@+id/empty_title_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/empty_shelter_image"
+                    android:layout_centerHorizontal="true"
+                    android:fontFamily="sans-serif-medium"
+                    android:paddingTop="16dp"
+                    android:text="@string/empty_view_title_text"
+                    android:textAppearance="?android:textAppearanceMedium"
+                    tools:text="Some text" />
+
+                <TextView
+                    android:id="@+id/empty_subtitle_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/empty_title_text"
+                    android:layout_centerHorizontal="true"
+                    android:fontFamily="sans-serif-medium"
+                    android:paddingTop="8dp"
+                    android:text="@string/empty_view_points_subtitle_text"
+                    android:textAppearance="?android:textAppearanceSmall"
+                    android:textColor="#A2AAB0"
+                    tools:text="Subtitle" />
+            </RelativeLayout>
         </RelativeLayout>
-    </RelativeLayout>
 
     </LinearLayout>
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
-    </android.support.design.widget.AppBarLayout>
+        android:theme="@style/AppTheme.AppBarOverlay"></android.support.design.widget.AppBarLayout>
 
     <include layout="@layout/content_program_edit" />
 
