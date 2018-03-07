@@ -18,16 +18,19 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.android.mufflefurnace.Data.ProgramContract;
 
 import static com.example.android.mufflefurnace.Data.ProgramContract.CONTENT_AUTHORITY;
-import static com.example.android.mufflefurnace.Data.ProgramDbHelper.LOG_TAG;
 
 public class AddPointActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+    public final String LOG_TAG = AddPointActivity.class.getSimpleName();
 
     private static final String TIME_SEPARATOR = ":";
     //For URI matcher
@@ -63,6 +66,9 @@ public class AddPointActivity extends AppCompatActivity implements LoaderManager
     private boolean ifInsertPointSuccess;
     private View ventOptionView;
     private SharedPreferences sharedPreferences;
+    private int vent;
+
+    String[]ventOptions = {"None","Open","Close"};
 
 
     @Override
@@ -78,7 +84,32 @@ public class AddPointActivity extends AppCompatActivity implements LoaderManager
         temperatureTextView = (EditText) findViewById(R.id.add_point_temperature);
         ventOptionView =(View)findViewById(R.id.vent_option);
 
+        //set vent visibility
         setVentOptionVisibility();
+
+        //Add spinner
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, ventOptions);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        Spinner ventSpinner = (Spinner) findViewById(R.id.add_point_vent_spinner);
+        ventSpinner.setAdapter(spinnerAdapter);
+
+        ventSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+               if (i==1){
+                   vent = ProgramContract.ProgramEntry.VENT_OPEN;
+                   Log.i(LOG_TAG, "ventilation in position " + vent );
+               }
+               if (i == 2){
+                   vent = ProgramContract.ProgramEntry.VENT_CLOSE;
+                   Log.i(LOG_TAG, "ventilation in position " + vent );
+               }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0){
+            }
+        });
 
         //Examine the intent that was used to launch this activity
         Intent intent = getIntent();

@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        Runnable sendUpdatesToUI = new Runnable() {
+         sendUpdatesToUI = new Runnable() {
             public void run() {
                 getSensorTemp();
                 currentTime = Calendar.getInstance().getTime();
@@ -118,12 +118,18 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         handler.postDelayed(sendUpdatesToUI, 1000); // 1 second
+
     }
 
     @Override
     public void onPause (){
         super.onPause();
         handler.removeCallbacks(sendUpdatesToUI);
+
+    }
+    @Override
+    public void onStop() {
+        super.onStop();
     }
 
 
