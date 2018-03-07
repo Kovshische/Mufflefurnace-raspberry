@@ -1,40 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    android:id="@+id/point_item"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/point_item"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
-    >
+    android:orientation="horizontal">
 
     <TextView
         android:id="@+id/time"
-        android:layout_weight="1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:fontFamily="sans-serif-smallcaps"
+        android:padding="16dp"
         android:textAppearance="?android:textAppearanceMedium"
         android:textColor="@color/black"
-        android:padding="16dp"
         tools:text="120  minutes" />
 
     <TextView
         android:id="@+id/temperature"
-        android:layout_weight="1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:fontFamily="sans-serif-smallcaps"
+        android:padding="16dp"
         android:textAppearance="?android:textAppearanceMedium"
         android:textColor="@color/black"
-        android:padding="16dp"
         tools:text="720 C" />
 
-
-
-
-
-
+    <TextView
+        android:id="@+id/vent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:fontFamily="sans-serif-smallcaps"
+        android:padding="16dp"
+        android:textAppearance="?android:textAppearanceMedium"
+        android:textColor="@color/black"
+        tools:text="Open" />
 
 
 </LinearLayout>
