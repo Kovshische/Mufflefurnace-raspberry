@@ -274,9 +274,14 @@ public class ProgramProvider  extends ContentProvider{
 
         //Check that the VENT is 0 or 1;
         Integer vent = contentValues.getAsInteger(ProgramContract.ProgramEntry.COLUMN_VENT);
-        if ( vent != null && (vent != ProgramContract.ProgramEntry.VENT_CLOSE || vent != ProgramContract.ProgramEntry.VENT_CLOSE) ){
-            throw new IllegalArgumentException("Point vent required a valid state (int 1 or 2 or null)");
+        if (vent == null){
+        } else if (vent == ProgramContract.ProgramEntry.VENT_CLOSE){
+        } else if (vent == ProgramContract.ProgramEntry.VENT_OPEN){
+        } else {
+            Log.i(LOG_TAG, "Vent is " + vent );
+            throw new IllegalArgumentException("Point vent required a valid state (int 0 or 1 or null)");
         }
+
 
         SQLiteDatabase database = mDbHelper.getWritableDatabase();
 
@@ -489,7 +494,7 @@ public class ProgramProvider  extends ContentProvider{
         //Check that the temperature value is not null, <0.
         if (values.containsKey(ProgramContract.ProgramEntry.COLUMN_TEMPERATURE)){
             Integer temperature = values.getAsInteger(ProgramContract.ProgramEntry.COLUMN_TEMPERATURE);
-            if (temperature == null || temperature < 0){
+            if (temperature != null && temperature < 0){
                 throw new IllegalArgumentException("Point required a valid Temperature");
             }
         }
@@ -505,8 +510,12 @@ public class ProgramProvider  extends ContentProvider{
         //Check that the vent is open or closed (1 or 2)
         if (values.containsKey(ProgramContract.ProgramEntry.COLUMN_VENT)){
             Integer vent = values.getAsInteger(ProgramContract.ProgramEntry.COLUMN_VENT);
-            if ( vent != null && (vent != ProgramContract.ProgramEntry.VENT_CLOSE || vent != ProgramContract.ProgramEntry.VENT_CLOSE) ){
-                throw new IllegalArgumentException("Point vent required a valid state (int 1 or 2 or null)");
+            if (vent == null){
+            } else if (vent == ProgramContract.ProgramEntry.VENT_CLOSE){
+            } else if (vent == ProgramContract.ProgramEntry.VENT_OPEN){
+            } else {
+                Log.i(LOG_TAG, "Vent is " + vent );
+                throw new IllegalArgumentException("Point vent required a valid state (int 0 or 1 or null)");
             }
         }
 

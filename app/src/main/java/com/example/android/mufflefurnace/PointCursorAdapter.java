@@ -61,7 +61,9 @@ public class PointCursorAdapter extends CursorAdapter {
             temperatureString = "";
         }
         String ventString;
-        if (vent == ProgramContract.ProgramEntry.VENT_OPEN){
+        if (vent == null){
+            ventString ="";
+        }else if (vent == ProgramContract.ProgramEntry.VENT_OPEN){
             ventString = "Open";
         } else if (vent == ProgramContract.ProgramEntry.VENT_CLOSE){
             ventString ="Close";

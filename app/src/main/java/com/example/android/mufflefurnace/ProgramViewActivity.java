@@ -155,7 +155,8 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
                     ProgramContract.ProgramEntry.COLUMN_PROGRAM_ID,
                     ProgramContract.ProgramEntry._ID,
                     ProgramContract.ProgramEntry.COLUMN_TIME,
-                    ProgramContract.ProgramEntry.COLUMN_TEMPERATURE
+                    ProgramContract.ProgramEntry.COLUMN_TEMPERATURE,
+                    ProgramContract.ProgramEntry.COLUMN_VENT
             };
 
             String mCurrentProgramIdString = Integer.toString(mCurrentProgramId);

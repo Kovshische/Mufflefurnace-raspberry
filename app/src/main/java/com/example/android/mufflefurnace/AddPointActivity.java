@@ -60,6 +60,7 @@ public class AddPointActivity extends AppCompatActivity implements LoaderManager
     private int mCurrentProgramID;
     private EditText timeTextView;
     private EditText temperatureTextView;
+    private Spinner ventSpinner;
     private View deleteItem;
     private String addPointMessage;
     private String editPointMessage;
@@ -93,7 +94,7 @@ public class AddPointActivity extends AppCompatActivity implements LoaderManager
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, ventOptions);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        Spinner ventSpinner = (Spinner) findViewById(R.id.add_point_vent_spinner);
+        ventSpinner = (Spinner) findViewById(R.id.add_point_vent_spinner);
         ventSpinner.setAdapter(spinnerAdapter);
 
         ventSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -228,8 +229,8 @@ public class AddPointActivity extends AppCompatActivity implements LoaderManager
             values.put(ProgramContract.ProgramEntry.COLUMN_TIME, timeInteger);
             values.put(ProgramContract.ProgramEntry.COLUMN_PROGRAM_ID, mCurrentProgramID);
             if (vent != null ){
-                Log.i(LOG_TAG, "Vent is open or closed");
-             //   values.put(ProgramContract.ProgramEntry.COLUMN_VENT, vent);
+//                Log.i(LOG_TAG, "Vent is open or closed");
+                values.put(ProgramContract.ProgramEntry.COLUMN_VENT, vent);
             }
 
 
@@ -263,7 +264,7 @@ public class AddPointActivity extends AppCompatActivity implements LoaderManager
 
 
         String timeString = timeTextView.getText().toString().trim();
-        int timeInteger = timeToInteger(timeString);
+        Integer timeInteger = timeToInteger(timeString);
 
 
         //Check to max temperature
@@ -276,11 +277,17 @@ public class AddPointActivity extends AppCompatActivity implements LoaderManager
         );
 
       //  if (temperatureInteger.)
-        if(temperatureInteger == null){
-            displayToast("temperature should be present " );
+        if (timeInteger == null){
+            displayToast("Please, add time" );
+            ifInsertPointSuccess = false;
+        } else if(ifVentEnabled == false && temperatureInteger == null){
+            displayToast("Please, add temperature" );
+            ifInsertPointSuccess = false;
+        }else if(ifVentEnabled == true && temperatureInteger == null && vent == null ){
+            displayToast("Please, add temperature or vent option");
             ifInsertPointSuccess = false;
         }
-        else if ( temperatureInteger > Integer.parseInt(maxTemperature)) {
+        else if (temperatureInteger != null && temperatureInteger > Integer.parseInt(maxTemperature)) {
             displayToast("temperature can not be more than " + maxTemperature);
             ifInsertPointSuccess = false;
         } else {
@@ -470,7 +477,8 @@ public class AddPointActivity extends AppCompatActivity implements LoaderManager
             String[] projection = {
                     ProgramContract.ProgramEntry.COLUMN_TIME,
                     ProgramContract.ProgramEntry.COLUMN_TEMPERATURE,
-                    ProgramContract.ProgramEntry.COLUMN_PROGRAM_ID
+                    ProgramContract.ProgramEntry.COLUMN_PROGRAM_ID,
+                    ProgramContract.ProgramEntry.COLUMN_VENT
             };
 
             return new CursorLoader(this,
@@ -511,13 +519,38 @@ public class AddPointActivity extends AppCompatActivity implements LoaderManager
                     int temperatureColumnIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_TEMPERATURE);
                     int timeColumnIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_TIME);
                     int programIdIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_PROGRAM_ID);
+                    int ventColumnIndex = cursor.getColumnIndex(ProgramContract.ProgramEntry.COLUMN_VENT);
 
-                    int temperature = cursor.getInt(temperatureColumnIndex);
+                    Integer temperature = null;
+                    if (!cursor.isNull(temperatureColumnIndex)) {
+                        temperature = cursor.getInt(temperatureColumnIndex);
+                    }
+                    String temperatureString;
+                    if (temperature != null){
+                        temperatureString = Integer.toString(temperature);
+                    } else {
+                        temperatureString = "";
+                    }
+
+                    Integer vent = null;
+                    if (!cursor.isNull(ventColumnIndex)){
+                        vent = cursor.getInt(ventColumnIndex);
+                    }
+
+
                     int time = cursor.getInt(timeColumnIndex);
                     mCurrentProgramID = cursor.getInt(programIdIndex);
 
                     timeTextView.setText(PointCursorAdapter.mTimeToString(time));
-                    temperatureTextView.setText(Integer.toString(temperature));
+
+                    temperatureTextView.setText(temperatureString);
+                    if (vent == null){
+                        ventSpinner.setSelection(0);
+                    } else if (vent == ProgramContract.ProgramEntry.VENT_OPEN){
+                        ventSpinner.setSelection(1);
+                    } else if (vent == ProgramContract.ProgramEntry.VENT_CLOSE){
+                        ventSpinner.setSelection(2);
+                    }
 
                     mCurrentProgramUri = ContentUris.withAppendedId(ProgramContract.ProgramEntry.CONTENT_URI_PROGRAMS, mCurrentProgramID);
 
