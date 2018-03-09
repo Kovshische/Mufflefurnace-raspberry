@@ -2,6 +2,9 @@ package com.example.android.mufflefurnace;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
@@ -21,7 +24,9 @@ import com.example.android.mufflefurnace.Data.ProgramContract;
 import com.example.android.mufflefurnace.ExecutionProgram.ExecutingProgramActivity;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.DataPointInterface;
 import com.jjoe64.graphview.series.LineGraphSeries;
+import com.jjoe64.graphview.series.PointsGraphSeries;
 
 import java.util.ArrayList;
 
@@ -39,6 +44,8 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
     PointCursorAdapter mPointCursorAdapter;
 
     ArrayList<DataPoint> dataPointArrayList = new ArrayList<DataPoint>();
+    ArrayList<DataPoint> ventOpenPointArrayList = new ArrayList<DataPoint>();
+    ArrayList<DataPoint> ventClosePointArrayList = new ArrayList<DataPoint>();
     private GraphView graph;
     private TextView programShouldContainTextView;
     private int pointsCounter = 0;
@@ -206,18 +213,28 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
 
                 int timeColumnIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_TIME);
                 int temperatureColumnIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_TEMPERATURE);
+                int ventColumnIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_VENT);
 
                 //Display graphView
 
                 while (cursor.moveToNext()) {
+                    int time = cursor.getInt(timeColumnIndex);
+                    double timeDouble = (double) time / 60;
                     Integer temperature;
+
                     if (!cursor.isNull(temperatureColumnIndex)){
                         temperature = cursor.getInt(temperatureColumnIndex);
-                        int time = cursor.getInt(timeColumnIndex);
-                        double timeDouble = (double) time / 60;
                         dataPointArrayList.add(new DataPoint(timeDouble, temperature));
                         Log.i("array for graphView", time + "/" + temperature);
                         pointsCounter = pointsCounter + 1;
+                    }
+
+
+                    if(cursor.getInt(ventColumnIndex)== ProgramContract.ProgramEntry.VENT_OPEN){
+                        ventOpenPointArrayList.add(new DataPoint(timeDouble, 0));
+                    }
+                    if(cursor.getInt(ventColumnIndex)== ProgramContract.ProgramEntry.VENT_CLOSE){
+                        ventClosePointArrayList.add(new DataPoint(timeDouble,0));
                     }
 
                 }
@@ -228,10 +245,40 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
                 } else {
                     
                 DataPoint[] dataPoint = dataPointArrayList.toArray(new DataPoint[]{});
+                DataPoint[] ventOpenPoint = ventOpenPointArrayList.toArray(new DataPoint[]{});
+                DataPoint[] ventClosePoint = ventClosePointArrayList.toArray(new DataPoint[]{});
 //                DataPoint[] dataPoint = (DataPoint[]) dataPointArrayList.toArray(new DataPoint[0]);
-                Log.i("length of datapoint", Integer.toString(dataPoint.length));
+//                Log.i("length of datapoint", Integer.toString(dataPoint.length));
 
-                LineGraphSeries<DataPoint> series = new LineGraphSeries<>(dataPoint);
+                LineGraphSeries<DataPoint> seriesPoint = new LineGraphSeries<>(dataPoint);
+
+                PointsGraphSeries<DataPoint> seriesOpenVent = new PointsGraphSeries<>(ventOpenPoint);
+                seriesOpenVent.setCustomShape(new PointsGraphSeries.CustomShape() {
+                    @Override
+                    public void draw(Canvas canvas, Paint paint, float x, float y, DataPointInterface dataPoint) {
+                        paint.setTextSize(20);
+                        paint.setColor(Color.BLACK);
+                        canvas.rotate(-90,x,y);
+                        canvas.drawText("vent open",x+10,y, paint);
+                        canvas.rotate(90,x,y);
+
+                    }
+                });
+
+                    PointsGraphSeries<DataPoint> seriesCloseVent = new PointsGraphSeries<>(ventClosePoint);
+                    seriesCloseVent.setCustomShape(new PointsGraphSeries.CustomShape() {
+                        @Override
+                        public void draw(Canvas canvas, Paint paint, float x, float y, DataPointInterface dataPoint) {
+                            paint.setTextSize(20);
+                            paint.setColor(Color.BLACK);
+                            canvas.rotate(-90,x,y);
+                            canvas.drawText("vent close",x+10,y, paint);
+                            canvas.rotate(90,x,y);
+
+                        }
+                    });
+
+
 
                 //Get mat time
                 int length = dataPoint.length;
@@ -240,7 +287,9 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
 
 
                 //Set max time
-                graph.addSeries(series);
+                graph.addSeries(seriesPoint);
+                graph.addSeries(seriesOpenVent);
+                graph.addSeries(seriesCloseVent);
                 graph.getViewport().setXAxisBoundsManual(true);
                 graph.getViewport().setMaxX(maxTime);
 
