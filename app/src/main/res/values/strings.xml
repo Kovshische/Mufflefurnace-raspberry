@@ -68,7 +68,8 @@
     <!-- Activity ProgramView ProgramEdit -->
     <string name="program_view_edit_time">Time </string>
     <string name="program_view_edit_temperature">T °C </string>
-    <string name="program_view_edit_vent">Vent hood</string>
+    <string name="program_view_edit_vent_hood">Vent hood</string>
+    <string name="program_view_edit_vent">Vent</string>
     <string name="program_view_program_should_contain">Program should contain at least 2 points</string>
 
     <!-- AddProgram Title -->

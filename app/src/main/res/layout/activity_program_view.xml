@@ -18,7 +18,7 @@
             android:id="@+id/graph_view"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="3" />
+            android:layout_weight="2.7" />
 
 
         <LinearLayout
@@ -31,17 +31,27 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="0dp"
                 android:orientation="horizontal">
 
                 <TextView
                     style="@style/Program_view_edit_time_temperature"
-                    android:text="@string/program_view_edit_time" />
+                    android:text="@string/program_view_edit_time"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="gravity"
+                    />
 
                 <TextView
                     style="@style/Program_view_edit_time_temperature"
-                    android:text="@string/program_view_edit_temperature" />
+                    android:text="@string/program_view_edit_temperature"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="gravity"/>
+                <TextView
+                    style="@style/Program_view_edit_time_temperature"
+                    android:text="@string/program_view_edit_vent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="gravity"/>
 
             </LinearLayout>
 
@@ -49,7 +59,7 @@
                 android:id="@+id/list_view_points"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="8dp" />
+                android:padding="0dp" />
             <!-- android:padding="@dimen/activity_margin"  -->
 
 

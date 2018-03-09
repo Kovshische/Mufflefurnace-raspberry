@@ -18,8 +18,8 @@ import java.util.TimeZone;
  */
 
 public class PointCursorAdapter extends CursorAdapter {
+    private static final String LOG_TAG = PointCursorAdapter.class.getSimpleName();
 
-    private static final int day = 24*60;
 
     public PointCursorAdapter(Context context,Cursor cursor){
         super(context, cursor, 0);
@@ -38,19 +38,43 @@ public class PointCursorAdapter extends CursorAdapter {
 
         TextView textViewTime  = (TextView) view.findViewById(R.id.time);
         TextView textViewTemperature = (TextView) view.findViewById(R.id.temperature);
+        TextView textViewVent = (TextView)view.findViewById(R.id.vent);
 
         //Extract properties from cursor
-        int time = cursor.getInt(cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_TIME));
-        int temperature  = cursor.getInt(cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_TEMPERATURE));
+        Integer time = cursor.getInt(cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_TIME));
+
+        Integer temperature = null;
+        if (!cursor.isNull(cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_TEMPERATURE))){
+            temperature  = cursor.getInt(cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_TEMPERATURE));
+        }
+
+        Integer vent = null;
+        if (!cursor.isNull(cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_VENT))){
+            vent = cursor.getInt(cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_VENT));
+        }
 
         String timeString = mTimeToString(time);
-        String temperatureString = Integer.toString(temperature);
+        String temperatureString;
+        if (temperature != null){
+             temperatureString = Integer.toString(temperature);
+        } else {
+            temperatureString = "";
+        }
+        String ventString;
+        if (vent == ProgramContract.ProgramEntry.VENT_OPEN){
+            ventString = "Open";
+        } else if (vent == ProgramContract.ProgramEntry.VENT_CLOSE){
+            ventString ="Close";
+        } else {
+            ventString ="";
+        }
 
         final int program_id = cursor.getInt(cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry._ID));
 
 
         textViewTime.setText(timeString);
         textViewTemperature.setText(temperatureString);
+        textViewVent.setText(ventString);
         // textViewCreated.setText(temperature);
 
 
