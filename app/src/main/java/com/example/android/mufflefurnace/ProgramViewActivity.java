@@ -210,14 +210,16 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
                 //Display graphView
 
                 while (cursor.moveToNext()) {
-                    int time = cursor.getInt(timeColumnIndex);
-                    int temperature = cursor.getInt(temperatureColumnIndex);
+                    Integer temperature;
+                    if (!cursor.isNull(temperatureColumnIndex)){
+                        temperature = cursor.getInt(temperatureColumnIndex);
+                        int time = cursor.getInt(timeColumnIndex);
+                        double timeDouble = (double) time / 60;
+                        dataPointArrayList.add(new DataPoint(timeDouble, temperature));
+                        Log.i("array for graphView", time + "/" + temperature);
+                        pointsCounter = pointsCounter + 1;
+                    }
 
-                    double timeDouble = (double) time / 60;
-
-                    dataPointArrayList.add(new DataPoint(timeDouble, temperature));
-                    Log.i("array for graphView", time + "/" + temperature);
-                    pointsCounter = pointsCounter + 1;
                 }
 
                 //Display text if there are less than 2 points
