@@ -230,15 +230,14 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
                 //Display graphView
 
                 while (cursor.moveToNext()) {
-                    int time = cursor.getInt(timeColumnIndex);
-                    int temperature = cursor.getInt(temperatureColumnIndex);
-
-                    //time in hours
-                    double timeDouble = (double) time / 60;
-
-                    dataPointArrayList.add(new DataPoint(timeDouble, temperature));
-                    Log.i("array for graphView min", time + "/" + temperature);
-                    //  Log.i("array for graphView", timeDouble + "/" + temperature);
+                    Integer temperature;
+                    if (!cursor.isNull(temperatureColumnIndex)){
+                        temperature = cursor.getInt(temperatureColumnIndex);
+                        int time = cursor.getInt(timeColumnIndex);
+                        double timeDouble = (double) time / 60;
+                        dataPointArrayList.add(new DataPoint(timeDouble, temperature));
+                        Log.i("array for graphView", time + "/" + temperature);
+                    }
                 }
 
 
