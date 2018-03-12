@@ -39,13 +39,13 @@
                 android:orientation="vertical">
 
                 <TextView
-                    style="@style/Program_view_edit_time_temperature"
+                    style="@style/Program_executed_time_temperature"
                     android:text="@string/program_view_edit_time"
                     android:textStyle="bold"/>
 
                 <TextView
                     android:id="@+id/executing_program_time"
-                    style="@style/Program_view_edit_time_temperature"
+                    style="@style/Program_executed_time_temperature"
                     android:paddingTop="8dp"
                     tools:text="02:30:32" />
 
@@ -59,13 +59,13 @@
                 android:orientation="vertical">
 
                 <TextView
-                    style="@style/Program_view_edit_time_temperature"
+                    style="@style/Program_executed_time_temperature"
                     android:text="@string/executing_program_sensor_temp"
                     android:textStyle="bold"/>
 
                 <TextView
                     android:id="@+id/executing_program_sensor_temp"
-                    style="@style/Program_view_edit_time_temperature"
+                    style="@style/Program_executed_time_temperature"
                     android:paddingTop="8dp"
                     tools:text="112" />
 
@@ -78,13 +78,13 @@
                 android:orientation="vertical">
 
                 <TextView
-                    style="@style/Program_view_edit_time_temperature"
+                    style="@style/Program_executed_time_temperature"
                     android:text="@string/executing_program_target_temp"
                     android:textStyle="bold"/>
 
                 <TextView
                     android:id="@+id/executing_program_target_temp"
-                    style="@style/Program_view_edit_time_temperature"
+                    style="@style/Program_executed_time_temperature"
                     android:paddingTop="8dp"
                     tools:text="150"/>
             </LinearLayout>
@@ -96,7 +96,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    style="@style/Program_view_edit_time_temperature"
+                    style="@style/Program_executed_time_temperature"
                     android:text="@string/executing_program_power"
                     android:textStyle="bold"/>
 
