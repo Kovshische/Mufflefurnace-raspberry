@@ -2,9 +2,11 @@ package com.example.android.mufflefurnace;
 
 import android.content.ContentUris;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.NavUtils;
@@ -16,7 +18,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.mufflefurnace.Data.ProgramContract;
@@ -41,6 +45,9 @@ public class ProgramEditActivity extends AppCompatActivity implements LoaderMana
     private String mCurrentProgramName;
     private int mCurrentProgramId;
 
+    private SharedPreferences sharedPreferences;
+    private boolean ifVentEnabled;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +56,9 @@ public class ProgramEditActivity extends AppCompatActivity implements LoaderMana
 
         Intent intent = getIntent();
         mCurrentProgramUri = intent.getData();
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        ifVentEnabled = sharedPreferences.getBoolean(getString(R.string.settings_vent_options_key),false);
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_add_point);
@@ -61,9 +71,16 @@ public class ProgramEditActivity extends AppCompatActivity implements LoaderMana
             }
         });
 
-       //get current  mCurrentProgramId;
 
-
+        //Sev vent invisible
+        TextView ventTextView = (TextView) findViewById(R.id.program_edit_vent);
+        if (ifVentEnabled == false){
+            ventTextView.setText("");
+            ventTextView.setVisibility(View.INVISIBLE);
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) ventTextView.getLayoutParams();
+            params.weight = 0;
+            ventTextView.setLayoutParams(params);
+        }
 
         //find the ListView which will be populated with the program data
         ListView pointListView = (ListView) findViewById(R.id.list_view_points);
