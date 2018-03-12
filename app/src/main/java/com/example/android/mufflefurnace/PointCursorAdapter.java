@@ -1,11 +1,14 @@
 package com.example.android.mufflefurnace;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.android.mufflefurnace.Data.ProgramContract;
@@ -20,6 +23,9 @@ import java.util.TimeZone;
 public class PointCursorAdapter extends CursorAdapter {
     private static final String LOG_TAG = PointCursorAdapter.class.getSimpleName();
 
+    private SharedPreferences sharedPreferences;
+    private boolean ifVentEnabled;
+
 
     public PointCursorAdapter(Context context,Cursor cursor){
         super(context, cursor, 0);
@@ -31,6 +37,7 @@ public class PointCursorAdapter extends CursorAdapter {
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         return LayoutInflater.from(context).inflate(R.layout.list_point, parent,false);
+
     }
 
     @Override
@@ -76,7 +83,18 @@ public class PointCursorAdapter extends CursorAdapter {
 
         textViewTime.setText(timeString);
         textViewTemperature.setText(temperatureString);
-        textViewVent.setText(ventString);
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        ifVentEnabled = sharedPreferences.getBoolean(context.getString(R.string.settings_vent_options_key),false);
+        if (ifVentEnabled == true){
+            textViewVent.setText(ventString);
+        } else {
+            textViewVent.setVisibility(View.INVISIBLE);
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) textViewVent.getLayoutParams();
+            params.weight = 0;
+            textViewVent.setLayoutParams(params);
+        }
+
         // textViewCreated.setText(temperature);
 
 
@@ -106,10 +124,9 @@ public class PointCursorAdapter extends CursorAdapter {
             timeString = Integer.toString(hours) + timeString;
         }
 
-
-
         return timeString;
     }
+
 
 
 }

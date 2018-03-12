@@ -44,7 +44,7 @@ public final class ProgramContract {
         public static final String COLUMN_TIME = "time";
         public static final String COLUMN_VENT = "vent";
 
-        public static final int VENT_CLOSE = 0;
+        public static final int VENT_CLOSE = 2;
         public static final int VENT_OPEN = 1;
 
         // Table Archive Programs
