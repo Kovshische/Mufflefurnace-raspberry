@@ -248,14 +248,14 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
                         pointsCounter = pointsCounter + 1;
                     }
 
-
-                    if(cursor.getInt(ventColumnIndex)== ProgramContract.ProgramEntry.VENT_OPEN){
-                        ventOpenPointArrayList.add(new DataPoint(timeDouble, 0));
+                    if (ifVentEnabled == true){
+                        if(cursor.getInt(ventColumnIndex)== ProgramContract.ProgramEntry.VENT_OPEN){
+                            ventOpenPointArrayList.add(new DataPoint(timeDouble, 0));
+                        }
+                        if(cursor.getInt(ventColumnIndex)== ProgramContract.ProgramEntry.VENT_CLOSE){
+                            ventClosePointArrayList.add(new DataPoint(timeDouble,0));
+                        }
                     }
-                    if(cursor.getInt(ventColumnIndex)== ProgramContract.ProgramEntry.VENT_CLOSE){
-                        ventClosePointArrayList.add(new DataPoint(timeDouble,0));
-                    }
-
                 }
 
                 //Display text if there are less than 2 points
