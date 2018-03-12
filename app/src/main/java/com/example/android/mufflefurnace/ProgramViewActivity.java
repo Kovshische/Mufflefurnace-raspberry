@@ -1,12 +1,14 @@
 package com.example.android.mufflefurnace;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -15,6 +17,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -49,6 +52,9 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
     private GraphView graph;
     private TextView programShouldContainTextView;
     private int pointsCounter = 0;
+
+    private SharedPreferences sharedPreferences;
+    private boolean ifVentEnabled;
 
 
     @Override
@@ -91,6 +97,19 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
         graph = (GraphView) findViewById(R.id.graph_view);
 
         programShouldContainTextView = (TextView) findViewById(R.id.program_view_program_should_contain);
+
+
+        //set Vent visibility
+        TextView ventTextView = (TextView) findViewById(R.id.program_view_vent);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        ifVentEnabled = sharedPreferences.getBoolean(getString(R.string.settings_vent_options_key),false);
+        if (ifVentEnabled == false){
+            ventTextView.setText("");
+            ventTextView.setVisibility(View.INVISIBLE);
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) ventTextView.getLayoutParams();
+            params.weight = 0;
+            ventTextView.setLayoutParams(params);
+        }
 
 
 
