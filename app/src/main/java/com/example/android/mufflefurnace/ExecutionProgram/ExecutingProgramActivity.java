@@ -5,9 +5,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.CursorLoader;
@@ -27,7 +32,9 @@ import com.example.android.mufflefurnace.ProgramViewActivity;
 import com.example.android.mufflefurnace.R;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.DataPointInterface;
 import com.jjoe64.graphview.series.LineGraphSeries;
+import com.jjoe64.graphview.series.PointsGraphSeries;
 
 import java.util.ArrayList;
 
@@ -44,6 +51,8 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
 
     ArrayList<DataPoint> dataPointArrayList;
     ArrayList<DataPoint> dataPointArchiveArrayList;
+    ArrayList<DataPoint> ventOpenPointArrayList = new ArrayList<DataPoint>();
+    ArrayList<DataPoint> ventClosePointArrayList = new ArrayList<DataPoint>();
     LineGraphSeries<DataPoint> archiveSeries;
     private GraphView graph;
     EditText enterTimeEditText;
@@ -61,6 +70,9 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
     AlertDialog.Builder alert;
     Context context;
 
+    private SharedPreferences sharedPreferences;
+    private boolean ifVentEnabled;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +83,7 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
         dataPointArrayList = new ArrayList<DataPoint>();
 
         dataPointArchiveArrayList = new ArrayList<DataPoint>();
+
 
 //        archiveSeries = new LineGraphSeries<>();
 //        archiveSeries.setColor(R.color.colorAccent);
@@ -102,6 +115,9 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
             }
         });
       */
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        ifVentEnabled = sharedPreferences.getBoolean(getString(R.string.settings_vent_options_key),false);
     }
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
@@ -177,7 +193,8 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
                     ProgramContract.ProgramEntry.COLUMN_PROGRAM_ID,
                     ProgramContract.ProgramEntry._ID,
                     ProgramContract.ProgramEntry.COLUMN_TIME,
-                    ProgramContract.ProgramEntry.COLUMN_TEMPERATURE
+                    ProgramContract.ProgramEntry.COLUMN_TEMPERATURE,
+                    ProgramContract.ProgramEntry.COLUMN_VENT
             };
 
             String mCurrentProgramIdString = Integer.toString(mCurrentProgramId);
@@ -226,52 +243,95 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
 
                 int timeColumnIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_TIME);
                 int temperatureColumnIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_TEMPERATURE);
+                int ventColumnIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_VENT);
 
                 //Display graphView
 
                 while (cursor.moveToNext()) {
                     Integer temperature;
-                    if (!cursor.isNull(temperatureColumnIndex)){
-                        temperature = cursor.getInt(temperatureColumnIndex);
                         int time = cursor.getInt(timeColumnIndex);
                         double timeDouble = (double) time / 60;
-                        dataPointArrayList.add(new DataPoint(timeDouble, temperature));
-                        Log.i("array for graphView", time + "/" + temperature);
-                    }
+                        //                       Log.i("array for graphView", time + "/" + temperature);
+
+                        int pointsCounter = 0;
+                        if (!cursor.isNull(temperatureColumnIndex)) {
+                            temperature = cursor.getInt(temperatureColumnIndex);
+                            dataPointArrayList.add(new DataPoint(timeDouble, temperature));
+                            Log.i("array for graphView", time + "/" + temperature);
+                            pointsCounter = pointsCounter + 1;
+                        }
+
+                        if (ifVentEnabled == true) {
+                            if (cursor.getInt(ventColumnIndex) == ProgramContract.ProgramEntry.VENT_OPEN) {
+                                ventOpenPointArrayList.add(new DataPoint(timeDouble, 0));
+                            }
+                            if (cursor.getInt(ventColumnIndex) == ProgramContract.ProgramEntry.VENT_CLOSE) {
+                                ventClosePointArrayList.add(new DataPoint(timeDouble, 0));
+                            }
+                        }
+
+
+
+                    DataPoint[] dataPoint = dataPointArrayList.toArray(new DataPoint[]{});
+                    Log.i("length of datapoint", Integer.toString(dataPoint.length));
+                    DataPoint[] ventOpenPoint = ventOpenPointArrayList.toArray(new DataPoint[]{});
+                    DataPoint[] ventClosePoint = ventClosePointArrayList.toArray(new DataPoint[]{});
+
+                    LineGraphSeries<DataPoint> series = new LineGraphSeries<>(dataPoint);
+
+                    PointsGraphSeries<DataPoint> seriesOpenVent = new PointsGraphSeries<>(ventOpenPoint);
+                    seriesOpenVent.setCustomShape(new PointsGraphSeries.CustomShape() {
+                        @Override
+                        public void draw(Canvas canvas, Paint paint, float x, float y, DataPointInterface dataPoint) {
+                            paint.setTextSize(20);
+                            paint.setColor(Color.BLACK);
+                            canvas.rotate(-90, x, y);
+                            canvas.drawText("vent open", x + 10, y, paint);
+                            canvas.rotate(90, x, y);
+
+                        }
+                    });
+
+                    PointsGraphSeries<DataPoint> seriesCloseVent = new PointsGraphSeries<>(ventClosePoint);
+                    seriesCloseVent.setCustomShape(new PointsGraphSeries.CustomShape() {
+                        @Override
+                        public void draw(Canvas canvas, Paint paint, float x, float y, DataPointInterface dataPoint) {
+                            paint.setTextSize(20);
+                            paint.setColor(Color.BLACK);
+                            canvas.rotate(-90, x, y);
+                            canvas.drawText("vent close", x + 10, y, paint);
+                            canvas.rotate(90, x, y);
+
+                        }
+                    });
+
+                    //Get mat time
+                    int length = dataPoint.length;
+                    DataPoint lastDataPoint = dataPoint[length - 1];
+                    double maxTime = lastDataPoint.getX();
+
+
+                    //Set max time
+                    graph.addSeries(series);
+                    graph.addSeries(seriesOpenVent);
+                    graph.addSeries(seriesCloseVent);
+                    graph.getViewport().setXAxisBoundsManual(true);
+                    graph.getViewport().setMaxX(maxTime);
+
+                    //Add series for real time temperature;
+                    archiveSeries = new LineGraphSeries<>();
+                    archiveSeries.setColor(R.color.colorAccent);
+                    graph.addSeries(archiveSeries);
+
+                    //Create control service
+                    controlServiceIntent = new Intent(ExecutingProgramActivity.this, ControlService.class);
+
+                    registerReceiver(broadcastReceiver, new IntentFilter(ControlService.BROADCAST_ACTION));
+                    controlServiceIntent.putExtra("pointsArray", dataPointArrayList);
+                    startService(controlServiceIntent);
+
                 }
-
-
-                DataPoint[] dataPoint = dataPointArrayList.toArray(new DataPoint[]{});
-//                DataPoint[] dataPoint = (DataPoint[]) dataPointArrayList.toArray(new DataPoint[0]);
-                Log.i("length of datapoint", Integer.toString(dataPoint.length));
-
-                LineGraphSeries<DataPoint> series = new LineGraphSeries<>(dataPoint);
-
-                //Get mat time
-                int length = dataPoint.length;
-                DataPoint lastDataPoint = dataPoint[length - 1];
-                double maxTime = lastDataPoint.getX();
-
-
-                //Set max time
-                graph.addSeries(series);
-                graph.getViewport().setXAxisBoundsManual(true);
-                graph.getViewport().setMaxX(maxTime);
-
-                //Add series for real time temperature;
-                archiveSeries = new LineGraphSeries<>();
-                archiveSeries.setColor(R.color.colorAccent);
-                graph.addSeries(archiveSeries);
-
-                //Create control service
-                controlServiceIntent = new Intent(ExecutingProgramActivity.this, ControlService.class);
-
-                registerReceiver(broadcastReceiver, new IntentFilter(ControlService.BROADCAST_ACTION));
-                controlServiceIntent.putExtra("pointsArray", dataPointArrayList);
-                startService(controlServiceIntent);
-
         }
-
     }
 
     @Override

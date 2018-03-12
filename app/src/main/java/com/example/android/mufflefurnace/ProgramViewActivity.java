@@ -34,7 +34,7 @@ import java.util.ArrayList;
 
 import static com.example.android.mufflefurnace.Data.ProgramDbHelper.LOG_TAG;
 
-public class ProgramViewActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
+public class ProgramViewActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int EXISTING_PROGRAM_ID_LOADER = 1;
     private static final int POINTS_LOADER = 2;
@@ -62,8 +62,6 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
         setContentView(R.layout.activity_program_view);
 
 
-
-
         //find the ListView which will be populated with the program data
         ListView pointListView = (ListView) findViewById(R.id.list_view_points);
 
@@ -78,15 +76,14 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
 
         //Start button
         RelativeLayout start = (RelativeLayout) findViewById(R.id.start);
-        start.setOnClickListener(new View.OnClickListener(){
+        start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(ProgramViewActivity.this, ExecutingProgramActivity.class);
                 i.setData(mCurrentProgramUri);
-                if (pointsCounter >=2){
+                if (pointsCounter >= 2) {
                     startActivity(i);
-                }
-                else {
+                } else {
                     displayToast(getString(R.string.program_view_program_should_contain));
                 }
             }
@@ -101,13 +98,10 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
         //set Vent visibility
         TextView ventTextView = (TextView) findViewById(R.id.program_view_vent);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        ifVentEnabled = sharedPreferences.getBoolean(getString(R.string.settings_vent_options_key),false);
-        if (ifVentEnabled == false){
+        ifVentEnabled = sharedPreferences.getBoolean(getString(R.string.settings_vent_options_key), false);
+        if (ifVentEnabled == false) {
             ventTextView.setVisibility(View.GONE);
         }
-
-
-
 
 
         getSupportLoaderManager().initLoader(EXISTING_PROGRAM_ID_LOADER, null, this);
@@ -170,8 +164,7 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
 
         }
 
-        if (id == POINTS_LOADER)
-        {
+        if (id == POINTS_LOADER) {
             String[] projectionForPoint = {
                     ProgramContract.ProgramEntry.COLUMN_PROGRAM_ID,
                     ProgramContract.ProgramEntry._ID,
@@ -194,8 +187,7 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
                     null,
                     ProgramContract.ProgramEntry.COLUMN_TIME
             );
-        }
-        else return null;
+        } else return null;
     }
 
     @Override
@@ -236,19 +228,19 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
                     double timeDouble = (double) time / 60;
                     Integer temperature;
 
-                    if (!cursor.isNull(temperatureColumnIndex)){
+                    if (!cursor.isNull(temperatureColumnIndex)) {
                         temperature = cursor.getInt(temperatureColumnIndex);
                         dataPointArrayList.add(new DataPoint(timeDouble, temperature));
                         Log.i("array for graphView", time + "/" + temperature);
                         pointsCounter = pointsCounter + 1;
                     }
 
-                    if (ifVentEnabled == true){
-                        if(cursor.getInt(ventColumnIndex)== ProgramContract.ProgramEntry.VENT_OPEN){
+                    if (ifVentEnabled == true) {
+                        if (cursor.getInt(ventColumnIndex) == ProgramContract.ProgramEntry.VENT_OPEN) {
                             ventOpenPointArrayList.add(new DataPoint(timeDouble, 0));
                         }
-                        if(cursor.getInt(ventColumnIndex)== ProgramContract.ProgramEntry.VENT_CLOSE){
-                            ventClosePointArrayList.add(new DataPoint(timeDouble,0));
+                        if (cursor.getInt(ventColumnIndex) == ProgramContract.ProgramEntry.VENT_CLOSE) {
+                            ventClosePointArrayList.add(new DataPoint(timeDouble, 0));
                         }
                     }
                 }
@@ -257,27 +249,27 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
                 if (pointsCounter < +2) {
                     programShouldContainTextView.setVisibility(View.VISIBLE);
                 } else {
-                    
-                DataPoint[] dataPoint = dataPointArrayList.toArray(new DataPoint[]{});
-                DataPoint[] ventOpenPoint = ventOpenPointArrayList.toArray(new DataPoint[]{});
-                DataPoint[] ventClosePoint = ventClosePointArrayList.toArray(new DataPoint[]{});
+
+                    DataPoint[] dataPoint = dataPointArrayList.toArray(new DataPoint[]{});
+                    DataPoint[] ventOpenPoint = ventOpenPointArrayList.toArray(new DataPoint[]{});
+                    DataPoint[] ventClosePoint = ventClosePointArrayList.toArray(new DataPoint[]{});
 //                DataPoint[] dataPoint = (DataPoint[]) dataPointArrayList.toArray(new DataPoint[0]);
 //                Log.i("length of datapoint", Integer.toString(dataPoint.length));
 
-                LineGraphSeries<DataPoint> seriesPoint = new LineGraphSeries<>(dataPoint);
+                    LineGraphSeries<DataPoint> seriesPoint = new LineGraphSeries<>(dataPoint);
 
-                PointsGraphSeries<DataPoint> seriesOpenVent = new PointsGraphSeries<>(ventOpenPoint);
-                seriesOpenVent.setCustomShape(new PointsGraphSeries.CustomShape() {
-                    @Override
-                    public void draw(Canvas canvas, Paint paint, float x, float y, DataPointInterface dataPoint) {
-                        paint.setTextSize(20);
-                        paint.setColor(Color.BLACK);
-                        canvas.rotate(-90,x,y);
-                        canvas.drawText("vent open",x+10,y, paint);
-                        canvas.rotate(90,x,y);
+                    PointsGraphSeries<DataPoint> seriesOpenVent = new PointsGraphSeries<>(ventOpenPoint);
+                    seriesOpenVent.setCustomShape(new PointsGraphSeries.CustomShape() {
+                        @Override
+                        public void draw(Canvas canvas, Paint paint, float x, float y, DataPointInterface dataPoint) {
+                            paint.setTextSize(20);
+                            paint.setColor(Color.BLACK);
+                            canvas.rotate(-90, x, y);
+                            canvas.drawText("vent open", x + 10, y, paint);
+                            canvas.rotate(90, x, y);
 
-                    }
-                });
+                        }
+                    });
 
                     PointsGraphSeries<DataPoint> seriesCloseVent = new PointsGraphSeries<>(ventClosePoint);
                     seriesCloseVent.setCustomShape(new PointsGraphSeries.CustomShape() {
@@ -285,33 +277,32 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
                         public void draw(Canvas canvas, Paint paint, float x, float y, DataPointInterface dataPoint) {
                             paint.setTextSize(20);
                             paint.setColor(Color.BLACK);
-                            canvas.rotate(-90,x,y);
-                            canvas.drawText("vent close",x+10,y, paint);
-                            canvas.rotate(90,x,y);
+                            canvas.rotate(-90, x, y);
+                            canvas.drawText("vent close", x + 10, y, paint);
+                            canvas.rotate(90, x, y);
 
                         }
                     });
 
 
-
-                //Get mat time
-                int length = dataPoint.length;
-                DataPoint lastDataPoint = dataPoint[length - 1];
-                double maxTime = lastDataPoint.getX();
-
-
-                //Set max time
-                graph.addSeries(seriesPoint);
-                graph.addSeries(seriesOpenVent);
-                graph.addSeries(seriesCloseVent);
-                graph.getViewport().setXAxisBoundsManual(true);
-                graph.getViewport().setMaxX(maxTime);
+                    //Get mat time
+                    int length = dataPoint.length;
+                    DataPoint lastDataPoint = dataPoint[length - 1];
+                    double maxTime = lastDataPoint.getX();
 
 
-                //graph.setTitle("Название графика");
-                //graph.getGridLabelRenderer().setVerticalAxisTitle("°C");
+                    //Set max time
+                    graph.addSeries(seriesPoint);
+                    graph.addSeries(seriesOpenVent);
+                    graph.addSeries(seriesCloseVent);
+                    graph.getViewport().setXAxisBoundsManual(true);
+                    graph.getViewport().setMaxX(maxTime);
 
-        }
+
+                    //graph.setTitle("Название графика");
+                    //graph.getGridLabelRenderer().setVerticalAxisTitle("°C");
+
+                }
                 mPointCursorAdapter.swapCursor(cursor);
         }
     }
