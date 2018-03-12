@@ -31,6 +31,7 @@ public class PointManager {
     private int startTemperature;
     private int finishTemperature;
     private int programStatus;
+//    private Integer ventVentStatus = ProgramContract.ProgramEntry.VENT_CLOSE;
 
     public static final int PROGRAM_END = 1;
     public static final int PROGRAM_EXECUTING = 2;

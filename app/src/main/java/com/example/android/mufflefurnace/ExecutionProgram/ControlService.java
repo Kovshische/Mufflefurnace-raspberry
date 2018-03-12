@@ -7,6 +7,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.example.android.mufflefurnace.Data.ProgramContract;
 import com.jjoe64.graphview.series.DataPoint;
 
 import java.io.IOException;
@@ -46,6 +47,7 @@ public class ControlService extends Service {
     int sensorTemp;
     Intent myIntent;
     private HeatingPowerWrapper heatingPowerWrapper;
+    private Integer ventPosition = ProgramContract.ProgramEntry.VENT_CLOSE;
 
     private PointManager pointManager;
     private Runnable sendUpdatesToUI = new Runnable() {
