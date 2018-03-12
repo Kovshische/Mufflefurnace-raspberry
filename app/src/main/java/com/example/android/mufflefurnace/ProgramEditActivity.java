@@ -18,7 +18,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -75,11 +74,7 @@ public class ProgramEditActivity extends AppCompatActivity implements LoaderMana
         //Sev vent invisible
         TextView ventTextView = (TextView) findViewById(R.id.program_edit_vent);
         if (ifVentEnabled == false){
-            ventTextView.setText("");
-            ventTextView.setVisibility(View.INVISIBLE);
-            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) ventTextView.getLayoutParams();
-            params.weight = 0;
-            ventTextView.setLayoutParams(params);
+            ventTextView.setVisibility(View.GONE);
         }
 
         //find the ListView which will be populated with the program data

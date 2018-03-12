@@ -17,7 +17,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -104,11 +103,7 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         ifVentEnabled = sharedPreferences.getBoolean(getString(R.string.settings_vent_options_key),false);
         if (ifVentEnabled == false){
-            ventTextView.setText("");
-            ventTextView.setVisibility(View.INVISIBLE);
-            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) ventTextView.getLayoutParams();
-            params.weight = 0;
-            ventTextView.setLayoutParams(params);
+            ventTextView.setVisibility(View.GONE);
         }
 
 

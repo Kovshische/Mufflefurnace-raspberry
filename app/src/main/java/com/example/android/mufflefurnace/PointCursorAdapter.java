@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.android.mufflefurnace.Data.ProgramContract;
@@ -89,10 +88,7 @@ public class PointCursorAdapter extends CursorAdapter {
         if (ifVentEnabled == true){
             textViewVent.setText(ventString);
         } else {
-            textViewVent.setVisibility(View.INVISIBLE);
-            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) textViewVent.getLayoutParams();
-            params.weight = 0;
-            textViewVent.setLayoutParams(params);
+            textViewVent.setVisibility(View.GONE);
         }
 
         // textViewCreated.setText(temperature);
