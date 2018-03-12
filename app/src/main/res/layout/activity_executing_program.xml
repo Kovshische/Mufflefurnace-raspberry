@@ -107,6 +107,25 @@
                     android:layout_gravity="center"
                     android:paddingTop="16dp" />
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/executing_program_vent_linear_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/Program_executed_time_temperature"
+                    android:text="@string/executing_program_vent"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/executing_program_vent"
+                    style="@style/Program_executed_time_temperature"
+                    android:paddingTop="8dp"
+                    tools:text="150"/>
+            </LinearLayout>
         </LinearLayout>
 
 

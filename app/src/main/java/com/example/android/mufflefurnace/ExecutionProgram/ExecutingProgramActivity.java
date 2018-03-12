@@ -24,6 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -81,7 +82,6 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
         context = ExecutingProgramActivity.this;
 
         dataPointArrayList = new ArrayList<DataPoint>();
-
         dataPointArchiveArrayList = new ArrayList<DataPoint>();
 
 
@@ -118,6 +118,11 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         ifVentEnabled = sharedPreferences.getBoolean(getString(R.string.settings_vent_options_key),false);
+
+        LinearLayout ventLinearLayout = (LinearLayout) findViewById(R.id.executing_program_vent_linear_layout);
+        if (ifVentEnabled == false){
+            ventLinearLayout.setVisibility(View.GONE);
+        }
     }
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
