@@ -29,7 +29,7 @@ public class VentPointManager {
              return ProgramContract.ProgramEntry.VENT_CLOSE;
          } else {
              int ii = 0;
-             while ( ii < i-1){
+             while ( ii < i){
                  double timeDouble =  ventArrayList.get(ii).getX();
                  //time in seconds
                  Integer time = (int) (timeDouble * 3600);
