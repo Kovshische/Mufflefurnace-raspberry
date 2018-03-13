@@ -54,6 +54,7 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
     ArrayList<DataPoint> dataPointArchiveArrayList;
     ArrayList<DataPoint> ventOpenPointArrayList = new ArrayList<DataPoint>();
     ArrayList<DataPoint> ventClosePointArrayList = new ArrayList<DataPoint>();
+    ArrayList<DataPoint> ventArrayList = new ArrayList<DataPoint>();
     LineGraphSeries<DataPoint> archiveSeries;
     private GraphView graph;
     EditText enterTimeEditText;
@@ -141,10 +142,12 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
         String sensorTempString = Integer.toString(sensorTemp);
         Boolean powerInstance = intent.getBooleanExtra(ControlService.POWER_INSTANCE, false);
         programStatus = intent.getIntExtra(ControlService.PROGRAM_STATUS, 0);
+        Integer ventStatus = intent.getIntExtra(ControlService.VENT_STATUS, ProgramContract.ProgramEntry.VENT_CLOSE);
 
         Log.d(LOG_TAG, time);
         Log.d(LOG_TAG, targetTemp);
         Log.d(LOG_TAG, sensorTempString);
+        Log.d(LOG_TAG, ventStatus.toString());
 
         TextView timeTextView = (TextView) findViewById(R.id.executing_program_time);
         timeTextView.setText(time);
@@ -154,6 +157,15 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
         sensorTempTextView.setText(sensorTempString);
         RadioButton powerRadioButton = (RadioButton) findViewById(R.id.executing_program_power_indicate);
         powerRadioButton.setChecked(powerInstance);
+        TextView ventStatusTextView = (TextView) findViewById(R.id.executing_program_vent_status);
+        String ventStatusString = "";
+        if (ventStatus == ProgramContract.ProgramEntry.VENT_CLOSE){
+            ventStatusString = getString(R.string.add_point_close);
+        }
+        if (ventStatus == ProgramContract.ProgramEntry.VENT_OPEN){
+            ventStatusString = getString(R.string.add_point_open);
+        }
+        ventStatusTextView.setText(ventStatusString);
         //set end program
         TextView programEndTextView = (TextView) findViewById(R.id.executing_program_end_program);
         if (programStatus == ControlService.PROGRAM_END) {
@@ -269,9 +281,11 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
                         if (ifVentEnabled == true) {
                             if (cursor.getInt(ventColumnIndex) == ProgramContract.ProgramEntry.VENT_OPEN) {
                                 ventOpenPointArrayList.add(new DataPoint(timeDouble, 0));
+                                ventArrayList.add(new DataPoint(timeDouble,  ProgramContract.ProgramEntry.VENT_OPEN));
                             }
                             if (cursor.getInt(ventColumnIndex) == ProgramContract.ProgramEntry.VENT_CLOSE) {
                                 ventClosePointArrayList.add(new DataPoint(timeDouble, 0));
+                                ventArrayList.add(new DataPoint(timeDouble, ProgramContract.ProgramEntry.VENT_CLOSE));
                             }
                         }
 
@@ -332,7 +346,8 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
                     controlServiceIntent = new Intent(ExecutingProgramActivity.this, ControlService.class);
 
                     registerReceiver(broadcastReceiver, new IntentFilter(ControlService.BROADCAST_ACTION));
-                    controlServiceIntent.putExtra("pointsArray", dataPointArrayList);
+                    controlServiceIntent.putExtra(ControlService.INTENT_DATA_POINTS_ARRAY_LIST, dataPointArrayList);
+                    controlServiceIntent.putExtra(ControlService.INTENT_VENT_ARRAY_LIST, ventArrayList);
                     startService(controlServiceIntent);
 
                 }

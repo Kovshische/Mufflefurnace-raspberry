@@ -11,18 +11,35 @@ import java.util.ArrayList;
 
 public class VentPointManager {
     private final String LOG_TAG = PointManager.class.getSimpleName();
+    private ArrayList<DataPoint> ventArrayList;
     private ArrayList<DataPoint> ventOpenArrayList;
     private ArrayList<DataPoint> ventCloseArrayList;
     private Integer ventStatus = ProgramContract.ProgramEntry.VENT_CLOSE;
+    private Boolean isContainTime = false;
+    private int currentTimeSeconds;
 
-    public VentPointManager(ArrayList<DataPoint> ventOpenArrayList, ArrayList<DataPoint> ventCloseArrayList) {
-        this.ventOpenArrayList = ventOpenArrayList;
-        this.ventCloseArrayList = ventCloseArrayList;
+    public VentPointManager(ArrayList<DataPoint> ventArrayList) {
+        this.ventArrayList = ventArrayList;
+
     }
      public int getVentStatus (int currentTimeSeconds){
+        this.currentTimeSeconds = currentTimeSeconds;
+         int i = ventArrayList.size();
+         if (i < 1){
+             return ProgramContract.ProgramEntry.VENT_CLOSE;
+         } else {
+             int ii = 0;
+             while ( ii < i-1){
+                 double timeDouble =  ventArrayList.get(ii).getX();
+                 //time in seconds
+                 Integer time = (int) (timeDouble * 3600);
 
-
-
+                 if (currentTimeSeconds >= time){
+                     ventStatus = (int) ventArrayList.get(ii).getY();
+                 }
+                 ii = ii+1;
+             }
+         }
 
         return ventStatus;
     }

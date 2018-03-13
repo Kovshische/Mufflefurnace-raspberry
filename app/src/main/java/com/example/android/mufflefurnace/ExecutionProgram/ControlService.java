@@ -30,7 +30,10 @@ public class ControlService extends Service {
     public static final String SENSOR_TEMP = "sensorTemp";
     public static final String POWER_INSTANCE = "powerInstance";
     public static final String PROGRAM_STATUS = "programStatus";
+    public static final String VENT_STATUS = "ventStatus";
     public static final int PROGRAM_END = 1;
+    public static final String INTENT_DATA_POINTS_ARRAY_LIST = "intentDataPointsArrayList";
+    public static final String INTENT_VENT_ARRAY_LIST = "intentVentArrayList";
     //GPIO
     private final static String GPIO_PIN_HEATING_POWER = "BCM21";
     static long startDate;
@@ -43,18 +46,25 @@ public class ControlService extends Service {
     Intent intent;
     int counter = 0;
     ArrayList<DataPoint> dataPointArrayList;
+    ArrayList<DataPoint> ventArrayList;
     int targetTemp;
     int sensorTemp;
     Intent myIntent;
     private HeatingPowerWrapper heatingPowerWrapper;
-    private Integer ventPosition = ProgramContract.ProgramEntry.VENT_CLOSE;
+    private Integer ventStatus = ProgramContract.ProgramEntry.VENT_CLOSE;
 
     private PointManager pointManager;
+    private VentPointManager ventPointManager;
+
+
+
     private Runnable sendUpdatesToUI = new Runnable() {
         public void run() {
             calculateTimeFromSrart();
             //CalculateTemp should be before get program status;
             calculateTemp();
+            calculateVentStatus();
+
             getSensorTemp();
             getProgramStatus();
             //control power
@@ -96,6 +106,8 @@ public class ControlService extends Service {
         intent = new Intent(ControlService.BROADCAST_ACTION);
         heatingPowerWrapper = new HeatingPowerWrapper(GPIO_PIN_HEATING_POWER);
 
+
+
     }
 
     @Nullable
@@ -109,9 +121,14 @@ public class ControlService extends Service {
     public void onStart(Intent intent, int startId) {
         myIntent = intent;
 
+//        ventArrayList = (ArrayList<DataPoint>) myIntent.getSerializableExtra(INTENT_VENT_ARRAY_LIST);
+//        ventPointManager = new VentPointManager(ventArrayList);
+        Log.i(LOG_TAG, "VentArrayList");
+
         startDate = Calendar.getInstance().getTimeInMillis();
-        handler.removeCallbacks(sendUpdatesToUI);
+//        handler.removeCallbacks(sendUpdatesToUI);
         handler.postDelayed(sendUpdatesToUI, 1000); // 1 second
+
 
     }
 
@@ -123,7 +140,7 @@ public class ControlService extends Service {
     }
 
     private void calculateTemp() {
-        dataPointArrayList = (ArrayList<DataPoint>) myIntent.getSerializableExtra("pointsArray");
+        dataPointArrayList = (ArrayList<DataPoint>) myIntent.getSerializableExtra(INTENT_DATA_POINTS_ARRAY_LIST);
         pointManager = new PointManager(dataPointArrayList);
         try {
             targetTemp = pointManager.getTemperature(timeFromStartSec);
@@ -133,6 +150,19 @@ public class ControlService extends Service {
             targetTemp = 0;
             heatingPowerWrapper.turnOff();
         }
+
+
+    }
+
+    private void calculateVentStatus(){
+        ventArrayList = (ArrayList<DataPoint>) myIntent.getSerializableExtra(INTENT_VENT_ARRAY_LIST);
+        ventPointManager = new VentPointManager(ventArrayList);
+        try {
+            ventStatus = ventPointManager.getVentStatus(timeFromStartSec);
+        } catch (IllegalArgumentException e){
+            Log.d(LOG_TAG, e.toString());
+        }
+
     }
 
     private int calculateTimeFromSrart() {
@@ -169,6 +199,7 @@ public class ControlService extends Service {
         intent.putExtra(SENSOR_TEMP, sensorTemp);
         intent.putExtra(POWER_INSTANCE, powerInstance);
         intent.putExtra(PROGRAM_STATUS, programStatus);
+        intent.putExtra(VENT_STATUS, ventStatus);
 
 
         sendBroadcast(intent);
@@ -180,6 +211,10 @@ public class ControlService extends Service {
         } else {
             heatingPowerWrapper.turnOff();
         }
+    }
+
+    private void controlVent(int ventStatus){
+
     }
 
     private void getProgramStatus() {

@@ -121,7 +121,7 @@
                     android:textStyle="bold"/>
 
                 <TextView
-                    android:id="@+id/executing_program_vent"
+                    android:id="@+id/executing_program_vent_status"
                     style="@style/Program_executed_time_temperature"
                     android:paddingTop="8dp"
                     tools:text="150"/>

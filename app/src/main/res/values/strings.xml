@@ -79,6 +79,8 @@
     <!-- AddPoint Title -->
     <string name="add_point_title_edit_point">Edit Point</string>
     <string name="add_point_title_add_point">Add Point</string>
+    <string name="add_point_open">Open</string>
+    <string name="add_point_close">Close</string>
 
     <string name="executing_program_view_stop">Stop</string>
     <string name="title_activity_settings">Settings</string>
