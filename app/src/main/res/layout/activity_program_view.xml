@@ -33,7 +33,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="0dp"
                 android:layout_marginRight="0dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingBottom="8dp"
+                >
 
                 <TextView
                     style="@style/Program_view_edit_time_temperature"

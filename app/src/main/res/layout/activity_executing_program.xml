@@ -30,23 +30,27 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingTop="8dp">
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_marginHorizontal="16dp"
+                android:padding="4dp"
+                android:background="@drawable/orange_rectangle_small">
 
                 <TextView
                     style="@style/Program_executed_time_temperature"
                     android:text="@string/program_view_edit_time"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold"
+                    />
 
                 <TextView
                     android:id="@+id/executing_program_time"
                     style="@style/Program_executed_time_temperature"
-                    android:paddingTop="8dp"
                     tools:text="02:30:32" />
 
 
@@ -56,17 +60,21 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_marginHorizontal="16dp"
+                android:padding="4dp"
+                android:background="@drawable/orange_rectangle_small"
+                >
 
                 <TextView
                     style="@style/Program_executed_time_temperature"
                     android:text="@string/executing_program_sensor_temp"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold"
+                    />
 
                 <TextView
                     android:id="@+id/executing_program_sensor_temp"
                     style="@style/Program_executed_time_temperature"
-                    android:paddingTop="8dp"
                     tools:text="112" />
 
             </LinearLayout>
@@ -75,7 +83,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_marginHorizontal="16dp"
+                android:padding="4dp"
+                android:background="@drawable/orange_rectangle_small">
 
                 <TextView
                     style="@style/Program_executed_time_temperature"
@@ -85,7 +96,6 @@
                 <TextView
                     android:id="@+id/executing_program_target_temp"
                     style="@style/Program_executed_time_temperature"
-                    android:paddingTop="8dp"
                     tools:text="150"/>
             </LinearLayout>
 
@@ -93,19 +103,24 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_marginHorizontal="16dp"
+                android:padding="4dp"
+                android:background="@drawable/orange_rectangle_small">
 
                 <TextView
                     style="@style/Program_executed_time_temperature"
                     android:text="@string/executing_program_power"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold"
+                    />
 
                 <RadioButton
                     android:id="@+id/executing_program_power_indicate"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="24dp"
                     android:layout_gravity="center"
-                    android:paddingTop="16dp" />
+                    android:buttonTint="@color/colorAccent"
+                     />
             </LinearLayout>
 
             <LinearLayout
@@ -113,7 +128,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_marginHorizontal="16dp"
+                android:padding="4dp"
+                android:background="@drawable/orange_rectangle_small">
 
                 <TextView
                     style="@style/Program_executed_time_temperature"
@@ -123,7 +141,6 @@
                 <TextView
                     android:id="@+id/executing_program_vent_status"
                     style="@style/Program_executed_time_temperature"
-                    android:paddingTop="8dp"
                     tools:text="150"/>
             </LinearLayout>
         </LinearLayout>
