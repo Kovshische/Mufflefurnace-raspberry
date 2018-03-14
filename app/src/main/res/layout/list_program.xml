@@ -6,7 +6,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:paddingTop="6dp"
+    android:paddingHorizontal="6dp"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/absoluteWhite"
+        android:padding="16dp">
 
     <TextView
         android:id="@+id/program_name"
@@ -15,7 +24,8 @@
         android:fontFamily="sans-serif-medium"
         android:textAppearance="?android:textAppearanceMedium"
         android:textColor="@color/black"
-        tools:text="Program 12" />
+        tools:text="Program 12"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -40,5 +50,6 @@
             tools:text="18 Feb 2016" />
 
     </LinearLayout>
+ </LinearLayout>
 
 </LinearLayout>
