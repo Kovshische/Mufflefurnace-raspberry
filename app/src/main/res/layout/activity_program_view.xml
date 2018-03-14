@@ -41,20 +41,19 @@
                     style="@style/Program_view_edit_time_temperature"
                     android:text="@string/program_view_edit_time"
                     android:layout_height="wrap_content"
-                    android:textAlignment="gravity"
                     />
 
                 <TextView
                     style="@style/Program_view_edit_time_temperature"
                     android:text="@string/program_view_edit_temperature"
                     android:layout_height="wrap_content"
-                    android:textAlignment="gravity"/>
+                    />
                 <TextView
                     android:id="@+id/program_view_vent"
                     style="@style/Program_view_edit_time_temperature"
                     android:text="@string/program_view_edit_vent"
                     android:layout_height="wrap_content"
-                    android:textAlignment="gravity"/>
+                    />
 
             </LinearLayout>
 

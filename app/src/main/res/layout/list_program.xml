@@ -6,16 +6,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingTop="6dp"
+    android:padding="16dp"
     android:paddingHorizontal="6dp"
+    android:background="@color/absoluteWhite"
     >
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="@color/absoluteWhite"
-        android:padding="16dp">
 
     <TextView
         android:id="@+id/program_name"
@@ -51,5 +45,3 @@
 
     </LinearLayout>
  </LinearLayout>
-
-</LinearLayout>

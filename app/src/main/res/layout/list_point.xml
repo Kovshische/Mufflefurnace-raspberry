@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:orientation="horizontal"
     android:paddingLeft="0dp"
-    android:paddingTop="8dp">
+    android:paddingVertical="4dp"
+    android:background="@color/absoluteWhite">
 
     <TextView
         android:id="@+id/time"
@@ -17,7 +18,8 @@
         android:padding="8dp"
         android:textAppearance="?android:textAppearanceMedium"
         android:textColor="@color/black"
-        tools:text="120  minutes" />
+        tools:text="12:24"
+        android:textAlignment="center"/>
 
     <TextView
         android:id="@+id/temperature"
@@ -28,7 +30,8 @@
         android:padding="8dp"
         android:textAppearance="?android:textAppearanceMedium"
         android:textColor="@color/black"
-        tools:text="720 C" />
+        tools:text="720 C"
+        android:textAlignment="center"/>
 
     <TextView
         android:id="@+id/vent"
@@ -39,7 +42,8 @@
         android:padding="8dp"
         android:textAppearance="?android:textAppearanceMedium"
         android:textColor="@color/black"
-        tools:text="Open" />
+        tools:text="Open"
+        android:textAlignment="center"/>
 
 
 </LinearLayout>

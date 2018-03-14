@@ -10,35 +10,35 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="#EEEEEE">
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="16dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingBottom="8dp"
+            >
 
             <TextView
                 style="@style/Program_view_edit_time_temperature"
                 android:layout_height="wrap_content"
                 android:text="@string/program_view_edit_time"
-                android:textAlignment="gravity"
-                android:paddingLeft="16dp"/>
+                />
 
             <TextView
                 style="@style/Program_view_edit_time_temperature"
                 android:layout_height="wrap_content"
                 android:text="@string/program_view_edit_temperature"
-                android:textAlignment="gravity"/>
+                />
 
             <TextView
                 style="@style/Program_view_edit_time_temperature"
                 android:id="@+id/program_edit_vent"
                 android:layout_height="wrap_content"
                 android:text="@string/program_view_edit_vent"
-                android:textAlignment="gravity"/>
+                />
 
         </LinearLayout>
 
@@ -52,7 +52,7 @@
                 android:id="@+id/list_view_points"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="@dimen/activity_margin"
+                android:padding="2dp"
                 android:paddingTop="0dp"/>
 
             <RelativeLayout
