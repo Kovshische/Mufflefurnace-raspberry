@@ -1,5 +1,9 @@
 package com.example.android.mufflefurnace;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -12,14 +16,20 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.android.mufflefurnace.Data.ProgramContract;
@@ -31,30 +41,34 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import com.jjoe64.graphview.series.PointsGraphSeries;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import static com.example.android.mufflefurnace.Data.ProgramDbHelper.LOG_TAG;
 
-public class ProgramViewActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+
+public class ProgramViewActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>  {
+
+    //AppCompatActivity
 
     private static final int EXISTING_PROGRAM_ID_LOADER = 1;
     private static final int POINTS_LOADER = 2;
-
-    private Uri mCurrentProgramUri;
-    private String mCurrentProgramName;
-    private int mCurrentProgramId;
-
     PointCursorAdapter mPointCursorAdapter;
-
     ArrayList<DataPoint> dataPointArrayList = new ArrayList<DataPoint>();
     ArrayList<DataPoint> ventOpenPointArrayList = new ArrayList<DataPoint>();
     ArrayList<DataPoint> ventClosePointArrayList = new ArrayList<DataPoint>();
+    AlertDialog.Builder alertStartNowOrSetTime;
+    Button datePickerButton, timePickerButton;
+    EditText dataEditText, timeEditText;
+    private Uri mCurrentProgramUri;
+    private String mCurrentProgramName;
+    private int mCurrentProgramId;
     private GraphView graph;
     private TextView programShouldContainTextView;
     private int pointsCounter = 0;
-
     private SharedPreferences sharedPreferences;
     private boolean ifVentEnabled;
-
+    private int mYear, mMonth, mDay, mHour, mMinute;
+    private String date_time;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,13 +93,7 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(ProgramViewActivity.this, ExecutingProgramActivity.class);
-                i.setData(mCurrentProgramUri);
-                if (pointsCounter >= 2) {
-                    startActivity(i);
-                } else {
-                    displayToast(getString(R.string.program_view_program_should_contain));
-                }
+                startProgram();
             }
         });
 
@@ -105,7 +113,10 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
 
 
         getSupportLoaderManager().initLoader(EXISTING_PROGRAM_ID_LOADER, null, this);
+
+
     }
+
 
     private void initPointLoader() {
         getSupportLoaderManager().initLoader(POINTS_LOADER, null, this);
@@ -319,4 +330,155 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
         Log.i(LOG_TAG, "toast displayed");
         // toast.setGravity(Gravity.BOTTOM,0,0);
     }
+
+    void startProgram() {
+//        Intent i = new Intent(ProgramViewActivity.this, ExecutingProgramActivity.class);
+//        i.setData(mCurrentProgramUri);
+        if (pointsCounter >= 2) {
+
+             popupStartNowSetTime();
+//            startActivity(i);
+
+        } else {
+            displayToast(getString(R.string.program_view_program_should_contain));
+        }
+    }
+
+    void popupStartNowSetTime() {
+        alertStartNowOrSetTime = new AlertDialog.Builder(this);
+        alertStartNowOrSetTime.setTitle(getString(R.string.program_view_when_start_program));
+        //alert.setMessage(getString(R.string.execution_program_dangerous_text));
+        alertStartNowOrSetTime.setPositiveButton(getString(R.string.program_view_start_now), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Intent intent1 = new Intent(ProgramViewActivity.this, ExecutingProgramActivity.class);
+                intent1.setData(mCurrentProgramUri);
+                //               NavUtils.navigateUpTo( ProgramViewActivity.this, intent1);
+                startActivity(intent1);
+            }
+        });
+//        alertStartNowOrSetTime.setPositiveButton()
+        alertStartNowOrSetTime.setNegativeButton(getString(R.string.program_view_set_time), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                datePicker();
+            }
+        });
+        alertStartNowOrSetTime.setCancelable(true);
+        alertStartNowOrSetTime.show();
+    }
+
+    public Dialog setTimeDialog() {
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        builder.setView(inflater.inflate(R.layout.dialog_set_time, null));
+
+        View setTimeView = View.inflate(this, R.layout.dialog_set_time,null);
+/*
+        setTimeView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                final Calendar c = Calendar.getInstance();
+                mYear = c.get(Calendar.YEAR);
+                mMonth = c.get(Calendar.MONTH);
+                mDay = c.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(ProgramViewActivity.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
+                     //   dataEditText.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                    }
+                }, mYear, mMonth, mDay);
+                datePickerDialog.show();
+
+            }
+        });
+*/
+        builder.setPositiveButton(getString(R.string.program_view_set_time_popup_set), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+
+
+        return builder.create();
+    }
+
+
+
+    void popupSetTime() {
+        setTimeDialog().show();
+    }
+
+
+    private void datePicker(){
+
+        // Get Current Date
+        final Calendar c = Calendar.getInstance();
+        mYear = c.get(Calendar.YEAR);
+        mMonth = c.get(Calendar.MONTH);
+        mDay = c.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+                new DatePickerDialog.OnDateSetListener() {
+
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+
+                        mYear = year;
+                        mMonth = monthOfYear;
+                        mDay = dayOfMonth;
+
+                        date_time = dayOfMonth + "-" + (monthOfYear + 1) + "-" + year;
+                        //*************Call Time Picker Here ********************
+                       timePicker();
+                    }
+                }, mYear, mMonth, mDay);
+        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() -1000);
+        datePickerDialog.show();
+    }
+
+    private void timePicker(){
+        // Get Current Time
+        final Calendar c = Calendar.getInstance();
+        mHour = c.get(Calendar.HOUR_OF_DAY);
+        mMinute = c.get(Calendar.MINUTE);
+
+        // Launch Time Picker Dialog
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this,
+                new TimePickerDialog.OnTimeSetListener() {
+
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+
+                        mHour = hourOfDay;
+                        mMinute = minute;
+
+                        Calendar datetime = Calendar.getInstance();
+                        Calendar c = Calendar.getInstance();
+                        datetime.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                        datetime.set(Calendar.MINUTE, minute);
+                        if (datetime.getTimeInMillis() >= c.getTimeInMillis()) {
+                            //it's after current
+                            int hour = hourOfDay % 12;
+                        //    btnPickStartTime.setText(String.format("%02d:%02d %s", hour == 0 ? 12 : hour,
+                         //           minute, hourOfDay < 12 ? "am" : "pm"));
+                        } else {
+                            //it's before current'
+                            Toast.makeText(getApplicationContext(), "Invalid Time", Toast.LENGTH_LONG).show();
+                        }
+
+                    }
+
+                    
+                }, mHour, mMinute, false);
+
+        timePickerDialog.show();
+    }
+
 }

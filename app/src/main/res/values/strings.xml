@@ -100,4 +100,14 @@
     <string name="ok">Ok</string>
     <string name="cancel">Cancel</string>
 
+    <!-- Activity ProgramView - StartNowOrSetTime popup  -->
+    <string name="program_view_when_start_program">When would you like to start program?</string>
+    <string name="program_view_start_now">Start now</string>
+    <string name="program_view_set_time">Set time</string>
+
+
+    <!-- Activity ProgramView - Set time popup  -->
+    <string name="program_view_set_date_and_time">Set date and time</string>
+    <string name="program_view_set_time_popup_set">Set</string>
+
 </resources>
