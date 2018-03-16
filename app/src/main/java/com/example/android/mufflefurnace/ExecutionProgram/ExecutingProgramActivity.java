@@ -37,7 +37,10 @@ import com.jjoe64.graphview.series.DataPointInterface;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.jjoe64.graphview.series.PointsGraphSeries;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class ExecutingProgramActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private final String LOG_TAG = PointManager.class.getSimpleName();
@@ -67,6 +70,7 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
     private int programStatus;
 
     private Intent controlServiceIntent;
+    private Calendar calendar;
 
     //alert
     AlertDialog.Builder alert;
@@ -94,6 +98,7 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
         //in order to figure out if we're creating a new program or editing existing one.
         Intent intent = getIntent();
         mCurrentProgramUri = intent.getData();
+        calendar = (Calendar) intent.getSerializableExtra(ProgramViewActivity.INTENT_CALENDAR);
 
         graph = (GraphView) findViewById(R.id.executing_program_graph_view);
         getSupportLoaderManager().initLoader(EXISTING_PROGRAM_ID_LOADER, null, this);
@@ -143,6 +148,7 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
         Boolean powerInstance = intent.getBooleanExtra(ControlService.POWER_INSTANCE, false);
         programStatus = intent.getIntExtra(ControlService.PROGRAM_STATUS, 0);
         Integer ventStatus = intent.getIntExtra(ControlService.VENT_STATUS, ProgramContract.ProgramEntry.VENT_CLOSE);
+        String startTime = intent.getStringExtra(ControlService.START_TIME);
 
         Log.d(LOG_TAG, time);
         Log.d(LOG_TAG, targetTemp);
@@ -167,9 +173,23 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
         }
         ventStatusTextView.setText(ventStatusString);
         //set end program
-        TextView programEndTextView = (TextView) findViewById(R.id.executing_program_end_program);
+        TextView programStatusTextView = (TextView) findViewById(R.id.executing_program_status);
+
+        if (!startTime.equals("")){
+            Date currentTime = new Date();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MMM hh:mm:ss");
+            String currentTimeString = simpleDateFormat.format(currentTime);
+
+            startTime = "Start time: " + startTime + "\n" + "Current time: " + currentTimeString;
+
+            programStatusTextView.setText(startTime);
+            programStatusTextView.setVisibility(View.VISIBLE);
+        } else {
+            programStatusTextView.setVisibility(View.INVISIBLE);
+        }
         if (programStatus == ControlService.PROGRAM_END) {
-            programEndTextView.setVisibility(View.VISIBLE);
+            programStatusTextView.setText(getString(R.string.executing_program_program_has_finished));
+            programStatusTextView.setVisibility(View.VISIBLE);
         }
 
         //graph in real time
@@ -348,6 +368,7 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
                     registerReceiver(broadcastReceiver, new IntentFilter(ControlService.BROADCAST_ACTION));
                     controlServiceIntent.putExtra(ControlService.INTENT_DATA_POINTS_ARRAY_LIST, dataPointArrayList);
                     controlServiceIntent.putExtra(ControlService.INTENT_VENT_ARRAY_LIST, ventArrayList);
+                    controlServiceIntent.putExtra(ProgramViewActivity.INTENT_CALENDAR, calendar);
                     startService(controlServiceIntent);
 
                 }

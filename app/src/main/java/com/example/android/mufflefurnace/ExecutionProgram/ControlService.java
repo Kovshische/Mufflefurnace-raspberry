@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.example.android.mufflefurnace.Data.ProgramContract;
+import com.example.android.mufflefurnace.ProgramViewActivity;
 import com.jjoe64.graphview.series.DataPoint;
 
 import java.io.IOException;
@@ -34,6 +35,7 @@ public class ControlService extends Service {
     public static final int PROGRAM_END = 1;
     public static final String INTENT_DATA_POINTS_ARRAY_LIST = "intentDataPointsArrayList";
     public static final String INTENT_VENT_ARRAY_LIST = "intentVentArrayList";
+    public static final String START_TIME = "startTime";
     //GPIO
     private final static String GPIO_PIN_HEATING_POWER = "BCM21";
     static long startDate;
@@ -56,10 +58,14 @@ public class ControlService extends Service {
     private PointManager pointManager;
     private VentPointManager ventPointManager;
 
+    private String startTimeString = "";
+    private Boolean waitToStart = false;
+
 
 
     private Runnable sendUpdatesToUI = new Runnable() {
         public void run() {
+            calculateTimeToStart();
             calculateTimeFromSrart();
             //CalculateTemp should be before get program status;
             calculateTemp();
@@ -72,7 +78,7 @@ public class ControlService extends Service {
             getPowerInstance();
             sendProgramParam();
 
-            handler.postDelayed(this, 1000); // 0.1 second
+            handler.postDelayed(this, 1000); // 1 second
         }
     };
 
@@ -200,6 +206,7 @@ public class ControlService extends Service {
         intent.putExtra(POWER_INSTANCE, powerInstance);
         intent.putExtra(PROGRAM_STATUS, programStatus);
         intent.putExtra(VENT_STATUS, ventStatus);
+        intent.putExtra(START_TIME, startTimeString);
 
 
         sendBroadcast(intent);
@@ -219,5 +226,24 @@ public class ControlService extends Service {
 
     private void getProgramStatus() {
         programStatus = pointManager.getProgramStatus();
+    }
+
+    private void calculateTimeToStart() {
+        Calendar calendar = (Calendar) myIntent.getSerializableExtra(ProgramViewActivity.INTENT_CALENDAR);
+        long currentTime = Calendar.getInstance().getTimeInMillis();
+        long startTime = calendar.getTimeInMillis();
+
+        if (startTime > currentTime){
+            waitToStart = true;
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MMM hh:mm");
+            startTimeString = simpleDateFormat.format(startTime);
+        } else {
+            waitToStart = false;
+            startTimeString = "";
+        }
+
+        Log.d(LOG_TAG,"startTime " + startTime);
+        Log.d(LOG_TAG,"currentTime " + currentTime);
+        Log.d(LOG_TAG, "startTimeString" + startTimeString);
     }
 }

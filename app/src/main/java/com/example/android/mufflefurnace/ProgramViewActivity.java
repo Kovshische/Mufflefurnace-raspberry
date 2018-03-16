@@ -52,6 +52,7 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
 
     private static final int EXISTING_PROGRAM_ID_LOADER = 1;
     private static final int POINTS_LOADER = 2;
+    public static final String INTENT_CALENDAR = "Intent calendar";
     PointCursorAdapter mPointCursorAdapter;
     ArrayList<DataPoint> dataPointArrayList = new ArrayList<DataPoint>();
     ArrayList<DataPoint> ventOpenPointArrayList = new ArrayList<DataPoint>();
@@ -432,6 +433,7 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
                         intentCalendar.set(Calendar.YEAR, year);
                         intentCalendar.set(Calendar.MONTH, monthOfYear);
                         intentCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                        intentCalendar.set(Calendar.SECOND, 0);
                         //*************Call Time Picker Here ********************
                        timePicker();
                     }
@@ -484,7 +486,7 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
     private void goToExecutedProgramActivity(){
         Intent intent = new Intent(ProgramViewActivity.this, ExecutingProgramActivity.class);
         intent.setData(mCurrentProgramUri);
-        intent.putExtra("Calendar", intentCalendar);
+        intent.putExtra(INTENT_CALENDAR, intentCalendar);
         startActivity(intent);
     }
 
