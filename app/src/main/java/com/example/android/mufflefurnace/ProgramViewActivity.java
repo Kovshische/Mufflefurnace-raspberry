@@ -468,13 +468,12 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
                         if (datetime.getTimeInMillis() >= c.getTimeInMillis()) {
 
                             date_time = intentCalendar.getTime().toString();
-                            Toast.makeText(getApplicationContext(), date_time, Toast.LENGTH_LONG).show();
-
+                           // Toast.makeText(getApplicationContext(), date_time, Toast.LENGTH_LONG).show();
                             goToExecutedProgramActivity();
 
                         } else {
                             //it's before current'
-                            Toast.makeText(getApplicationContext(), "Invalid Time", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "You can NOT set past time", Toast.LENGTH_LONG).show();
                         }
 
                     }

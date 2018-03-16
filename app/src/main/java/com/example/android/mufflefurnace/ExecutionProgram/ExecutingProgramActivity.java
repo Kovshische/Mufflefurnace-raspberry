@@ -177,7 +177,7 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
 
         if (!startTime.equals("")){
             Date currentTime = new Date();
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MMM hh:mm:ss");
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MMM HH:mm:ss");
             String currentTimeString = simpleDateFormat.format(currentTime);
 
             startTime = "Start time: " + startTime + "\n" + "Current time: " + currentTimeString;

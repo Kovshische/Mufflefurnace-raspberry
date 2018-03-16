@@ -79,7 +79,7 @@ public class ControlService extends Service {
             getPowerInstance();
             sendProgramParam();
 
-            handler.postDelayed(this, 1000); // 1 second
+            handler.postDelayed(this, 100); // 1 second
         }
     };
 
@@ -163,7 +163,7 @@ public class ControlService extends Service {
 
 
 //        handler.removeCallbacks(sendUpdatesToUI);
-        handler.postDelayed(sendUpdatesToUI, 1000); // 1 second
+        handler.postDelayed(sendUpdatesToUI, 100); // 1 second
 
 
     }
@@ -266,16 +266,16 @@ public class ControlService extends Service {
 
         if (setStartTime > currentTime){
             waitToStart = true;
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MMM hh:mm");
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MMM HH:mm");
             startTimeString = simpleDateFormat.format(setStartTime);
         } else {
             waitToStart = false;
             startTimeString = "";
         }
 
-        Log.d(LOG_TAG,"setStartTime " + setStartTime);
-        Log.d(LOG_TAG,"currentTime " + currentTime);
-        Log.d(LOG_TAG, "startTimeString" + startTimeString);
+//        Log.d(LOG_TAG,"setStartTime " + setStartTime);
+//        Log.d(LOG_TAG,"currentTime " + currentTime);
+//        Log.d(LOG_TAG, "startTimeString" + startTimeString);
     }
 
 }
