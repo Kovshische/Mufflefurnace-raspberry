@@ -434,6 +434,7 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
                         intentCalendar.set(Calendar.MONTH, monthOfYear);
                         intentCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                         intentCalendar.set(Calendar.SECOND, 0);
+                        intentCalendar.set(Calendar.MILLISECOND, 0);
                         //*************Call Time Picker Here ********************
                        timePicker();
                     }

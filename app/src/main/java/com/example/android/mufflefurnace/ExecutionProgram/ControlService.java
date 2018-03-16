@@ -35,12 +35,12 @@ public class ControlService extends Service {
     public static final int PROGRAM_END = 1;
     public static final String INTENT_DATA_POINTS_ARRAY_LIST = "intentDataPointsArrayList";
     public static final String INTENT_VENT_ARRAY_LIST = "intentVentArrayList";
-    public static final String START_TIME = "startTime";
+    public static final String START_TIME = "setStartTime";
     //GPIO
     private final static String GPIO_PIN_HEATING_POWER = "BCM21";
     static long startDate;
     static long currentDate;
-    static int timeFromStartSec;
+    static Integer timeFromStartSec;
     static boolean powerInstance;
     static int programStatus;
     private final String LOG_TAG = PointManager.class.getSimpleName();
@@ -60,13 +60,14 @@ public class ControlService extends Service {
 
     private String startTimeString = "";
     private Boolean waitToStart = false;
+    private long setStartTime;
 
 
 
     private Runnable sendUpdatesToUI = new Runnable() {
         public void run() {
             calculateTimeToStart();
-            calculateTimeFromSrart();
+            calculateTimeFromStart();
             //CalculateTemp should be before get program status;
             calculateTemp();
             calculateVentStatus();
@@ -88,21 +89,42 @@ public class ControlService extends Service {
         int hours;
         String timeString;
 
+        if (time >=0 ){
+            if (time < 24 * 60 * 60) {
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+                sdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
+                timeString = sdf.format(time * 1000);
+            } else {
 
-        if (time < 24 * 60 * 60) {
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-            sdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
-            timeString = sdf.format(time * 1000);
+                hours = time / (60 * 60);
+
+                SimpleDateFormat sdf = new SimpleDateFormat(":mm:ss");
+                sdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
+                timeString = sdf.format(time * 1000);
+
+                timeString = Integer.toString(hours) + timeString;
+            }
         } else {
+            time = time * (-1);
+            if (time < 24 * 60 * 60) {
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+                sdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
+                timeString = sdf.format(time * 1000);
+                timeString = "-" +timeString;
+            } else {
 
-            hours = time / (60 * 60);
+                hours = time / (60 * 60);
 
-            SimpleDateFormat sdf = new SimpleDateFormat(":mm:ss");
-            sdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
-            timeString = sdf.format(time * 1000);
+                SimpleDateFormat sdf = new SimpleDateFormat(":mm:ss");
+                sdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
+                timeString = sdf.format(time * 1000);
 
-            timeString = Integer.toString(hours) + timeString;
+                timeString = Integer.toString(hours) + timeString;
+                timeString = "-" +timeString;
+            }
         }
+
+
         return timeString;
     }
 
@@ -127,11 +149,19 @@ public class ControlService extends Service {
     public void onStart(Intent intent, int startId) {
         myIntent = intent;
 
+        Calendar calendar = (Calendar) myIntent.getSerializableExtra(ProgramViewActivity.INTENT_CALENDAR);
+        setStartTime = calendar.getTimeInMillis();
+
 //        ventArrayList = (ArrayList<DataPoint>) myIntent.getSerializableExtra(INTENT_VENT_ARRAY_LIST);
 //        ventPointManager = new VentPointManager(ventArrayList);
         Log.i(LOG_TAG, "VentArrayList");
 
         startDate = Calendar.getInstance().getTimeInMillis();
+        if (setStartTime > startDate ){
+            startDate = setStartTime;
+        }
+
+
 //        handler.removeCallbacks(sendUpdatesToUI);
         handler.postDelayed(sendUpdatesToUI, 1000); // 1 second
 
@@ -171,12 +201,14 @@ public class ControlService extends Service {
 
     }
 
-    private int calculateTimeFromSrart() {
-        currentDate = Calendar.getInstance().getTimeInMillis();
-        long timeFromStart = currentDate - startDate;
-        timeFromStart = timeFromStart / 1000;
-        Long l = timeFromStart;
-        timeFromStartSec = Integer.valueOf(l.intValue());
+    private int calculateTimeFromStart() {
+
+            currentDate = Calendar.getInstance().getTimeInMillis();
+            long timeFromStart = currentDate - startDate;
+            timeFromStart = timeFromStart / 1000;
+            Long l = timeFromStart;
+            timeFromStartSec = Integer.valueOf(l.intValue());
+
         return timeFromStartSec;
     }
 
@@ -229,21 +261,21 @@ public class ControlService extends Service {
     }
 
     private void calculateTimeToStart() {
-        Calendar calendar = (Calendar) myIntent.getSerializableExtra(ProgramViewActivity.INTENT_CALENDAR);
-        long currentTime = Calendar.getInstance().getTimeInMillis();
-        long startTime = calendar.getTimeInMillis();
 
-        if (startTime > currentTime){
+        long currentTime = Calendar.getInstance().getTimeInMillis();
+
+        if (setStartTime > currentTime){
             waitToStart = true;
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MMM hh:mm");
-            startTimeString = simpleDateFormat.format(startTime);
+            startTimeString = simpleDateFormat.format(setStartTime);
         } else {
             waitToStart = false;
             startTimeString = "";
         }
 
-        Log.d(LOG_TAG,"startTime " + startTime);
+        Log.d(LOG_TAG,"setStartTime " + setStartTime);
         Log.d(LOG_TAG,"currentTime " + currentTime);
         Log.d(LOG_TAG, "startTimeString" + startTimeString);
     }
+
 }
