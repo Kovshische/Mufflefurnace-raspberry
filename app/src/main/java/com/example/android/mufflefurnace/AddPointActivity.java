@@ -297,7 +297,7 @@ public class AddPointActivity extends AppCompatActivity implements LoaderManager
             values.put(ProgramContract.ProgramEntry.COLUMN_TEMPERATURE, temperatureInteger);
             values.put(ProgramContract.ProgramEntry.COLUMN_TIME, timeInteger);
 //        values.put(ProgramContract.ProgramEntry.COLUMN_PROGRAM_ID, mCurrentProgramID);
-            if (vent == ProgramContract.ProgramEntry.VENT_CLOSE || vent == ProgramContract.ProgramEntry.VENT_OPEN){
+            if (vent != null){
                 values.put(ProgramContract.ProgramEntry.COLUMN_VENT, vent);
             }
 

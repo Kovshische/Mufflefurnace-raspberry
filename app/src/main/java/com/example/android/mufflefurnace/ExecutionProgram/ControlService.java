@@ -79,7 +79,7 @@ public class ControlService extends Service {
             getPowerInstance();
             sendProgramParam();
 
-            handler.postDelayed(this, 100); // 1 second
+            handler.postDelayed(this, 1000); // 0.1 second
         }
     };
 
@@ -105,7 +105,7 @@ public class ControlService extends Service {
                 timeString = Integer.toString(hours) + timeString;
             }
         } else {
-            time = time * (-1);
+            time = (time - 1) * (-1);
             if (time < 24 * 60 * 60) {
                 SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
                 sdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
@@ -163,7 +163,7 @@ public class ControlService extends Service {
 
 
 //        handler.removeCallbacks(sendUpdatesToUI);
-        handler.postDelayed(sendUpdatesToUI, 100); // 1 second
+        handler.postDelayed(sendUpdatesToUI, 1000); // 0.1 second
 
 
     }
