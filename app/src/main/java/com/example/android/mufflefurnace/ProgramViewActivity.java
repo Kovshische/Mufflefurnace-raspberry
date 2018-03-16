@@ -70,6 +70,7 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
     private int mYear, mMonth, mDay, mHour, mMinute;
     private String date_time;
 
+    private Calendar intentCalendar = Calendar.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -351,10 +352,7 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
         alertStartNowOrSetTime.setPositiveButton(getString(R.string.program_view_start_now), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Intent intent1 = new Intent(ProgramViewActivity.this, ExecutingProgramActivity.class);
-                intent1.setData(mCurrentProgramUri);
-                //               NavUtils.navigateUpTo( ProgramViewActivity.this, intent1);
-                startActivity(intent1);
+                goToExecutedProgramActivity();
             }
         });
 //        alertStartNowOrSetTime.setPositiveButton()
@@ -430,11 +428,10 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
 
-                        mYear = year;
-                        mMonth = monthOfYear;
-                        mDay = dayOfMonth;
 
-                        date_time = dayOfMonth + "-" + (monthOfYear + 1) + "-" + year;
+                        intentCalendar.set(Calendar.YEAR, year);
+                        intentCalendar.set(Calendar.MONTH, monthOfYear);
+                        intentCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                         //*************Call Time Picker Here ********************
                        timePicker();
                     }
@@ -456,18 +453,22 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
 
-                        mHour = hourOfDay;
-                        mMinute = minute;
 
                         Calendar datetime = Calendar.getInstance();
-                        Calendar c = Calendar.getInstance();
+//                        Calendar c = Calendar.getInstance();
                         datetime.set(Calendar.HOUR_OF_DAY, hourOfDay);
                         datetime.set(Calendar.MINUTE, minute);
+
+                        intentCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                        intentCalendar.set(Calendar.MINUTE, minute);
+
                         if (datetime.getTimeInMillis() >= c.getTimeInMillis()) {
-                            //it's after current
-                            int hour = hourOfDay % 12;
-                        //    btnPickStartTime.setText(String.format("%02d:%02d %s", hour == 0 ? 12 : hour,
-                         //           minute, hourOfDay < 12 ? "am" : "pm"));
+
+                            date_time = intentCalendar.getTime().toString();
+                            Toast.makeText(getApplicationContext(), date_time, Toast.LENGTH_LONG).show();
+
+                            goToExecutedProgramActivity();
+
                         } else {
                             //it's before current'
                             Toast.makeText(getApplicationContext(), "Invalid Time", Toast.LENGTH_LONG).show();
@@ -475,10 +476,16 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
 
                     }
 
-                    
+
                 }, mHour, mMinute, false);
 
         timePickerDialog.show();
+    }
+    private void goToExecutedProgramActivity(){
+        Intent intent = new Intent(ProgramViewActivity.this, ExecutingProgramActivity.class);
+        intent.setData(mCurrentProgramUri);
+        intent.putExtra("Calendar", intentCalendar);
+        startActivity(intent);
     }
 
 }
