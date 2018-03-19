@@ -359,8 +359,11 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
 
                     //Add series for real time temperature;
                     archiveSeries = new LineGraphSeries<>();
-                    archiveSeries.setColor(R.color.colorAccent);
+//                    archiveSeries.setColor(R.color.colorAccent);
+                    archiveSeries.setColor(Color.RED);
                     graph.addSeries(archiveSeries);
+
+
 
                     //Create control service
                     controlServiceIntent = new Intent(ExecutingProgramActivity.this, ControlService.class);

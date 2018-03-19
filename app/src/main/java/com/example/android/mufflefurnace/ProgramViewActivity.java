@@ -34,6 +34,7 @@ import android.widget.Toast;
 
 import com.example.android.mufflefurnace.Data.ProgramContract;
 import com.example.android.mufflefurnace.ExecutionProgram.ExecutingProgramActivity;
+import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.DataPointInterface;
@@ -314,6 +315,18 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
 
                     //graph.setTitle("Название графика");
                     //graph.getGridLabelRenderer().setVerticalAxisTitle("°C");
+
+                    graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter(){
+                        @Override
+                        public String formatLabel(double value, boolean isValueX){
+                            if (isValueX){
+                                return super.formatLabel(value, isValueX);
+                            } else {
+                                return super.formatLabel(value, isValueX) + "°C ";
+                            }
+                        }
+                    });
+                    
 
                 }
                 mPointCursorAdapter.swapCursor(cursor);
