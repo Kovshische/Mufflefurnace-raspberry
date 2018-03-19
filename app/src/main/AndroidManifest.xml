@@ -70,6 +70,10 @@
             android:label="@string/main_menu_programs"
             android:parentActivityName=".MainActivity" />
         <activity
+            android:name=".ArchiveProgramsActivity"
+            android:label="@string/main_menu_archive"
+            android:parentActivityName=".MainActivity" />
+        <activity
             android:name=".AddProgramActivity"
             android:label="@string/program_view_create_program"
             android:parentActivityName=".ProgramsActivity" />

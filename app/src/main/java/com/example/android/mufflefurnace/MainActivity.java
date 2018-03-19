@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -47,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
         LinearLayout connect = (LinearLayout) findViewById(R.id.menu_connect);
         connect.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,10 +88,8 @@ public class MainActivity extends AppCompatActivity {
         archive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent1 = new Intent(Settings.ACTION_SETTINGS);
-                intent1.putExtra("extra_prefs_show_button_bar", true);
-                startActivity(intent1);
-              //  startActivityForResult(intent1,0);
+                Intent i = new Intent(MainActivity.this, ArchiveProgramsActivity.class);
+                startActivity(i);
             }
         });
 
