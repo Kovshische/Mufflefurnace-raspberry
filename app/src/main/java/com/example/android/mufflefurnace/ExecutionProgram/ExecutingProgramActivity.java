@@ -31,6 +31,7 @@ import android.widget.TextView;
 import com.example.android.mufflefurnace.Data.ProgramContract;
 import com.example.android.mufflefurnace.ProgramViewActivity;
 import com.example.android.mufflefurnace.R;
+import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.DataPointInterface;
@@ -101,6 +102,17 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
         calendar = (Calendar) intent.getSerializableExtra(ProgramViewActivity.INTENT_CALENDAR);
 
         graph = (GraphView) findViewById(R.id.executing_program_graph_view);
+        graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter(){
+            @Override
+            public String formatLabel(double value, boolean isValueX){
+                if (isValueX){
+                    return super.formatLabel(value, isValueX);
+                } else {
+                    return super.formatLabel(value, isValueX) + "°C ";
+                }
+            }
+        });
+
         getSupportLoaderManager().initLoader(EXISTING_PROGRAM_ID_LOADER, null, this);
 
 

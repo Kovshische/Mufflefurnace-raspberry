@@ -102,6 +102,16 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
 
 
         graph = (GraphView) findViewById(R.id.graph_view);
+        graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter(){
+            @Override
+            public String formatLabel(double value, boolean isValueX){
+                if (isValueX){
+                    return super.formatLabel(value, isValueX);
+                } else {
+                    return super.formatLabel(value, isValueX) + "°C ";
+                }
+            }
+        });
 
         programShouldContainTextView = (TextView) findViewById(R.id.program_view_program_should_contain);
 
@@ -316,17 +326,8 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
                     //graph.setTitle("Название графика");
                     //graph.getGridLabelRenderer().setVerticalAxisTitle("°C");
 
-                    graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter(){
-                        @Override
-                        public String formatLabel(double value, boolean isValueX){
-                            if (isValueX){
-                                return super.formatLabel(value, isValueX);
-                            } else {
-                                return super.formatLabel(value, isValueX) + "°C ";
-                            }
-                        }
-                    });
-                    
+
+
 
                 }
                 mPointCursorAdapter.swapCursor(cursor);
