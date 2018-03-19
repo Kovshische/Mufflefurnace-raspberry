@@ -52,6 +52,7 @@ public class ProgramDbHelper extends SQLiteOpenHelper {
                 + ProgramEntry.COLUMN_A_TARGET_TEMPERATURE + " INTEGER NOT NULL, "
                 + ProgramEntry.COLUMN_A_SENSOR_TEMPERATURE + " INTEGER NOT NULL, "
                 + ProgramEntry.COLUMN_A_VENT + " INTEGER, "
+                + ProgramEntry.COLUMN_A_DOOR + " INTEGER, "
                 + ProgramEntry.COLUMN_A_TIME + " INTEGER NOT NULL" +");";
         db.execSQL(SQL_CREATE_A_POINTS_TABLE);
 

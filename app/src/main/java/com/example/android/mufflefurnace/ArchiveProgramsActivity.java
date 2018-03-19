@@ -1,6 +1,9 @@
 package com.example.android.mufflefurnace;
 
+import android.content.ContentUris;
+import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.LoaderManager;
@@ -8,6 +11,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
@@ -39,6 +43,28 @@ public class ArchiveProgramsActivity extends AppCompatActivity implements Loader
 
         archiveProgramCursorAdapter = new ArchiveProgramCursorAdapter(this, null);
         programListView.setAdapter(archiveProgramCursorAdapter);
+
+
+        programListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                //Create new intent to go to {@Link EditorActivity}
+                Intent intent = new Intent(ArchiveProgramsActivity.this, ProgramViewActivity.class);
+
+                //Form the content URI that represents the specific pet that was clicked on,
+                //by appending the "id" (passed as input to this method) onto the
+                // {@link ProgramEntry#CONTENT_URI}
+                // for example, the URI would be "content://com.example.android.programs/program/2"
+                //if the pet with ID 2 was clicked on
+                Uri currentProgramUri = ContentUris.withAppendedId(ProgramContract.ProgramEntry.CONTENT_URI_PROGRAMS, id);
+
+                //Set the URI on the data field of the intent
+                intent.setData(currentProgramUri);
+
+                // Launch the activity to display the data
+                startActivity(intent);
+            }
+        });
 
         getSupportLoaderManager().initLoader(PROGRAM_LOADER, null, this);
     }

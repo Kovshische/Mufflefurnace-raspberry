@@ -45,7 +45,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class ExecutingProgramActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
-    private final String LOG_TAG = PointManager.class.getSimpleName();
+    private final String LOG_TAG = ExecutingProgramActivity.class.getSimpleName();
 
 
     private static final int EXISTING_PROGRAM_ID_LOADER = 1;

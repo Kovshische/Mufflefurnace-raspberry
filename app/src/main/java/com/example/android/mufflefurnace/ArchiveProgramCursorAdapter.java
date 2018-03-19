@@ -31,6 +31,9 @@ public class ArchiveProgramCursorAdapter extends CursorAdapter {
 
         TextView textViewName  = (TextView) view.findViewById(R.id.program_name);
         TextView textViewStarted = (TextView) view.findViewById(R.id.program_created);
+        TextView textViewCreatedAtLabel = (TextView) view.findViewById(R.id.created_at_label);
+
+        textViewCreatedAtLabel.setText("Launched at: ");
 
         //Extract properties from cursor
         String name = cursor.getString(cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_A_PROGRAM_NAME));

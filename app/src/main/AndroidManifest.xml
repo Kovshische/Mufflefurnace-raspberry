@@ -96,12 +96,14 @@
         <activity
             android:name=".ExecutionProgram.ExecutingProgramActivity"
             android:parentActivityName=".ProgramViewActivity"/>
+        <activity
+            android:name=".ArchiveProgramViewActivity"
+            android:parentActivityName=".ArchiveProgramsActivity" />
 
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
             android:parentActivityName=".MainActivity">
-
         </activity>
 
 

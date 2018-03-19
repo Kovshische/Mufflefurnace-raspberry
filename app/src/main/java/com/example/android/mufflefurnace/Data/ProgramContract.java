@@ -63,6 +63,7 @@ public final class ProgramContract {
         public static final String COLUMN_A_SENSOR_TEMPERATURE = "a_sensor_temperature";
         public static final String COLUMN_A_TIME = "a_time";
         public static final String COLUMN_A_VENT = "a_vent";
+        public static final String COLUMN_A_DOOR = "column_a_door";
 
 
 
