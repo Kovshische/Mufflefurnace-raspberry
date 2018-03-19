@@ -1,7 +1,6 @@
 package com.example.android.mufflefurnace;
 
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -19,7 +18,6 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -112,6 +110,7 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
                 }
             }
         });
+
 
         programShouldContainTextView = (TextView) findViewById(R.id.program_view_program_should_contain);
 
@@ -324,10 +323,6 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
 
 
                     //graph.setTitle("Название графика");
-                    //graph.getGridLabelRenderer().setVerticalAxisTitle("°C");
-
-
-
 
                 }
                 mPointCursorAdapter.swapCursor(cursor);
@@ -381,52 +376,7 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
         alertStartNowOrSetTime.show();
     }
 
-    public Dialog setTimeDialog() {
 
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = this.getLayoutInflater();
-        builder.setView(inflater.inflate(R.layout.dialog_set_time, null));
-
-        View setTimeView = View.inflate(this, R.layout.dialog_set_time,null);
-/*
-        setTimeView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-
-                final Calendar c = Calendar.getInstance();
-                mYear = c.get(Calendar.YEAR);
-                mMonth = c.get(Calendar.MONTH);
-                mDay = c.get(Calendar.DAY_OF_MONTH);
-
-                DatePickerDialog datePickerDialog = new DatePickerDialog(ProgramViewActivity.this, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
-                     //   dataEditText.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
-                    }
-                }, mYear, mMonth, mDay);
-                datePickerDialog.show();
-
-            }
-        });
-*/
-        builder.setPositiveButton(getString(R.string.program_view_set_time_popup_set), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-
-            }
-        });
-
-
-        return builder.create();
-    }
-
-
-
-    void popupSetTime() {
-        setTimeDialog().show();
-    }
 
 
     private void datePicker(){
