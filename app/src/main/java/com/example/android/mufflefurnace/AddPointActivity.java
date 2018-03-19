@@ -296,10 +296,9 @@ public class AddPointActivity extends AppCompatActivity implements LoaderManager
             ContentValues values = new ContentValues();
             values.put(ProgramContract.ProgramEntry.COLUMN_TEMPERATURE, temperatureInteger);
             values.put(ProgramContract.ProgramEntry.COLUMN_TIME, timeInteger);
-//        values.put(ProgramContract.ProgramEntry.COLUMN_PROGRAM_ID, mCurrentProgramID);
-            if (vent != null){
-                values.put(ProgramContract.ProgramEntry.COLUMN_VENT, vent);
-            }
+//          values.put(ProgramContract.ProgramEntry.COLUMN_PROGRAM_ID, mCurrentProgramID);
+            values.put(ProgramContract.ProgramEntry.COLUMN_VENT, vent);
+
 
             int update = getContentResolver().update(mCurrentPointUri, values, null, null);
 
