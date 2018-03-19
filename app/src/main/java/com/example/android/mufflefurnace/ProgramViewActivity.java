@@ -52,6 +52,8 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
     private static final int EXISTING_PROGRAM_ID_LOADER = 1;
     private static final int POINTS_LOADER = 2;
     public static final String INTENT_CALENDAR = "Intent calendar";
+    public static final String A_PROGRAM_URI = "A program uri";
+
     PointCursorAdapter mPointCursorAdapter;
     ArrayList<DataPoint> dataPointArrayList = new ArrayList<DataPoint>();
     ArrayList<DataPoint> ventOpenPointArrayList = new ArrayList<DataPoint>();
@@ -69,6 +71,7 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
     private boolean ifVentEnabled;
     private int mYear, mMonth, mDay, mHour, mMinute;
     private String date_time;
+
 
     private Calendar intentCalendar = Calendar.getInstance();
     @Override
@@ -448,10 +451,14 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
         timePickerDialog.show();
     }
     private void goToExecutedProgramActivity(){
+
         Intent intent = new Intent(ProgramViewActivity.this, ExecutingProgramActivity.class);
         intent.setData(mCurrentProgramUri);
         intent.putExtra(INTENT_CALENDAR, intentCalendar);
+
         startActivity(intent);
     }
+
+
 
 }

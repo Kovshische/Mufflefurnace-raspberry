@@ -53,6 +53,7 @@ public final class ProgramContract {
 //        public static final String COLUMN_A_PROGRAM_NAME = "a_program_name";
         public static final String COLUMN_STARTED_AT = "started_at";
         public static final String COLUMN_FINISHED_AT = "finished_at";
+        public static final String COLUMN_A_PROGRAM_NAME = "a_program_name";
 
         //Table Archive Points
         public static final String TABLE_A_POINTS = "a_points";

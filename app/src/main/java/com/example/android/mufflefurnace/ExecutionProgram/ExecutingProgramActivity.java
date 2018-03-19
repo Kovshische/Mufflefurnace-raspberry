@@ -1,6 +1,7 @@
 package com.example.android.mufflefurnace.ExecutionProgram;
 
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -79,6 +80,8 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
 
     private SharedPreferences sharedPreferences;
     private boolean ifVentEnabled;
+    private Uri aProgramUri;
+    private Integer aProgramId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -281,6 +284,7 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
 
                     setTitle(mCurrentProgramName);
                 }
+                addArchiveProgram();
                 initPointLoader();
                 break;
 
@@ -384,6 +388,7 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
                     controlServiceIntent.putExtra(ControlService.INTENT_DATA_POINTS_ARRAY_LIST, dataPointArrayList);
                     controlServiceIntent.putExtra(ControlService.INTENT_VENT_ARRAY_LIST, ventArrayList);
                     controlServiceIntent.putExtra(ProgramViewActivity.INTENT_CALENDAR, calendar);
+                    controlServiceIntent.putExtra(ProgramContract.ProgramEntry.COLUMN_A_PROGRAM_ID, aProgramId);
                     startService(controlServiceIntent);
 
                 }
@@ -456,5 +461,19 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
         Log.i(LOG_TAG, "stop service");
     }
 
+    private void addArchiveProgram(){
+        ContentValues values = new ContentValues();
+        values.put(ProgramContract.ProgramEntry.COLUMN_PROGRAM_ID, mCurrentProgramId );
+        values.put(ProgramContract.ProgramEntry.COLUMN_A_PROGRAM_NAME, mCurrentProgramName);
+
+        aProgramUri = getContentResolver().insert(ProgramContract.ProgramEntry.CONTENT_URI_A_PROGRAMS, values);
+        Log.d(LOG_TAG, aProgramUri.getEncodedPath());
+
+        String aProgramIdString = aProgramUri.getEncodedPath();
+        String[] aProgramURIParts = aProgramIdString.split("/");
+        aProgramIdString = aProgramURIParts[2];
+        Log.d(LOG_TAG, "archive program id " + aProgramId);
+        aProgramId = Integer.getInteger(aProgramIdString);
+    }
 
 }
