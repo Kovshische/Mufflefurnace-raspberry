@@ -21,6 +21,7 @@ public class ArchiveProgramsActivity extends AppCompatActivity implements Loader
 
     private static String LOG_TAG = AppCompatActivity.class.getSimpleName();
     private static final int PROGRAM_LOADER = 0;
+    ArchiveProgramCursorAdapter archiveProgramCursorAdapter;
 
     @Override
     protected void onCreate (Bundle savedInstanceState){
@@ -35,6 +36,9 @@ public class ArchiveProgramsActivity extends AppCompatActivity implements Loader
 
         //find the ListView which will be populated with the pet data
         ListView programListView = (ListView) findViewById(R.id.list_view_programs);
+
+        archiveProgramCursorAdapter = new ArchiveProgramCursorAdapter(this, null);
+        programListView.setAdapter(archiveProgramCursorAdapter);
 
         getSupportLoaderManager().initLoader(PROGRAM_LOADER, null, this);
     }
@@ -61,11 +65,12 @@ public class ArchiveProgramsActivity extends AppCompatActivity implements Loader
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        archiveProgramCursorAdapter.swapCursor(data);
 
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
+        archiveProgramCursorAdapter.swapCursor(null);
     }
 }
