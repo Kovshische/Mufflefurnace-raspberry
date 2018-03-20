@@ -66,6 +66,10 @@ public final class ProgramContract {
         public static final String COLUMN_A_DOOR = "column_a_door";
 
 
+        //Table Archive Target Points
+        public static final String TABLE_A_T_POINTS = "a_points";
+        //   public static final String COLUMN_A_PROGRAM_ID = "a_program_id";
+
 
         /**
          * The MIME type of the {@link #CONTENT_URI_PROGRAMS} for a list of programs.
