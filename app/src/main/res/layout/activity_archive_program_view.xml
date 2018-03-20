@@ -29,7 +29,7 @@
              />
 
         <TextView
-            android:id="@+id/arhive_program_view_text"
+            android:id="@+id/archive_program_view_Info_graph_text"
             android:layout_width="600dp"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"

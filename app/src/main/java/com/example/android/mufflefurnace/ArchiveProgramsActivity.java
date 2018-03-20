@@ -49,7 +49,7 @@ public class ArchiveProgramsActivity extends AppCompatActivity implements Loader
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 //Create new intent to go to {@Link EditorActivity}
-                Intent intent = new Intent(ArchiveProgramsActivity.this, ProgramViewActivity.class);
+                Intent intent = new Intent(ArchiveProgramsActivity.this, ArchiveProgramViewActivity.class);
 
                 //Form the content URI that represents the specific pet that was clicked on,
                 //by appending the "id" (passed as input to this method) onto the
@@ -78,12 +78,14 @@ public class ArchiveProgramsActivity extends AppCompatActivity implements Loader
                 ProgramContract.ProgramEntry.COLUMN_STARTED_AT};
         // This loader will execute the ContentProvider's query method on a background thread
 
+        String sortOrder = ProgramContract.ProgramEntry.COLUMN_STARTED_AT + " DESC";
+
         return new CursorLoader(this, //parent activity content
                 ProgramContract.ProgramEntry.CONTENT_URI_A_PROGRAMS,   //Provider content URI to query
                 projection,             //Columns to include in the resulting Cursor
                 null,                   //No selection clause
                 null,                   //No selection arguments
-                null);                   //Default sort order
+                sortOrder);                   //Default sort order
 
 
     }
@@ -99,4 +101,6 @@ public class ArchiveProgramsActivity extends AppCompatActivity implements Loader
     public void onLoaderReset(Loader<Cursor> loader) {
         archiveProgramCursorAdapter.swapCursor(null);
     }
+
+
 }

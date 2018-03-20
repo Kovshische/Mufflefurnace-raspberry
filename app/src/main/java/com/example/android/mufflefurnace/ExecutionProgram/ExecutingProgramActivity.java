@@ -336,7 +336,7 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
                         }
                     }
 
-                    Uri newUri = getContentResolver().insert(ProgramContract.ProgramEntry.CONTENT_URI_A_POINTS, valuesArchiveTargetPoint);
+                    Uri newUri = getContentResolver().insert(ProgramContract.ProgramEntry.CONTENT_URI_A_T_POINTS, valuesArchiveTargetPoint);
                     if (newUri == null){
                         Log.i(LOG_TAG, "Error with saving point to archive");
                     }
