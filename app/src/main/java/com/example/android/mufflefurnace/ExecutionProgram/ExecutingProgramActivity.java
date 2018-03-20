@@ -105,10 +105,10 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
         calendar = (Calendar) intent.getSerializableExtra(ProgramViewActivity.INTENT_CALENDAR);
 
         graph = (GraphView) findViewById(R.id.executing_program_graph_view);
-        graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter(){
+        graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
             @Override
-            public String formatLabel(double value, boolean isValueX){
-                if (isValueX){
+            public String formatLabel(double value, boolean isValueX) {
+                if (isValueX) {
                     return super.formatLabel(value, isValueX);
                 } else {
                     return super.formatLabel(value, isValueX) + "°C ";
@@ -138,10 +138,10 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
       */
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        ifVentEnabled = sharedPreferences.getBoolean(getString(R.string.settings_vent_options_key),false);
+        ifVentEnabled = sharedPreferences.getBoolean(getString(R.string.settings_vent_options_key), false);
 
         LinearLayout ventLinearLayout = (LinearLayout) findViewById(R.id.executing_program_vent_linear_layout);
-        if (ifVentEnabled == false){
+        if (ifVentEnabled == false) {
             ventLinearLayout.setVisibility(View.GONE);
         }
     }
@@ -156,9 +156,9 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
     private void updateUI(Intent intent) {
 
         String time = intent.getStringExtra(ControlService.TIME);
-        int timeInt = intent.getIntExtra(ControlService.TIME_SEC,0);
+        int timeInt = intent.getIntExtra(ControlService.TIME_SEC, 0);
         String targetTemp = intent.getStringExtra(ControlService.TARGET_TEMP);
-        int sensorTemp = intent.getIntExtra(ControlService.SENSOR_TEMP,0);
+        int sensorTemp = intent.getIntExtra(ControlService.SENSOR_TEMP, 0);
         String sensorTempString = Integer.toString(sensorTemp);
         Boolean powerInstance = intent.getBooleanExtra(ControlService.POWER_INSTANCE, false);
         programStatus = intent.getIntExtra(ControlService.PROGRAM_STATUS, 0);
@@ -180,17 +180,17 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
         powerRadioButton.setChecked(powerInstance);
         TextView ventStatusTextView = (TextView) findViewById(R.id.executing_program_vent_status);
         String ventStatusString = "";
-        if (ventStatus == ProgramContract.ProgramEntry.VENT_CLOSE){
+        if (ventStatus == ProgramContract.ProgramEntry.VENT_CLOSE) {
             ventStatusString = getString(R.string.add_point_close);
         }
-        if (ventStatus == ProgramContract.ProgramEntry.VENT_OPEN){
+        if (ventStatus == ProgramContract.ProgramEntry.VENT_OPEN) {
             ventStatusString = getString(R.string.add_point_open);
         }
         ventStatusTextView.setText(ventStatusString);
         //set end program
         TextView programStatusTextView = (TextView) findViewById(R.id.executing_program_status);
 
-        if (!startTime.equals("")){
+        if (!startTime.equals("")) {
             Date currentTime = new Date();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MMM HH:mm:ss");
             String currentTimeString = simpleDateFormat.format(currentTime);
@@ -208,8 +208,8 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
         }
 
         //graph in real time
-        double timeDouble = (double) timeInt /3600;
-        archiveSeries.appendData(new DataPoint(timeDouble, sensorTemp),false,100000000);
+        double timeDouble = (double) timeInt / 3600;
+        archiveSeries.appendData(new DataPoint(timeDouble, sensorTemp), false, 100000000);
 
     }
 
@@ -298,33 +298,48 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
                 int temperatureColumnIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_TEMPERATURE);
                 int ventColumnIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_VENT);
 
+
                 //Display graphView
 
                 while (cursor.moveToNext()) {
-                    Integer temperature;
-                        int time = cursor.getInt(timeColumnIndex);
-                        double timeDouble = (double) time / 60;
-                        //                       Log.i("array for graphView", time + "/" + temperature);
+                    ContentValues valuesArchiveTargetPoint = new ContentValues();
+                    valuesArchiveTargetPoint.put(ProgramContract.ProgramEntry.COLUMN_A_PROGRAM_ID, aProgramId);
 
-                        int pointsCounter = 0;
-                        if (!cursor.isNull(temperatureColumnIndex)) {
-                            temperature = cursor.getInt(temperatureColumnIndex);
-                            dataPointArrayList.add(new DataPoint(timeDouble, temperature));
-                            Log.i("array for graphView", time + "/" + temperature);
-                            pointsCounter = pointsCounter + 1;
+                    Integer temperature = null;
+                    int time = cursor.getInt(timeColumnIndex);
+                    valuesArchiveTargetPoint.put(ProgramContract.ProgramEntry.COLUMN_TIME, time);
+
+                    double timeDouble = (double) time / 60;
+                    //                       Log.i("array for graphView", time + "/" + temperature);
+
+                    int pointsCounter = 0;
+                    if (!cursor.isNull(temperatureColumnIndex)) {
+                        temperature = cursor.getInt(temperatureColumnIndex);
+                        //Add to archive target point
+                        valuesArchiveTargetPoint.put(ProgramContract.ProgramEntry.COLUMN_TEMPERATURE, temperature);
+
+                        dataPointArrayList.add(new DataPoint(timeDouble, temperature));
+                        Log.i("array for graphView", time + "/" + temperature);
+                        pointsCounter = pointsCounter + 1;
+                    }
+
+                    if (ifVentEnabled == true) {
+                        if (cursor.getInt(ventColumnIndex) == ProgramContract.ProgramEntry.VENT_OPEN) {
+                            ventOpenPointArrayList.add(new DataPoint(timeDouble, 0));
+                            ventArrayList.add(new DataPoint(timeDouble, ProgramContract.ProgramEntry.VENT_OPEN));
+                            valuesArchiveTargetPoint.put(ProgramContract.ProgramEntry.COLUMN_VENT, ProgramContract.ProgramEntry.VENT_OPEN);
                         }
-
-                        if (ifVentEnabled == true) {
-                            if (cursor.getInt(ventColumnIndex) == ProgramContract.ProgramEntry.VENT_OPEN) {
-                                ventOpenPointArrayList.add(new DataPoint(timeDouble, 0));
-                                ventArrayList.add(new DataPoint(timeDouble,  ProgramContract.ProgramEntry.VENT_OPEN));
-                            }
-                            if (cursor.getInt(ventColumnIndex) == ProgramContract.ProgramEntry.VENT_CLOSE) {
-                                ventClosePointArrayList.add(new DataPoint(timeDouble, 0));
-                                ventArrayList.add(new DataPoint(timeDouble, ProgramContract.ProgramEntry.VENT_CLOSE));
-                            }
+                        if (cursor.getInt(ventColumnIndex) == ProgramContract.ProgramEntry.VENT_CLOSE) {
+                            ventClosePointArrayList.add(new DataPoint(timeDouble, 0));
+                            ventArrayList.add(new DataPoint(timeDouble, ProgramContract.ProgramEntry.VENT_CLOSE));
+                            valuesArchiveTargetPoint.put(ProgramContract.ProgramEntry.COLUMN_VENT, ProgramContract.ProgramEntry.VENT_CLOSE);
                         }
+                    }
 
+                    Uri newUri = getContentResolver().insert(ProgramContract.ProgramEntry.CONTENT_URI_A_POINTS, valuesArchiveTargetPoint);
+                    if (newUri == null){
+                        Log.i(LOG_TAG, "Error with saving point to archive");
+                    }
 
 
                     DataPoint[] dataPoint = dataPointArrayList.toArray(new DataPoint[]{});
@@ -378,7 +393,6 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
 //                    archiveSeries.setColor(R.color.colorAccent);
                     archiveSeries.setColor(Color.RED);
                     graph.addSeries(archiveSeries);
-
 
 
                     //Create control service
@@ -461,19 +475,22 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
         Log.i(LOG_TAG, "stop service");
     }
 
-    private void addArchiveProgram(){
+    private void addArchiveProgram() {
         ContentValues values = new ContentValues();
-        values.put(ProgramContract.ProgramEntry.COLUMN_PROGRAM_ID, mCurrentProgramId );
+        values.put(ProgramContract.ProgramEntry.COLUMN_PROGRAM_ID, mCurrentProgramId);
         values.put(ProgramContract.ProgramEntry.COLUMN_A_PROGRAM_NAME, mCurrentProgramName);
 
         aProgramUri = getContentResolver().insert(ProgramContract.ProgramEntry.CONTENT_URI_A_PROGRAMS, values);
         Log.d(LOG_TAG, aProgramUri.getEncodedPath());
 
+
+
         String aProgramIdString = aProgramUri.getEncodedPath();
         String[] aProgramURIParts = aProgramIdString.split("/");
         aProgramIdString = aProgramURIParts[2];
+        Log.d(LOG_TAG, "archive program id string:" + aProgramIdString);
+        aProgramId = Integer.parseInt(aProgramIdString);
         Log.d(LOG_TAG, "archive program id " + aProgramId);
-        aProgramId = Integer.getInteger(aProgramIdString);
     }
 
 }

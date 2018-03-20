@@ -62,7 +62,7 @@ public class ProgramDbHelper extends SQLiteOpenHelper {
                 + ProgramEntry.COLUMN_TEMPERATURE + " INTEGER, "
                 + ProgramEntry.COLUMN_VENT + " INTEGER, "
                 + ProgramEntry.COLUMN_TIME + " INTEGER NOT NULL" +");";
-        db.execSQL(SQL_CREATE_A_POINTS_TABLE);
+        db.execSQL(SQL_CREATE_A_T_POINTS_TABLE);
 
 
     }
