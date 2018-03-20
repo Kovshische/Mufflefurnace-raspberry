@@ -45,7 +45,7 @@ public class ControlService extends Service {
     static Integer timeFromStartSec;
     static boolean powerInstance;
     static int programStatus;
-    private final String LOG_TAG = PointManager.class.getSimpleName();
+    private final String LOG_TAG = ControlService.class.getSimpleName();
     private final Handler handler = new Handler();
     Intent intent;
     int counter = 0;

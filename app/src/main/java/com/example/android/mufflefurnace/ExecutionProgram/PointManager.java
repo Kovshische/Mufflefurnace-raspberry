@@ -51,14 +51,14 @@ public class PointManager {
         }
 
         //check that time < max time
-        if (currentTimeSeconds > (int) 3600 * dataPointArrayList.get(i - 1).getX()) {
+        else if (currentTimeSeconds > (int) 3600 * dataPointArrayList.get(i -1).getX()) {
             Log.i(LOG_TAG, "program end");
             programStatus = PROGRAM_END;
-            throw new IllegalArgumentException("Time is out of range, your time = " + currentTimeSeconds + "max time =" + 3600 * dataPointArrayList.get(i - 1).getX());
+            throw new IllegalArgumentException("Time is out of range, your time = " + currentTimeSeconds + " max time = " + 3600 * dataPointArrayList.get(i - 1).getX());
             //return 0;
         }
 
-        if((currentTimeSeconds <= (int) 3600 * dataPointArrayList.get(i - 1).getX())) {
+        else if((currentTimeSeconds <= (int) 3600 * dataPointArrayList.get(i - 1).getX())) {
             programStatus = PROGRAM_EXECUTING;
             int ii = 0;
             while (isContainTime == false & ii < dataPointArrayList.size() - 1) {
@@ -87,9 +87,11 @@ public class PointManager {
                 }
                 ii = ii + 1;
             }
+        } else {
+            throw new IllegalArgumentException("Time is out of range, your time = " + currentTimeSeconds + "max time =" + 3600 * dataPointArrayList.get(i - 1).getX());
         }
 
-        throw new IllegalArgumentException("Time is out of range, your time = " + currentTimeSeconds + "max time =" + 3600 * dataPointArrayList.get(i - 1).getX());
+        return temperature;
     }
     public int getProgramStatus(){
         return programStatus;
