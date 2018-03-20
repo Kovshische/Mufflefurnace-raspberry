@@ -84,7 +84,7 @@ public class ControlService extends Service {
             sendProgramParam();
             saveToTheDB();
 
-            handler.postDelayed(this, 1000); // 0.1 second
+            handler.postDelayed(this, 100); // 0.1 second
         }
     };
 
@@ -158,10 +158,14 @@ public class ControlService extends Service {
         setStartTime = calendar.getTimeInMillis();
 
         aProgramId = myIntent.getIntExtra(ProgramContract.ProgramEntry.COLUMN_A_PROGRAM_ID, 0);
+        dataPointArrayList = (ArrayList<DataPoint>) myIntent.getSerializableExtra(INTENT_DATA_POINTS_ARRAY_LIST);
+        pointManager = new PointManager(dataPointArrayList);
+        ventArrayList = (ArrayList<DataPoint>) myIntent.getSerializableExtra(INTENT_VENT_ARRAY_LIST);
+        ventPointManager = new VentPointManager(ventArrayList);
 
 //        ventArrayList = (ArrayList<DataPoint>) myIntent.getSerializableExtra(INTENT_VENT_ARRAY_LIST);
 //        ventPointManager = new VentPointManager(ventArrayList);
-        Log.i(LOG_TAG, "VentArrayList");
+//        Log.i(LOG_TAG, "VentArrayList");
 
         startDate = Calendar.getInstance().getTimeInMillis();
         if (setStartTime > startDate ){
@@ -170,7 +174,7 @@ public class ControlService extends Service {
 
 
 //        handler.removeCallbacks(sendUpdatesToUI);
-        handler.postDelayed(sendUpdatesToUI, 1000); // 0.1 second
+        handler.postDelayed(sendUpdatesToUI, 100); // 0.1 second
 
 
     }
@@ -183,8 +187,8 @@ public class ControlService extends Service {
     }
 
     private void calculateTemp() {
-        dataPointArrayList = (ArrayList<DataPoint>) myIntent.getSerializableExtra(INTENT_DATA_POINTS_ARRAY_LIST);
-        pointManager = new PointManager(dataPointArrayList);
+//        dataPointArrayList = (ArrayList<DataPoint>) myIntent.getSerializableExtra(INTENT_DATA_POINTS_ARRAY_LIST);
+//        pointManager = new PointManager(dataPointArrayList);
         try {
             targetTemp = pointManager.getTemperature(timeFromStartSec);
         } catch (IllegalArgumentException e) {
@@ -198,8 +202,8 @@ public class ControlService extends Service {
     }
 
     private void calculateVentStatus(){
-        ventArrayList = (ArrayList<DataPoint>) myIntent.getSerializableExtra(INTENT_VENT_ARRAY_LIST);
-        ventPointManager = new VentPointManager(ventArrayList);
+
+
         try {
             ventStatus = ventPointManager.getVentStatus(timeFromStartSec);
         } catch (IllegalArgumentException e){
@@ -223,7 +227,7 @@ public class ControlService extends Service {
         try {
             Max6675 max6675 = new Max6675();
             sensorTemp = Math.round(max6675.getTemp());
-            Log.i(LOG_TAG, "SensorTemp: " + sensorTemp + " °C");
+//            Log.i(LOG_TAG, "SensorTemp: " + sensorTemp + " °C");
             max6675.close();
 
         } catch (IOException e) {
@@ -287,7 +291,6 @@ public class ControlService extends Service {
     private void saveToTheDB (){
         ContentValues valuesArchivePoint = new ContentValues();
         valuesArchivePoint.put(ProgramContract.ProgramEntry.COLUMN_A_PROGRAM_ID, aProgramId);
-        Log.d(LOG_TAG, "Time from start to the db: " + timeFromStartSec);
         valuesArchivePoint.put(ProgramContract.ProgramEntry.COLUMN_A_TIME, timeFromStartSec);
         valuesArchivePoint.put(ProgramContract.ProgramEntry.COLUMN_A_TARGET_TEMPERATURE, targetTemp);
         valuesArchivePoint.put(ProgramContract.ProgramEntry.COLUMN_A_SENSOR_TEMPERATURE, sensorTemp);
