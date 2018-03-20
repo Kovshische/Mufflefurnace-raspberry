@@ -363,14 +363,21 @@ public class ProgramProvider  extends ContentProvider{
 
     private Uri insertArchivePoint(Uri uri, ContentValues contentValues){
         //Check that the time is not null
-        Integer time = contentValues.getAsInteger(ProgramContract.ProgramEntry.COLUMN_TIME);
+        Integer time = contentValues.getAsInteger(ProgramContract.ProgramEntry.COLUMN_A_TIME);
+        Log.d(LOG_TAG, "Time from start:" + time);
         if (time == null || time < 0){
             throw new IllegalArgumentException("Point requires a valid time");
         }
 
         //Check that the temperature is not null
-        Integer temperature = contentValues.getAsInteger(ProgramContract.ProgramEntry.COLUMN_TEMPERATURE);
-        if (temperature == null || temperature < 0){
+        Integer targetTemperature = contentValues.getAsInteger(ProgramContract.ProgramEntry.COLUMN_A_TARGET_TEMPERATURE);
+        if (targetTemperature == null || targetTemperature < 0){
+            throw new IllegalArgumentException("Point requires a valid temperature");
+        }
+
+        //Check that the temperature is not null
+        Integer sensorTemperature = contentValues.getAsInteger(ProgramContract.ProgramEntry.COLUMN_A_SENSOR_TEMPERATURE);
+        if (sensorTemperature == null || sensorTemperature < 0){
             throw new IllegalArgumentException("Point requires a valid temperature");
         }
 

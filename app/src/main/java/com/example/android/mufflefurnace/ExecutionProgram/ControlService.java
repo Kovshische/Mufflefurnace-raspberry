@@ -1,7 +1,9 @@
 package com.example.android.mufflefurnace.ExecutionProgram;
 
 import android.app.Service;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -62,6 +64,8 @@ public class ControlService extends Service {
     private Boolean waitToStart = false;
     private long setStartTime;
 
+    private int aProgramId;
+
 
 
     private Runnable sendUpdatesToUI = new Runnable() {
@@ -78,6 +82,7 @@ public class ControlService extends Service {
             controlPower(sensorTemp, targetTemp);
             getPowerInstance();
             sendProgramParam();
+            saveToTheDB();
 
             handler.postDelayed(this, 1000); // 0.1 second
         }
@@ -151,6 +156,8 @@ public class ControlService extends Service {
 
         Calendar calendar = (Calendar) myIntent.getSerializableExtra(ProgramViewActivity.INTENT_CALENDAR);
         setStartTime = calendar.getTimeInMillis();
+
+        aProgramId = myIntent.getIntExtra(ProgramContract.ProgramEntry.COLUMN_A_PROGRAM_ID, 0);
 
 //        ventArrayList = (ArrayList<DataPoint>) myIntent.getSerializableExtra(INTENT_VENT_ARRAY_LIST);
 //        ventPointManager = new VentPointManager(ventArrayList);
@@ -277,5 +284,17 @@ public class ControlService extends Service {
 //        Log.d(LOG_TAG,"currentTime " + currentTime);
 //        Log.d(LOG_TAG, "startTimeString" + startTimeString);
     }
+    private void saveToTheDB (){
+        ContentValues valuesArchivePoint = new ContentValues();
+        valuesArchivePoint.put(ProgramContract.ProgramEntry.COLUMN_A_PROGRAM_ID, aProgramId);
+        Log.d(LOG_TAG, "Time from start to the db: " + timeFromStartSec);
+        valuesArchivePoint.put(ProgramContract.ProgramEntry.COLUMN_A_TIME, timeFromStartSec);
+        valuesArchivePoint.put(ProgramContract.ProgramEntry.COLUMN_A_TARGET_TEMPERATURE, targetTemp);
+        valuesArchivePoint.put(ProgramContract.ProgramEntry.COLUMN_A_SENSOR_TEMPERATURE, sensorTemp);
 
+        Uri newUri = getContentResolver().insert(ProgramContract.ProgramEntry.CONTENT_URI_A_POINTS, valuesArchivePoint);
+        if (newUri == null){
+            Log.i(LOG_TAG, "Error with saving point to archive");
+        }
+    }
 }
