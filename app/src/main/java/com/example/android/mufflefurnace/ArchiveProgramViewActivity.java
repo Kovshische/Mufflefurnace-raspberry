@@ -31,7 +31,7 @@ import java.util.ArrayList;
  * Created by admin on 3/19/2018.
  */
 
-public class ArchiveProgramViewActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>  {
+public class ArchiveProgramViewActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private final String LOG_TAG = ArchiveProgramViewActivity.class.getSimpleName();
 
@@ -39,7 +39,8 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
     private GraphView graph;
     private SharedPreferences sharedPreferences;
     private boolean ifVentEnabled;
-    private static final int A_POINT_LOADER = 1;
+    private static final int A_TARGET_POINT_LOADER = 1;
+    private static final int A_POINT_LOADER = 2;
     private int currentProgramId;
     ArchivePointCursorAdapter mPointCursorAdapter;
 
@@ -86,128 +87,159 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
             ventTextView.setVisibility(View.GONE);
         }
 
-        getSupportLoaderManager().initLoader(A_POINT_LOADER, null, this);
+        getSupportLoaderManager().initLoader(A_TARGET_POINT_LOADER, null, this);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        if (id == A_TARGET_POINT_LOADER) {
+
+            String[] projectionForPoint = {
+                    ProgramContract.ProgramEntry._ID,
+                    ProgramContract.ProgramEntry.COLUMN_A_PROGRAM_ID,
+                    ProgramContract.ProgramEntry.COLUMN_TIME,
+                    ProgramContract.ProgramEntry.COLUMN_TEMPERATURE,
+                    ProgramContract.ProgramEntry.COLUMN_VENT,
+            };
+
+            String mCurrentProgramIdString = Integer.toString(currentProgramId);
+
+            // Select Where ProgramId = currentProgramID
+            String select = "(" + ProgramContract.ProgramEntry.COLUMN_A_PROGRAM_ID + "=" + mCurrentProgramIdString + "  )";
 
 
-        String[] projectionForPoint = {
-                ProgramContract.ProgramEntry._ID,
-                ProgramContract.ProgramEntry.COLUMN_A_PROGRAM_ID,
-                ProgramContract.ProgramEntry.COLUMN_A_TIME,
-                ProgramContract.ProgramEntry.COLUMN_A_TARGET_TEMPERATURE,
-                ProgramContract.ProgramEntry.COLUMN_A_SENSOR_TEMPERATURE,
-                ProgramContract.ProgramEntry.COLUMN_A_VENT,
-                ProgramContract.ProgramEntry.COLUMN_A_DOOR
-        };
+            return new CursorLoader(
+                    this,
+                    ProgramContract.ProgramEntry.CONTENT_URI_A_T_POINTS,
+                    projectionForPoint,
+                    select,
+                    null,
+                    ProgramContract.ProgramEntry.COLUMN_TIME
+            );
+        } else if(id == A_POINT_LOADER){
 
-        String mCurrentProgramIdString = Integer.toString(currentProgramId);
+            String[] projectionForPoint = {
+                    ProgramContract.ProgramEntry._ID,
+                    ProgramContract.ProgramEntry.COLUMN_A_PROGRAM_ID,
+                    ProgramContract.ProgramEntry.COLUMN_A_TIME,
+                    ProgramContract.ProgramEntry.COLUMN_A_TARGET_TEMPERATURE,
+                    ProgramContract.ProgramEntry.COLUMN_A_SENSOR_TEMPERATURE,
+                    ProgramContract.ProgramEntry.COLUMN_A_VENT,
+                    ProgramContract.ProgramEntry.COLUMN_A_DOOR,
+                    ProgramContract.ProgramEntry.COLUMN_A_POWER
+            };
 
-        // Select Where ProgramId = currentProgramID
-        String select = "(" + ProgramContract.ProgramEntry.COLUMN_A_PROGRAM_ID + "=" + mCurrentProgramIdString + "  )";
+            String mCurrentProgramIdString = Integer.toString(currentProgramId);
 
+            String select = "(" + ProgramContract.ProgramEntry.COLUMN_A_PROGRAM_ID + "=" + mCurrentProgramIdString + "  )";
 
-        return new CursorLoader(
-                this,
-                ProgramContract.ProgramEntry.CONTENT_URI_A_T_POINTS,
-                projectionForPoint,
-                select,
-                null,
-                ProgramContract.ProgramEntry.COLUMN_A_TIME
-        );
+            return new CursorLoader(
+                    this,
+                    ProgramContract.ProgramEntry.CONTENT_URI_A_POINTS,
+                    projectionForPoint,
+                    select,
+                    null,
+                    ProgramContract.ProgramEntry.COLUMN_A_TIME
+            );
+        } else {
+            return null;
+        }
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        if (cursor == null || cursor.getCount() < 1) {
-            graphInfoTextView.setVisibility(View.VISIBLE);
-            return;
-        }
+        switch (loader.getId()) {
+            case A_TARGET_POINT_LOADER:
 
-        int timeColumnIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_TIME);
-        int temperatureColumnIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_TEMPERATURE);
-        int ventColumnIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_VENT);
 
-        //Display graphView
-
-        while (cursor.moveToNext()) {
-            int time = cursor.getInt(timeColumnIndex);
-            double timeDouble = (double) time / 60;
-            Integer temperature;
-
-            if (!cursor.isNull(temperatureColumnIndex)) {
-                temperature = cursor.getInt(temperatureColumnIndex);
-                dataPointArrayList.add(new DataPoint(timeDouble, temperature));
-                Log.i("array for graphView", time + "/" + temperature);
-            }
-
-            if (ifVentEnabled == true) {
-                if (cursor.getInt(ventColumnIndex) == ProgramContract.ProgramEntry.VENT_OPEN) {
-                    ventOpenPointArrayList.add(new DataPoint(timeDouble, 0));
+                if (cursor == null || cursor.getCount() < 1) {
+                    graphInfoTextView.setVisibility(View.VISIBLE);
+                    return;
                 }
-                if (cursor.getInt(ventColumnIndex) == ProgramContract.ProgramEntry.VENT_CLOSE) {
-                    ventClosePointArrayList.add(new DataPoint(timeDouble, 0));
+
+                int timeColumnIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_TIME);
+                int temperatureColumnIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_TEMPERATURE);
+                int ventColumnIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_VENT);
+
+                //Display graphView
+
+                while (cursor.moveToNext()) {
+                    int time = cursor.getInt(timeColumnIndex);
+                    double timeDouble = (double) time / 60;
+                    Integer temperature;
+
+                    if (!cursor.isNull(temperatureColumnIndex)) {
+                        temperature = cursor.getInt(temperatureColumnIndex);
+                        dataPointArrayList.add(new DataPoint(timeDouble, temperature));
+                        Log.i("array for graphView", time + "/" + temperature);
+                    }
+
+                    if (ifVentEnabled == true) {
+                        if (cursor.getInt(ventColumnIndex) == ProgramContract.ProgramEntry.VENT_OPEN) {
+                            ventOpenPointArrayList.add(new DataPoint(timeDouble, 0));
+                        }
+                        if (cursor.getInt(ventColumnIndex) == ProgramContract.ProgramEntry.VENT_CLOSE) {
+                            ventClosePointArrayList.add(new DataPoint(timeDouble, 0));
+                        }
+                    }
                 }
-            }
-        }
 
 
-
-            DataPoint[] dataPoint = dataPointArrayList.toArray(new DataPoint[]{});
-            DataPoint[] ventOpenPoint = ventOpenPointArrayList.toArray(new DataPoint[]{});
-            DataPoint[] ventClosePoint = ventClosePointArrayList.toArray(new DataPoint[]{});
+                DataPoint[] dataPoint = dataPointArrayList.toArray(new DataPoint[]{});
+                DataPoint[] ventOpenPoint = ventOpenPointArrayList.toArray(new DataPoint[]{});
+                DataPoint[] ventClosePoint = ventClosePointArrayList.toArray(new DataPoint[]{});
 //                DataPoint[] dataPoint = (DataPoint[]) dataPointArrayList.toArray(new DataPoint[0]);
 //                Log.i("length of datapoint", Integer.toString(dataPoint.length));
 
-            LineGraphSeries<DataPoint> seriesPoint = new LineGraphSeries<>(dataPoint);
+                LineGraphSeries<DataPoint> seriesPoint = new LineGraphSeries<>(dataPoint);
 
-            PointsGraphSeries<DataPoint> seriesOpenVent = new PointsGraphSeries<>(ventOpenPoint);
-            seriesOpenVent.setCustomShape(new PointsGraphSeries.CustomShape() {
-                @Override
-                public void draw(Canvas canvas, Paint paint, float x, float y, DataPointInterface dataPoint) {
-                    paint.setTextSize(20);
-                    paint.setColor(Color.BLACK);
-                    canvas.rotate(-90, x, y);
-                    canvas.drawText("vent open", x + 10, y, paint);
-                    canvas.rotate(90, x, y);
+                PointsGraphSeries<DataPoint> seriesOpenVent = new PointsGraphSeries<>(ventOpenPoint);
+                seriesOpenVent.setCustomShape(new PointsGraphSeries.CustomShape() {
+                    @Override
+                    public void draw(Canvas canvas, Paint paint, float x, float y, DataPointInterface dataPoint) {
+                        paint.setTextSize(20);
+                        paint.setColor(Color.BLACK);
+                        canvas.rotate(-90, x, y);
+                        canvas.drawText("vent open", x + 10, y, paint);
+                        canvas.rotate(90, x, y);
 
-                }
-            });
+                    }
+                });
 
-            PointsGraphSeries<DataPoint> seriesCloseVent = new PointsGraphSeries<>(ventClosePoint);
-            seriesCloseVent.setCustomShape(new PointsGraphSeries.CustomShape() {
-                @Override
-                public void draw(Canvas canvas, Paint paint, float x, float y, DataPointInterface dataPoint) {
-                    paint.setTextSize(20);
-                    paint.setColor(Color.BLACK);
-                    canvas.rotate(-90, x, y);
-                    canvas.drawText("vent close", x + 10, y, paint);
-                    canvas.rotate(90, x, y);
+                PointsGraphSeries<DataPoint> seriesCloseVent = new PointsGraphSeries<>(ventClosePoint);
+                seriesCloseVent.setCustomShape(new PointsGraphSeries.CustomShape() {
+                    @Override
+                    public void draw(Canvas canvas, Paint paint, float x, float y, DataPointInterface dataPoint) {
+                        paint.setTextSize(20);
+                        paint.setColor(Color.BLACK);
+                        canvas.rotate(-90, x, y);
+                        canvas.drawText("vent close", x + 10, y, paint);
+                        canvas.rotate(90, x, y);
 
-                }
-            });
+                    }
+                });
 
+                //Get mat time
+                int length = dataPoint.length;
+                DataPoint lastDataPoint = dataPoint[length - 1];
+                double maxTime = lastDataPoint.getX();
 
-            //Get mat time
-            int length = dataPoint.length;
-            DataPoint lastDataPoint = dataPoint[length - 1];
-            double maxTime = lastDataPoint.getX();
+                //Set max time
+                graph.addSeries(seriesPoint);
+                graph.addSeries(seriesOpenVent);
+                graph.addSeries(seriesCloseVent);
+                graph.getViewport().setXAxisBoundsManual(true);
+                graph.getViewport().setMaxX(maxTime);
+                //graph.setTitle("Название графика");
 
+                initPointLoader();
 
-            //Set max time
-            graph.addSeries(seriesPoint);
-            graph.addSeries(seriesOpenVent);
-            graph.addSeries(seriesCloseVent);
-            graph.getViewport().setXAxisBoundsManual(true);
-            graph.getViewport().setMaxX(maxTime);
+                break;
 
-
-            //graph.setTitle("Название графика");
-
-
-        mPointCursorAdapter.swapCursor(cursor);
+            case A_POINT_LOADER:
+                mPointCursorAdapter.swapCursor(cursor);
+                break;
+        }
     }
 
     @Override
@@ -215,12 +247,16 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
 
     }
 
-    private int parsIdFromUri (Uri uri ){
+    private int parsIdFromUri(Uri uri) {
         String aProgramIdString = uri.getEncodedPath();
         String[] aProgramURIParts = aProgramIdString.split("/");
         aProgramIdString = aProgramURIParts[2];
         Log.d(LOG_TAG, "archive program id " + aProgramIdString);
         int id = Integer.parseInt(aProgramIdString);
         return id;
+    }
+
+    private void initPointLoader() {
+        getSupportLoaderManager().initLoader(A_POINT_LOADER, null, this);
     }
 }

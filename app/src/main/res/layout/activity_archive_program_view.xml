@@ -79,7 +79,7 @@
         <ListView
             android:id="@+id/list_view_a_points"
             android:layout_width="match_parent"
-            android:layout_height="600dp"
+            android:layout_height="400dp"
             android:padding="0dp" />
     <!-- android:padding="@dimen/activity_margin"  -->
     </LinearLayout>
