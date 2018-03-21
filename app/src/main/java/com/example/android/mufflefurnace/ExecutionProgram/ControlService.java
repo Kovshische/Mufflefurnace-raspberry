@@ -140,7 +140,6 @@ public class ControlService extends Service {
         heatingPowerWrapper = new HeatingPowerWrapper(GPIO_PIN_HEATING_POWER);
 
 
-
     }
 
     @Nullable
@@ -159,7 +158,7 @@ public class ControlService extends Service {
 
         aProgramId = myIntent.getIntExtra(ProgramContract.ProgramEntry.COLUMN_A_PROGRAM_ID, 0);
         dataPointArrayList = (ArrayList<DataPoint>) myIntent.getSerializableExtra(INTENT_DATA_POINTS_ARRAY_LIST);
-        pointManager = new PointManager(dataPointArrayList);
+//        pointManager = new PointManager(dataPointArrayList);
         ventArrayList = (ArrayList<DataPoint>) myIntent.getSerializableExtra(INTENT_VENT_ARRAY_LIST);
         ventPointManager = new VentPointManager(ventArrayList);
 
@@ -188,7 +187,7 @@ public class ControlService extends Service {
 
     private void calculateTemp() {
 //        dataPointArrayList = (ArrayList<DataPoint>) myIntent.getSerializableExtra(INTENT_DATA_POINTS_ARRAY_LIST);
-//        pointManager = new PointManager(dataPointArrayList);
+        pointManager = new PointManager(dataPointArrayList);
         try {
             targetTemp = pointManager.getTemperature(timeFromStartSec);
         } catch (IllegalArgumentException e) {

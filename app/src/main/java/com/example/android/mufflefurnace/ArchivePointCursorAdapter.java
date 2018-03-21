@@ -12,6 +12,9 @@ import android.widget.TextView;
 
 import com.example.android.mufflefurnace.Data.ProgramContract;
 
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
+
 /**
  * Created by admin on 3/21/2018.
  */
@@ -43,7 +46,7 @@ public class ArchivePointCursorAdapter extends CursorAdapter {
         TextView doorTextView  = (TextView) view.findViewById(R.id.a_door);
 
         Integer time = cursor.getInt(cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_A_TIME));
-        String timeString = PointCursorAdapter.mTimeToString(time);
+        String timeString = mTimeToString(time);
         timeTextView.setText(timeString);
 
         Integer targetTemInteger = cursor.getInt(cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_A_TARGET_TEMPERATURE));
@@ -72,6 +75,33 @@ public class ArchivePointCursorAdapter extends CursorAdapter {
         String doorString = PointCursorAdapter.doorToString(doorInt);
         doorTextView.setText(doorString);
 
+    }
+
+    public static String mTimeToString (int time){
+
+        int hours;
+
+        String timeString;
+
+
+        if (time < 24*60*60){
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+            sdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
+            timeString = sdf.format(time*1000);
+        }
+
+        else {
+
+            hours = time/(60*60);
+
+            SimpleDateFormat sdf = new SimpleDateFormat(":mm:ss");
+            sdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
+            timeString = sdf.format(time*1000);
+
+            timeString = Integer.toString(hours) + timeString;
+        }
+
+        return timeString;
     }
 
 
