@@ -83,7 +83,7 @@ public class PointManager {
 
                     temperature = startTemperature + (currentTimeSeconds - startTime) * (finishTemperature - startTemperature) / (finishTime - startTime);
 
-                    return temperature;
+//                    return temperature;
                 }
                 ii = ii + 1;
             }

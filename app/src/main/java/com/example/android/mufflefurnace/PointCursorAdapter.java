@@ -66,7 +66,10 @@ public class PointCursorAdapter extends CursorAdapter {
         } else {
             temperatureString = "";
         }
-        String ventString;
+
+        String ventString = ventToString(vent);
+
+/*        String ventString;
         if (vent == null){
             ventString ="";
         }else if (vent == ProgramContract.ProgramEntry.VENT_OPEN){
@@ -76,7 +79,7 @@ public class PointCursorAdapter extends CursorAdapter {
         } else {
             ventString ="";
         }
-
+*/
         final int program_id = cursor.getInt(cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry._ID));
 
 
@@ -123,6 +126,46 @@ public class PointCursorAdapter extends CursorAdapter {
         return timeString;
     }
 
+    public static String ventToString (Integer vent){
+        String ventString;
+        if (vent == null){
+            ventString = "";
+        }else if (vent == ProgramContract.ProgramEntry.VENT_OPEN){
+            ventString = "Open";
+        } else if (vent == ProgramContract.ProgramEntry.VENT_CLOSE){
+            ventString ="Close";
+        } else {
+            ventString ="";
+        }
+        return ventString;
+    }
 
+    public static String powerToString (Integer power){
+        String powerString;
+        if (power == null){
+            powerString = "";
+        }else if (power == ProgramContract.ProgramEntry.POWER_OFF){
+            powerString = "OFF";
+        } else if (power == ProgramContract.ProgramEntry.POWER_ON){
+            powerString = "ON";
+        } else {
+            powerString = "";
+        }
+        return powerString;
+    }
+
+    public static String doorToString (Integer door){
+        String doorString;
+        if (door == null){
+            doorString = "";
+        }else if (door == ProgramContract.ProgramEntry.DOOR_CLOSE){
+            doorString = "Close";
+        } else if (door == ProgramContract.ProgramEntry.DOOR_OPEN){
+            doorString = "Open";
+        } else {
+            doorString = "";
+        }
+        return doorString;
+    }
 
 }

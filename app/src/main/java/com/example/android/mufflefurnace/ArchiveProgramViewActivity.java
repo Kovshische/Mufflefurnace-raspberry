@@ -15,6 +15,7 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.android.mufflefurnace.Data.ProgramContract;
@@ -38,8 +39,9 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
     private GraphView graph;
     private SharedPreferences sharedPreferences;
     private boolean ifVentEnabled;
-    private static final int EXISTING_PROGRAM_ID_LOADER = 1;
+    private static final int A_POINT_LOADER = 1;
     private int currentProgramId;
+    ArchivePointCursorAdapter mPointCursorAdapter;
 
     private TextView graphInfoTextView;
 
@@ -57,6 +59,11 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
         Intent intent = getIntent();
         currentProgramUri = intent.getData();
         currentProgramId = parsIdFromUri(currentProgramUri);
+
+        ListView pointListView = (ListView) findViewById(R.id.list_view_a_points);
+
+        mPointCursorAdapter = new ArchivePointCursorAdapter(this, null);
+        pointListView.setAdapter(mPointCursorAdapter);
 
         graph = (GraphView) findViewById(R.id.archive_graph_view);
 /*
@@ -79,7 +86,7 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
             ventTextView.setVisibility(View.GONE);
         }
 
-        getSupportLoaderManager().initLoader(EXISTING_PROGRAM_ID_LOADER, null, this);
+        getSupportLoaderManager().initLoader(A_POINT_LOADER, null, this);
     }
 
     @Override
@@ -89,9 +96,11 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
         String[] projectionForPoint = {
                 ProgramContract.ProgramEntry._ID,
                 ProgramContract.ProgramEntry.COLUMN_A_PROGRAM_ID,
-                ProgramContract.ProgramEntry.COLUMN_TIME,
-                ProgramContract.ProgramEntry.COLUMN_TEMPERATURE,
-                ProgramContract.ProgramEntry.COLUMN_VENT
+                ProgramContract.ProgramEntry.COLUMN_A_TIME,
+                ProgramContract.ProgramEntry.COLUMN_A_TARGET_TEMPERATURE,
+                ProgramContract.ProgramEntry.COLUMN_A_SENSOR_TEMPERATURE,
+                ProgramContract.ProgramEntry.COLUMN_A_VENT,
+                ProgramContract.ProgramEntry.COLUMN_A_DOOR
         };
 
         String mCurrentProgramIdString = Integer.toString(currentProgramId);
@@ -106,7 +115,7 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
                 projectionForPoint,
                 select,
                 null,
-                ProgramContract.ProgramEntry.COLUMN_TIME
+                ProgramContract.ProgramEntry.COLUMN_A_TIME
         );
     }
 
@@ -198,7 +207,7 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
             //graph.setTitle("Название графика");
 
 
-//        mPointCursorAdapter.swapCursor(cursor);
+        mPointCursorAdapter.swapCursor(cursor);
     }
 
     @Override

@@ -49,6 +49,13 @@ public final class ProgramContract {
         public static final int VENT_CLOSE = 2;
         public static final int VENT_OPEN = 1;
 
+        public static final int POWER_OFF = 2;
+        public static final int POWER_ON = 1;
+
+        public static final int DOOR_OPEN = 1;
+        public static final int DOOR_CLOSE = 2;
+
+
         // Table Archive Programs
         public static final String TABLE_A_PROGRAMS = "a_programs";
 
@@ -65,7 +72,9 @@ public final class ProgramContract {
         public static final String COLUMN_A_SENSOR_TEMPERATURE = "a_sensor_temperature";
         public static final String COLUMN_A_TIME = "a_time";
         public static final String COLUMN_A_VENT = "a_vent";
-        public static final String COLUMN_A_DOOR = "column_a_door";
+        public static final String COLUMN_A_DOOR = "a_door";
+        public static final String COLUMN_A_POWER = "a_power";
+
 
 
         //Table Archive Target Points
