@@ -325,7 +325,12 @@ public class ControlService extends Service {
     private  Runnable sendUpdateUI = new Runnable() {
         @Override
         public void run() {
+
             handler.postDelayed(sendUpdateUI, 1000); // 0.1 second
+
+            if (programStatus == pointManager.PROGRAM_END) {
+                handler.removeCallbacks(sendUpdateUI);
+            }
             calculateTimeToStart();
             calculateTimeFromStart();
             //CalculateTemp should be before get program status;
