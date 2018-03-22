@@ -91,7 +91,7 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
         });
 */
         //set Vent visibility
-        TextView ventTextView = (TextView) findViewById(R.id.program_view_vent);
+        TextView ventTextView = (TextView) findViewById(R.id.archive_program_view_vent);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         ifVentEnabled = sharedPreferences.getBoolean(getString(R.string.settings_vent_options_key), false);
         if (ifVentEnabled == false) {
