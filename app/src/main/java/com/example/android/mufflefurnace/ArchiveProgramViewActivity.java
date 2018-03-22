@@ -63,6 +63,7 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
         currentProgramId = parsIdFromUri(currentProgramUri);
 
         ListView pointListView = (ListView) findViewById(R.id.list_view_a_points);
+        pointListView.setFocusable(false);
         pointListView.setOnTouchListener(new View.OnTouchListener() {
             // Setting on Touch Listener for handling the touch inside ScrollView
             @Override
