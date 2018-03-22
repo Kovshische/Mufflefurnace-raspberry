@@ -145,9 +145,9 @@ public class PointCursorAdapter extends CursorAdapter {
         if (power == null){
             powerString = "";
         }else if (power == ProgramContract.ProgramEntry.POWER_OFF){
-            powerString = "OFF";
+            powerString = "off";
         } else if (power == ProgramContract.ProgramEntry.POWER_ON){
-            powerString = "ON";
+            powerString = "on";
         } else {
             powerString = "";
         }

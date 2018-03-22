@@ -258,6 +258,8 @@ public class ControlService extends Service {
         valuesArchivePoint.put(ProgramContract.ProgramEntry.COLUMN_A_TIME, timeFromStartSec);
         valuesArchivePoint.put(ProgramContract.ProgramEntry.COLUMN_A_TARGET_TEMPERATURE, targetTemp);
         valuesArchivePoint.put(ProgramContract.ProgramEntry.COLUMN_A_SENSOR_TEMPERATURE, sensorTemp);
+        valuesArchivePoint.put(ProgramContract.ProgramEntry.COLUMN_A_POWER, powerInstanceToInt(powerInstance));
+//        valuesArchivePoint.put(ProgramContract.ProgramEntry.);
 
         Uri newUri = getContentResolver().insert(ProgramContract.ProgramEntry.CONTENT_URI_A_POINTS, valuesArchivePoint);
         if (newUri == null){
@@ -309,6 +311,15 @@ public class ControlService extends Service {
 
 
         return timeString;
+    }
+    private Integer powerInstanceToInt (Boolean powerInstance){
+        Integer powerInstanceInt = null;
+        if (powerInstance == true){
+            powerInstanceInt = ProgramContract.ProgramEntry.POWER_ON;
+        } else {
+            powerInstanceInt = ProgramContract.ProgramEntry.POWER_OFF;
+        }
+        return powerInstanceInt;
     }
 
     private  Runnable sendUpdateUI = new Runnable() {
