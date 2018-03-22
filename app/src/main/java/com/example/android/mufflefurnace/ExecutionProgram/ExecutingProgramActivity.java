@@ -336,77 +336,81 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
                         }
                     }
 
+
                     Uri newUri = getContentResolver().insert(ProgramContract.ProgramEntry.CONTENT_URI_A_T_POINTS, valuesArchiveTargetPoint);
-                    if (newUri == null){
+                    if (newUri == null) {
                         Log.i(LOG_TAG, "Error with saving point to archive");
                     }
-
-
-                    DataPoint[] dataPoint = dataPointArrayList.toArray(new DataPoint[]{});
-                    Log.i("length of datapoint", Integer.toString(dataPoint.length));
-                    DataPoint[] ventOpenPoint = ventOpenPointArrayList.toArray(new DataPoint[]{});
-                    DataPoint[] ventClosePoint = ventClosePointArrayList.toArray(new DataPoint[]{});
-
-                    LineGraphSeries<DataPoint> series = new LineGraphSeries<>(dataPoint);
-
-                    PointsGraphSeries<DataPoint> seriesOpenVent = new PointsGraphSeries<>(ventOpenPoint);
-                    seriesOpenVent.setCustomShape(new PointsGraphSeries.CustomShape() {
-                        @Override
-                        public void draw(Canvas canvas, Paint paint, float x, float y, DataPointInterface dataPoint) {
-                            paint.setTextSize(20);
-                            paint.setColor(Color.BLACK);
-                            canvas.rotate(-90, x, y);
-                            canvas.drawText("vent open", x + 10, y, paint);
-                            canvas.rotate(90, x, y);
-
-                        }
-                    });
-
-                    PointsGraphSeries<DataPoint> seriesCloseVent = new PointsGraphSeries<>(ventClosePoint);
-                    seriesCloseVent.setCustomShape(new PointsGraphSeries.CustomShape() {
-                        @Override
-                        public void draw(Canvas canvas, Paint paint, float x, float y, DataPointInterface dataPoint) {
-                            paint.setTextSize(20);
-                            paint.setColor(Color.BLACK);
-                            canvas.rotate(-90, x, y);
-                            canvas.drawText("vent close", x + 10, y, paint);
-                            canvas.rotate(90, x, y);
-
-                        }
-                    });
-
-                    //Get mat time
-                    int length = dataPoint.length;
-                    DataPoint lastDataPoint = dataPoint[length - 1];
-                    double maxTime = lastDataPoint.getX();
-
-
-                    //Set max time
-                    graph.addSeries(series);
-                    graph.addSeries(seriesOpenVent);
-                    graph.addSeries(seriesCloseVent);
-                    graph.getViewport().setXAxisBoundsManual(true);
-                    graph.getViewport().setMaxX(maxTime);
-
-                    //Add series for real time temperature;
-                    archiveSeries = new LineGraphSeries<>();
-//                    archiveSeries.setColor(R.color.colorAccent);
-                    archiveSeries.setColor(Color.RED);
-                    graph.addSeries(archiveSeries);
-
-
-                    //Create control service
-                    controlServiceIntent = new Intent(ExecutingProgramActivity.this, ControlService.class);
-
-                    registerReceiver(broadcastReceiver, new IntentFilter(ControlService.BROADCAST_ACTION));
-                    controlServiceIntent.putExtra(ControlService.INTENT_DATA_POINTS_ARRAY_LIST, dataPointArrayList);
-                    controlServiceIntent.putExtra(ControlService.INTENT_VENT_ARRAY_LIST, ventArrayList);
-                    controlServiceIntent.putExtra(ProgramViewActivity.INTENT_CALENDAR, calendar);
-                    controlServiceIntent.putExtra(ProgramContract.ProgramEntry.COLUMN_A_PROGRAM_ID, aProgramId);
                 }
+
+                DataPoint[] dataPoint = dataPointArrayList.toArray(new DataPoint[]{});
+                Log.i("length of datapoint", Integer.toString(dataPoint.length));
+                DataPoint[] ventOpenPoint = ventOpenPointArrayList.toArray(new DataPoint[]{});
+                DataPoint[] ventClosePoint = ventClosePointArrayList.toArray(new DataPoint[]{});
+
+
+                LineGraphSeries<DataPoint> series = new LineGraphSeries<>(dataPoint);
+
+                PointsGraphSeries<DataPoint> seriesOpenVent = new PointsGraphSeries<>(ventOpenPoint);
+                seriesOpenVent.setCustomShape(new PointsGraphSeries.CustomShape() {
+                    @Override
+                    public void draw(Canvas canvas, Paint paint, float x, float y, DataPointInterface dataPoint) {
+                        paint.setTextSize(20);
+                        paint.setColor(Color.BLACK);
+                        canvas.rotate(-90, x, y);
+                        canvas.drawText("vent open", x + 10, y, paint);
+                        canvas.rotate(90, x, y);
+
+                    }
+                });
+
+                PointsGraphSeries<DataPoint> seriesCloseVent = new PointsGraphSeries<>(ventClosePoint);
+                seriesCloseVent.setCustomShape(new PointsGraphSeries.CustomShape() {
+                    @Override
+                    public void draw(Canvas canvas, Paint paint, float x, float y, DataPointInterface dataPoint) {
+                        paint.setTextSize(20);
+                        paint.setColor(Color.BLACK);
+                        canvas.rotate(-90, x, y);
+                        canvas.drawText("vent close", x + 10, y, paint);
+                        canvas.rotate(90, x, y);
+
+                    }
+                });
+
+                //Get mat time
+                int length = dataPoint.length;
+                DataPoint lastDataPoint = dataPoint[length - 1];
+                double maxTime = lastDataPoint.getX();
+
+
+                //Set max time
+                graph.addSeries(series);
+                graph.addSeries(seriesOpenVent);
+                graph.addSeries(seriesCloseVent);
+                graph.getViewport().setXAxisBoundsManual(true);
+                graph.getViewport().setMaxX(maxTime);
+
+                //Add series for real time temperature;
+                archiveSeries = new LineGraphSeries<>();
+//                    archiveSeries.setColor(R.color.colorAccent);
+                archiveSeries.setColor(Color.RED);
+                graph.addSeries(archiveSeries);
+
+
+                //Create control service
+                controlServiceIntent = new Intent(ExecutingProgramActivity.this, ControlService.class);
+
+                registerReceiver(broadcastReceiver, new IntentFilter(ControlService.BROADCAST_ACTION));
+                controlServiceIntent.putExtra(ControlService.INTENT_DATA_POINTS_ARRAY_LIST, dataPointArrayList);
+                controlServiceIntent.putExtra(ControlService.INTENT_VENT_ARRAY_LIST, ventArrayList);
+                controlServiceIntent.putExtra(ProgramViewActivity.INTENT_CALENDAR, calendar);
+                controlServiceIntent.putExtra(ProgramContract.ProgramEntry.COLUMN_A_PROGRAM_ID, aProgramId);
+
                 Log.d(LOG_TAG, "init service");
                 startService(controlServiceIntent);
         }
+
+
     }
 
     @Override
@@ -482,7 +486,6 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
 
         aProgramUri = getContentResolver().insert(ProgramContract.ProgramEntry.CONTENT_URI_A_PROGRAMS, values);
         Log.d(LOG_TAG, aProgramUri.getEncodedPath());
-
 
 
         String aProgramIdString = aProgramUri.getEncodedPath();
