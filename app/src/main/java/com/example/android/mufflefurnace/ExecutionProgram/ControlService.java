@@ -18,6 +18,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.TimeZone;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by admin on 2/16/2018.
@@ -66,75 +68,16 @@ public class ControlService extends Service {
 
     private int aProgramId;
 
+    Timer t;
+    TimerTask timerTask;
 
 
-    private Runnable sendUpdatesToUI = new Runnable() {
-        public void run() {
-            calculateTimeToStart();
-            calculateTimeFromStart();
-            //CalculateTemp should be before get program status;
-            calculateTemp();
-            calculateVentStatus();
-
-            getSensorTemp();
-            getProgramStatus();
-            //control power
-            controlPower(sensorTemp, targetTemp);
-            getPowerInstance();
-            sendProgramParam();
-            saveToTheDB();
-
-            handler.postDelayed(this, 100); // 0.1 second
-        }
-    };
-
-    //Get time in seconds - return time in format HH:MM:SS
-    public static String mTimeToString(int time) {
-
-        int hours;
-        String timeString;
-
-        if (time >=0 ){
-            if (time < 24 * 60 * 60) {
-                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-                sdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
-                timeString = sdf.format(time * 1000);
-            } else {
-
-                hours = time / (60 * 60);
-
-                SimpleDateFormat sdf = new SimpleDateFormat(":mm:ss");
-                sdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
-                timeString = sdf.format(time * 1000);
-
-                timeString = Integer.toString(hours) + timeString;
-            }
-        } else {
-            time = (time - 1) * (-1);
-            if (time < 24 * 60 * 60) {
-                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-                sdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
-                timeString = sdf.format(time * 1000);
-                timeString = "-" +timeString;
-            } else {
-
-                hours = time / (60 * 60);
-
-                SimpleDateFormat sdf = new SimpleDateFormat(":mm:ss");
-                sdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
-                timeString = sdf.format(time * 1000);
-
-                timeString = Integer.toString(hours) + timeString;
-                timeString = "-" +timeString;
-            }
-        }
 
 
-        return timeString;
-    }
 
     @Override
     public void onCreate() {
+        Log.d(LOG_TAG, "onCreate ControlService");
         super.onCreate();
         intent = new Intent(ControlService.BROADCAST_ACTION);
         heatingPowerWrapper = new HeatingPowerWrapper(GPIO_PIN_HEATING_POWER);
@@ -148,9 +91,10 @@ public class ControlService extends Service {
         return null;
     }
 
-
+// public void onStart (Intent intent, int startId)
     @Override
-    public void onStart(Intent intent, int startId) {
+    public int onStartCommand (Intent intent, int flag, int startId) {
+        Log.d(LOG_TAG, "Start ControlService");
         myIntent = intent;
 
         Calendar calendar = (Calendar) myIntent.getSerializableExtra(ProgramViewActivity.INTENT_CALENDAR);
@@ -173,16 +117,34 @@ public class ControlService extends Service {
 
 
 //        handler.removeCallbacks(sendUpdatesToUI);
-        handler.postDelayed(sendUpdatesToUI, 100); // 0.1 second
+//        handler.postDelayed(sendUpdatesToUI, 1000); // 0.1 second
+        handler.post(sendUpdatesToUI);
+/*
+// try o add timer
+        t = new Timer();
+        timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                Log.d(LOG_TAG, "Test timing");
+//               saveToTheDB();
 
+            }
+        };
 
+        t.scheduleAtFixedRate(timerTask, 1000, 1000);
+*/
+         return Service.START_NOT_STICKY;
     }
 
     @Override
     public void onDestroy() {
+//        timerTask.cancel();
+//        t.cancel();
+//        t = null;
         heatingPowerWrapper.turnOff();
         heatingPowerWrapper.onDestroy();
         handler.removeCallbacks(sendUpdatesToUI);
+
     }
 
     private void calculateTemp() {
@@ -288,6 +250,7 @@ public class ControlService extends Service {
 //        Log.d(LOG_TAG, "startTimeString" + startTimeString);
     }
     private void saveToTheDB (){
+        Log.d(LOG_TAG, "Save to the db");
         ContentValues valuesArchivePoint = new ContentValues();
         valuesArchivePoint.put(ProgramContract.ProgramEntry.COLUMN_A_PROGRAM_ID, aProgramId);
         valuesArchivePoint.put(ProgramContract.ProgramEntry.COLUMN_A_TIME, timeFromStartSec);
@@ -299,4 +262,73 @@ public class ControlService extends Service {
             Log.i(LOG_TAG, "Error with saving point to archive");
         }
     }
+
+
+    //Get time in seconds - return time in format HH:MM:SS
+    public static String mTimeToString(int time) {
+
+        int hours;
+        String timeString;
+
+        if (time >=0 ){
+            if (time < 24 * 60 * 60) {
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+                sdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
+                timeString = sdf.format(time * 1000);
+            } else {
+
+                hours = time / (60 * 60);
+
+                SimpleDateFormat sdf = new SimpleDateFormat(":mm:ss");
+                sdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
+                timeString = sdf.format(time * 1000);
+
+                timeString = Integer.toString(hours) + timeString;
+            }
+        } else {
+            time = (time - 1) * (-1);
+            if (time < 24 * 60 * 60) {
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+                sdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
+                timeString = sdf.format(time * 1000);
+                timeString = "-" +timeString;
+            } else {
+
+                hours = time / (60 * 60);
+
+                SimpleDateFormat sdf = new SimpleDateFormat(":mm:ss");
+                sdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
+                timeString = sdf.format(time * 1000);
+
+                timeString = Integer.toString(hours) + timeString;
+                timeString = "-" +timeString;
+            }
+        }
+
+
+        return timeString;
+    }
+
+    private Runnable sendUpdatesToUI = new Runnable() {
+        @Override
+        public void run() {
+            handler.postDelayed(sendUpdatesToUI, 1000); // 0.1 second
+            calculateTimeToStart();
+            calculateTimeFromStart();
+            //CalculateTemp should be before get program status;
+            calculateTemp();
+            calculateVentStatus();
+
+            getSensorTemp();
+            getProgramStatus();
+            //control power
+            controlPower(sensorTemp, targetTemp);
+            getPowerInstance();
+            sendProgramParam();
+            saveToTheDB();
+
+
+        }
+    };
+
 }

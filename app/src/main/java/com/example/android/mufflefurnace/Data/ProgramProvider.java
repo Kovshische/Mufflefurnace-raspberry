@@ -17,7 +17,7 @@ import android.util.Log;
 
 public class ProgramProvider  extends ContentProvider{
 
-    public final String LOG_TAG = ProgramContract.class.getSimpleName();
+    public final String LOG_TAG = ProgramProvider.class.getSimpleName();
 
     private static final int PROGRAMS = 100;
     private static final int PROGRAM_ID = 101;

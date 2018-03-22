@@ -403,9 +403,9 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
                     controlServiceIntent.putExtra(ControlService.INTENT_VENT_ARRAY_LIST, ventArrayList);
                     controlServiceIntent.putExtra(ProgramViewActivity.INTENT_CALENDAR, calendar);
                     controlServiceIntent.putExtra(ProgramContract.ProgramEntry.COLUMN_A_PROGRAM_ID, aProgramId);
-                    startService(controlServiceIntent);
-
                 }
+                Log.d(LOG_TAG, "init service");
+                startService(controlServiceIntent);
         }
     }
 
