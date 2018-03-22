@@ -52,13 +52,31 @@
         <TextView
             style="@style/Program_view_edit_time_temperature"
             android:layout_height="wrap_content"
-            android:text="@string/program_view_edit_temperature" />
+            android:text="@string/executing_program_target_temp" />
+
+        <TextView
+            style="@style/Program_view_edit_time_temperature"
+            android:layout_height="wrap_content"
+            android:text="@string/executing_program_sensor_temp" />
+
+        <TextView
+            style="@style/Program_view_edit_time_temperature"
+            android:layout_height="wrap_content"
+            android:text="@string/executing_program_power" />
 
         <TextView
             android:id="@+id/program_view_vent"
             style="@style/Program_view_edit_time_temperature"
             android:layout_height="wrap_content"
             android:text="@string/program_view_edit_vent" />
+
+        <TextView
+            android:id="@+id/program_view_door"
+            style="@style/Program_view_edit_time_temperature"
+            android:layout_height="wrap_content"
+            android:text="door" />
+
+
 
     </LinearLayout>
 

@@ -46,6 +46,18 @@
         android:textAlignment="center"/>
 
     <TextView
+        android:id="@+id/a_power"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:fontFamily="sans-serif-smallcaps"
+        android:padding="8dp"
+        android:textAppearance="?android:textAppearanceMedium"
+        android:textColor="@color/black"
+        tools:text="ON"
+        android:textAlignment="center"/>
+
+    <TextView
         android:id="@+id/a_vent"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -57,17 +69,6 @@
         tools:text="Open"
         android:textAlignment="center"/>
 
-    <TextView
-        android:id="@+id/a_power"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:fontFamily="sans-serif-smallcaps"
-        android:padding="8dp"
-        android:textAppearance="?android:textAppearanceMedium"
-        android:textColor="@color/black"
-        tools:text="ON"
-        android:textAlignment="center"/>
 
     <TextView
         android:id="@+id/a_door"
