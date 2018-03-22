@@ -20,6 +20,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.android.mufflefurnace.Data.ProgramContract;
+import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.DataPointInterface;
@@ -50,6 +51,7 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
     ArrayList<DataPoint> dataPointArrayList = new ArrayList<DataPoint>();
     ArrayList<DataPoint> ventOpenPointArrayList = new ArrayList<DataPoint>();
     ArrayList<DataPoint> ventClosePointArrayList = new ArrayList<DataPoint>();
+    ArrayList<DataPoint> aDataPointArrayList = new ArrayList<DataPoint>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +59,7 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
         setContentView(R.layout.activity_archive_program_view);
 
         graphInfoTextView = (TextView) findViewById(R.id.archive_program_view_Info_graph_text);
+
 
         Intent intent = getIntent();
         currentProgramUri = intent.getData();
@@ -78,6 +81,16 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
         pointListView.setAdapter(mPointCursorAdapter);
 
         graph = (GraphView) findViewById(R.id.archive_graph_view);
+        graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
+            @Override
+            public String formatLabel(double value, boolean isValueX) {
+                if (isValueX) {
+                    return super.formatLabel(value, isValueX);
+                } else {
+                    return super.formatLabel(value, isValueX) + "°C ";
+                }
+            }
+        });
 /*
         graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter(){
             @Override
@@ -249,6 +262,28 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
 
             case A_POINT_LOADER:
                 mPointCursorAdapter.swapCursor(cursor);
+
+                Integer sensorTemp = null;
+                if (cursor == null || cursor.getCount() < 1) {
+                    return;
+                }
+                int aTimeColumnIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_A_TIME);
+                int aSensorTempColumnIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_A_SENSOR_TEMPERATURE);
+ //               int aVentColumnIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_VENT);
+
+                while (cursor.moveToNext()){
+                    int time = cursor.getInt(aTimeColumnIndex);
+                    double aTimeDouble = (double) time / (60 *60);
+
+                    if (!cursor.isNull(aSensorTempColumnIndex)){
+                        sensorTemp = cursor.getInt(aSensorTempColumnIndex);
+                        aDataPointArrayList.add(new DataPoint(aTimeDouble, sensorTemp));
+                    }
+                }
+                DataPoint[] aDataPoint = aDataPointArrayList.toArray(new DataPoint[]{});
+                LineGraphSeries<DataPoint> seriesAPoints = new LineGraphSeries<>(aDataPoint);
+                seriesAPoints.setColor(Color.RED);
+                graph.addSeries(seriesAPoints);
                 break;
         }
     }
