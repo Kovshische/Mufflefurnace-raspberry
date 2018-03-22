@@ -146,7 +146,7 @@ public class ControlService extends Service {
         heatingPowerWrapper.turnOff();
         heatingPowerWrapper.onDestroy();
         handler.removeCallbacks(sendUpdateUI);
-
+        handlerControlInstance.removeCallbacks(controlInstance);
     }
 
     private void calculateTemp() {
