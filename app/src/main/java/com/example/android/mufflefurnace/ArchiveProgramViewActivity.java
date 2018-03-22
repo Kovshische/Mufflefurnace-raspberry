@@ -14,6 +14,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -62,6 +63,15 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
         currentProgramId = parsIdFromUri(currentProgramUri);
 
         ListView pointListView = (ListView) findViewById(R.id.list_view_a_points);
+        pointListView.setOnTouchListener(new View.OnTouchListener() {
+            // Setting on Touch Listener for handling the touch inside ScrollView
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // Disallow the touch request for parent scroll on touch of child view
+                v.getParent().requestDisallowInterceptTouchEvent(true);
+                return false;
+            }
+        });
 
         mPointCursorAdapter = new ArchivePointCursorAdapter(this, null);
         pointListView.setAdapter(mPointCursorAdapter);
