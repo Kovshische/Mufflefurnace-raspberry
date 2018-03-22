@@ -49,6 +49,7 @@ public class ControlService extends Service {
     static int programStatus;
     private final String LOG_TAG = ControlService.class.getSimpleName();
     private final Handler handler = new Handler();
+    private final Handler handlerControlInstance = new Handler();
     Intent intent;
     int counter = 0;
     ArrayList<DataPoint> dataPointArrayList;
@@ -116,9 +117,10 @@ public class ControlService extends Service {
         }
 
 
-//        handler.removeCallbacks(sendUpdatesToUI);
-//        handler.postDelayed(sendUpdatesToUI, 1000); // 0.1 second
-        handler.post(sendUpdatesToUI);
+//        handler.removeCallbacks(sendUpdateUI);
+//        handler.postDelayed(sendUpdateUI, 1000); // 0.1 second
+        handlerControlInstance.post(controlInstance);
+        handler.post(sendUpdateUI);
 /*
 // try o add timer
         t = new Timer();
@@ -143,7 +145,7 @@ public class ControlService extends Service {
 //        t = null;
         heatingPowerWrapper.turnOff();
         heatingPowerWrapper.onDestroy();
-        handler.removeCallbacks(sendUpdatesToUI);
+        handler.removeCallbacks(sendUpdateUI);
 
     }
 
@@ -309,10 +311,10 @@ public class ControlService extends Service {
         return timeString;
     }
 
-    private Runnable sendUpdatesToUI = new Runnable() {
+    private  Runnable sendUpdateUI = new Runnable() {
         @Override
         public void run() {
-            handler.postDelayed(sendUpdatesToUI, 1000); // 0.1 second
+            handler.postDelayed(sendUpdateUI, 1000); // 0.1 second
             calculateTimeToStart();
             calculateTimeFromStart();
             //CalculateTemp should be before get program status;
@@ -326,8 +328,27 @@ public class ControlService extends Service {
             getPowerInstance();
             sendProgramParam();
             saveToTheDB();
+        }
+    };
 
+    private Runnable controlInstance = new Runnable() {
+        @Override
+        public void run() {
+            handlerControlInstance.postDelayed(controlInstance, 100); // 0.1 second
+            Log.d(LOG_TAG, "controlInstance");
+            calculateTimeToStart();
+            calculateTimeFromStart();
+            //CalculateTemp should be before get program status;
+            calculateTemp();
+            calculateVentStatus();
 
+            getSensorTemp();
+            getProgramStatus();
+            //control power
+            controlPower(sensorTemp, targetTemp);
+//            getPowerInstance();
+//            sendProgramParam();
+//            saveToTheDB();
         }
     };
 
