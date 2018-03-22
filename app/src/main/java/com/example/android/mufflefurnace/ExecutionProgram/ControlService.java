@@ -56,6 +56,7 @@ public class ControlService extends Service {
     ArrayList<DataPoint> ventArrayList;
     int targetTemp;
     int sensorTemp;
+    double sensorTempDouble;
     Intent myIntent;
     private HeatingPowerWrapper heatingPowerWrapper;
     private Integer ventStatus = ProgramContract.ProgramEntry.VENT_CLOSE;
@@ -68,6 +69,8 @@ public class ControlService extends Service {
     private long setStartTime;
 
     private int aProgramId;
+
+    private Max6675 max6675;
 
     Timer t;
     TimerTask timerTask;
@@ -189,12 +192,14 @@ public class ControlService extends Service {
     private void getSensorTemp() {
         try {
             Max6675 max6675 = new Max6675();
-            sensorTemp = Math.round(max6675.getTemp());
+            sensorTempDouble = max6675.getTemp();
+            sensorTemp = (int)Math.round(sensorTempDouble);
 //            Log.i(LOG_TAG, "SensorTemp: " + sensorTemp + " °C");
             max6675.close();
 
         } catch (IOException e) {
             e.printStackTrace();
+            Log.d(LOG_TAG, e.toString());
         }
     }
 
@@ -326,7 +331,7 @@ public class ControlService extends Service {
         @Override
         public void run() {
 
-            handler.postDelayed(sendUpdateUI, 1000); // 0.1 second
+            handler.postDelayed(sendUpdateUI, 1000); // 1 second
 
             if (programStatus == pointManager.PROGRAM_END) {
                 handler.removeCallbacks(sendUpdateUI);
@@ -337,7 +342,7 @@ public class ControlService extends Service {
             calculateTemp();
             calculateVentStatus();
 
-            getSensorTemp();
+//            getSensorTemp();
             getProgramStatus();
             //control power
             controlPower(sensorTemp, targetTemp);
@@ -350,7 +355,7 @@ public class ControlService extends Service {
     private Runnable controlInstance = new Runnable() {
         @Override
         public void run() {
-            handlerControlInstance.postDelayed(controlInstance, 100); // 0.1 second
+            handlerControlInstance.postDelayed(controlInstance, 150); // 0.1 second
             Log.d(LOG_TAG, "controlInstance");
             calculateTimeToStart();
             calculateTimeFromStart();
@@ -359,6 +364,7 @@ public class ControlService extends Service {
             calculateVentStatus();
 
             getSensorTemp();
+            Log.d(LOG_TAG, "controlInstance sensor temp " + sensorTempDouble);
             getProgramStatus();
             //control power
             controlPower(sensorTemp, targetTemp);
