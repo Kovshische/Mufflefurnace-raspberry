@@ -5,10 +5,14 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.android.mufflefurnace.ExecutionProgram.Max6675;
+
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -97,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
          sendUpdatesToUI = new Runnable() {
             public void run() {
- //               getSensorTemp();
+              getSensorTemp();
                 currentTime = Calendar.getInstance().getTime();
                 SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
                 timeString = sdf.format(currentTime );
@@ -126,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
     }
 
-/*
+
 
     private void getSensorTemp() {
         try {
@@ -139,5 +143,5 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-*/
+
 }
