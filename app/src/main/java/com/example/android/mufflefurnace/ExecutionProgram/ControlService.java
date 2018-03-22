@@ -259,7 +259,7 @@ public class ControlService extends Service {
         valuesArchivePoint.put(ProgramContract.ProgramEntry.COLUMN_A_TARGET_TEMPERATURE, targetTemp);
         valuesArchivePoint.put(ProgramContract.ProgramEntry.COLUMN_A_SENSOR_TEMPERATURE, sensorTemp);
         valuesArchivePoint.put(ProgramContract.ProgramEntry.COLUMN_A_POWER, powerInstanceToInt(powerInstance));
-//        valuesArchivePoint.put(ProgramContract.ProgramEntry.);
+        valuesArchivePoint.put(ProgramContract.ProgramEntry.COLUMN_A_VENT, ventStatus);
 
         Uri newUri = getContentResolver().insert(ProgramContract.ProgramEntry.CONTENT_URI_A_POINTS, valuesArchivePoint);
         if (newUri == null){
