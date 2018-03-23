@@ -263,23 +263,41 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
             case A_POINT_LOADER:
                 mPointCursorAdapter.swapCursor(cursor);
 
+                Integer aPointsAmount= cursor.getCount();
                 Integer sensorTemp = null;
                 if (cursor == null || cursor.getCount() < 1) {
                     return;
                 }
+
                 int aTimeColumnIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_A_TIME);
                 int aSensorTempColumnIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_A_SENSOR_TEMPERATURE);
  //               int aVentColumnIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_VENT);
 
-                while (cursor.moveToNext()){
-                    int time = cursor.getInt(aTimeColumnIndex);
-                    double aTimeDouble = (double) time / (60 *60);
+                //add every second if overall time < 60 minutes
+                if (aPointsAmount <= 3600){
+                    while (cursor.moveToNext()){
+                        int time = cursor.getInt(aTimeColumnIndex);
+                        double aTimeDouble = (double) time / (60 *60);
 
-                    if (!cursor.isNull(aSensorTempColumnIndex)){
-                        sensorTemp = cursor.getInt(aSensorTempColumnIndex);
-                        aDataPointArrayList.add(new DataPoint(aTimeDouble, sensorTemp));
+                        if (!cursor.isNull(aSensorTempColumnIndex)){
+                            sensorTemp = cursor.getInt(aSensorTempColumnIndex);
+                            aDataPointArrayList.add(new DataPoint(aTimeDouble, sensorTemp));
+                        }
+                    }
+                    //add every minute if overall time < 60 minutes
+                } else {
+
+                    while (cursor.move(60)) {
+                        int time = cursor.getInt(aTimeColumnIndex);
+                        double aTimeDouble = (double) time / (60 * 60);
+
+                        if (!cursor.isNull(aSensorTempColumnIndex)) {
+                            sensorTemp = cursor.getInt(aSensorTempColumnIndex);
+                            aDataPointArrayList.add(new DataPoint(aTimeDouble, sensorTemp));
+                        }
                     }
                 }
+
                 DataPoint[] aDataPoint = aDataPointArrayList.toArray(new DataPoint[]{});
                 LineGraphSeries<DataPoint> seriesAPoints = new LineGraphSeries<>(aDataPoint);
                 seriesAPoints.setColor(Color.RED);
