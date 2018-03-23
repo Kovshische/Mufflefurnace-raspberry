@@ -29,6 +29,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import com.example.android.mufflefurnace.AppProperties;
 import com.example.android.mufflefurnace.Data.ProgramContract;
 import com.example.android.mufflefurnace.ProgramViewActivity;
 import com.example.android.mufflefurnace.R;
@@ -44,12 +45,16 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import static com.example.android.mufflefurnace.Data.ProgramContract.BASE_CONTENT_URI;
+import static com.example.android.mufflefurnace.Data.ProgramContract.PATH_A_POINTS;
+
 public class ExecutingProgramActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private final String LOG_TAG = ExecutingProgramActivity.class.getSimpleName();
 
 
     private static final int EXISTING_PROGRAM_ID_LOADER = 1;
     private static final int POINTS_LOADER = 2;
+    private static final int A_PROGRAMS_LOADER = 3;
 
     private Uri mCurrentProgramUri;
     private String mCurrentProgramName;
@@ -220,6 +225,10 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
         getSupportLoaderManager().initLoader(POINTS_LOADER, null, this);
     }
 
+    private void initArchiveProgramLoader(){
+        getSupportLoaderManager().initLoader(A_PROGRAMS_LOADER, null,this);
+    }
+
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
@@ -264,6 +273,23 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
                     select,
                     null,
                     ProgramContract.ProgramEntry.COLUMN_TIME
+            );
+        }
+        if (id == A_PROGRAMS_LOADER){
+
+            String[] projectionForAProgram = {
+                    ProgramContract.ProgramEntry._ID,
+            };
+
+            String sortOrder = ProgramContract.ProgramEntry.COLUMN_STARTED_AT + " DESC";
+
+            return new CursorLoader(
+                    this,
+                    ProgramContract.ProgramEntry.CONTENT_URI_A_PROGRAMS,
+                    projectionForAProgram,
+                    null,
+                    null,
+                    sortOrder
             );
         } else return null;
     }
@@ -410,6 +436,12 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
 
                 Log.d(LOG_TAG, "init service");
                 startService(controlServiceIntent);
+                initArchiveProgramLoader();
+                break;
+
+            case A_PROGRAMS_LOADER:
+ //               deleteArchiveProgram(cursor);
+                break;
         }
 
 
@@ -496,6 +528,44 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
         Log.d(LOG_TAG, "archive program id string:" + aProgramIdString);
         aProgramId = Integer.parseInt(aProgramIdString);
         Log.d(LOG_TAG, "archive program id " + aProgramId);
+    }
+
+    private void deleteArchiveProgram (Cursor cursor){
+        if (cursor.getCount() > AppProperties.MAX_ARCHIVE_PROGRAMS_AMOUNT){
+
+            cursor.moveToLast();
+
+            int archiveProgramIdColumnIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry._ID);
+            int archiveProgramId = cursor.getInt(archiveProgramIdColumnIndex);
+
+            String selection = ProgramContract.ProgramEntry.COLUMN_A_PROGRAM_ID +"=?";
+            String [] selectionArgs = {Integer.toString(archiveProgramId)};
+
+            Uri pointsUri = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_A_POINTS);
+            int deletePoints = getContentResolver().delete(pointsUri,selection,selectionArgs);
+
+            if (deletePoints == -1) {
+                //If the  new content URI is null, then there was a
+                // n error with insertion
+                Log.i(LOG_TAG, "Error with delete archive points in archive program");
+            } else {
+/*
+                Uri aDeletedProgramUri = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_A_PROGRAMS);
+                String selectionAProgram = ProgramContract.ProgramEntry._ID +"=?";
+                int deleteArchiveProgram = getContentResolver().delete(aDeletedProgramUri,selectionAProgram,selectionArgs);
+
+                if (deleteArchiveProgram == -1) {
+                    //If the  new content URI is null, then there was an error with insertion);
+                    Log.i(LOG_TAG, "Error with delete archive program");
+                } else {
+                    String deleteProgramMessage = "Program deleted successful";
+                    Log.i(LOG_TAG, "Deleted program row is " + Integer.toString(deleteArchiveProgram));
+                    Log.i(LOG_TAG, "Deleted points row is " + Integer.toString(deletePoints));
+                }
+                */
+            }
+            initArchiveProgramLoader();
+        }
     }
 
 }

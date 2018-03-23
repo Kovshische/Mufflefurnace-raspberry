@@ -488,7 +488,7 @@ public class ProgramProvider  extends ContentProvider{
                 break;
             case A_PROGRAM_ID:
                 // Delete single row given by the ID in the URI
-                selection = ProgramContract.ProgramEntry._ID + "=?";
+                selection = ProgramContract.ProgramEntry._ID +"=?";
                 selectionArgs = new String[] {String.valueOf(ContentUris.parseId(uri))};
                 rowDeleted = database.delete(ProgramContract.ProgramEntry.TABLE_A_PROGRAMS, selection, selectionArgs);
                 break;

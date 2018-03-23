@@ -274,7 +274,7 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
  //               int aVentColumnIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_VENT);
 
                 //add every second if overall time < 60 minutes
-                if (aPointsAmount <= 3600){
+                if (aPointsAmount <= 360){
                     while (cursor.moveToNext()){
                         int time = cursor.getInt(aTimeColumnIndex);
                         double aTimeDouble = (double) time / (60 *60);
@@ -285,8 +285,18 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
                         }
                     }
                     //add every minute if overall time < 60 minutes
-                } else {
+                } else if (aPointsAmount <= 3600) {
 
+                    while (cursor.move(10)) {
+                        int time = cursor.getInt(aTimeColumnIndex);
+                        double aTimeDouble = (double) time / (60 * 60);
+
+                        if (!cursor.isNull(aSensorTempColumnIndex)) {
+                            sensorTemp = cursor.getInt(aSensorTempColumnIndex);
+                            aDataPointArrayList.add(new DataPoint(aTimeDouble, sensorTemp));
+                        }
+                    }
+                } else {
                     while (cursor.move(60)) {
                         int time = cursor.getInt(aTimeColumnIndex);
                         double aTimeDouble = (double) time / (60 * 60);
