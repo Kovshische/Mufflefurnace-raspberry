@@ -2,6 +2,7 @@ package com.example.android.mufflefurnace;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import com.example.android.mufflefurnace.Data.ProgramContract;
  */
 
 public class ProgramCursorAdapter extends CursorAdapter {
+    private static final String LOG_TAG = ProgramCursorAdapter.class.getSimpleName();
 
     public ProgramCursorAdapter(Context context,Cursor cursor){
         super(context, cursor, 0);
@@ -38,6 +40,11 @@ public class ProgramCursorAdapter extends CursorAdapter {
         String name = cursor.getString(cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_PROGRAM_NAME));
         //String created = cursor.getInt(cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_CREATED_AT));
         String created  = cursor.getString(cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_CREATED_AT));
+
+
+        int i = cursor.getInt(cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_CREATED_AT));
+        Log.d(LOG_TAG, Integer.toString(i));
+
 
         final int program_id = cursor.getInt(cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry._ID));
 

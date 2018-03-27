@@ -50,46 +50,42 @@ import static com.example.android.mufflefurnace.Data.ProgramContract.PATH_A_POIN
 import static com.example.android.mufflefurnace.Data.ProgramContract.PATH_A_PROGRAMS;
 
 public class ExecutingProgramActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
-    private final String LOG_TAG = ExecutingProgramActivity.class.getSimpleName();
-
-
     private static final int EXISTING_PROGRAM_ID_LOADER = 1;
     private static final int POINTS_LOADER = 2;
     private static final int A_PROGRAMS_LOADER = 3;
-
-    private Uri mCurrentProgramUri;
-    private String mCurrentProgramName;
-    private int mCurrentProgramId;
-
+    private final String LOG_TAG = ExecutingProgramActivity.class.getSimpleName();
     ArrayList<DataPoint> dataPointArrayList;
     ArrayList<DataPoint> dataPointArchiveArrayList;
     ArrayList<DataPoint> ventOpenPointArrayList = new ArrayList<DataPoint>();
     ArrayList<DataPoint> ventClosePointArrayList = new ArrayList<DataPoint>();
     ArrayList<DataPoint> ventArrayList = new ArrayList<DataPoint>();
     LineGraphSeries<DataPoint> archiveSeries;
-    private GraphView graph;
     EditText enterTimeEditText;
     Button enterButton;
     TextView expectedTemperatureTextView;
-
+    //alert
+    AlertDialog.Builder alert;
+    Context context;
+    private Uri mCurrentProgramUri;
+    private String mCurrentProgramName;
+    private int mCurrentProgramId;
+    private GraphView graph;
     //For check how pointManager works
     private int currentTime;
     private int expectedTempera;
     private int programStatus;
-
     private Intent controlServiceIntent;
     private Calendar calendar;
-
-    //alert
-    AlertDialog.Builder alert;
-    Context context;
-
     private SharedPreferences sharedPreferences;
     private boolean ifVentEnabled;
     private Uri aProgramUri;
     private Integer aProgramId;
-
-
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            updateUI(intent);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,13 +149,6 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
             ventLinearLayout.setVisibility(View.GONE);
         }
     }
-
-    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            updateUI(intent);
-        }
-    };
 
     private void updateUI(Intent intent) {
 
@@ -226,14 +215,15 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
         getSupportLoaderManager().initLoader(POINTS_LOADER, null, this);
     }
 
-    private void initArchiveProgramLoader(){
-        getSupportLoaderManager().initLoader(A_PROGRAMS_LOADER, null,this);
+    private void initArchiveProgramLoader() {
+        getSupportLoaderManager().initLoader(A_PROGRAMS_LOADER, null, this);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
         if (id == EXISTING_PROGRAM_ID_LOADER) {
+            Log.d(LOG_TAG, "EXISTING_PROGRAM_ID_LOADER on create");
             if (mCurrentProgramUri == null) {
                 return null;
             }
@@ -253,6 +243,7 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
         }
 
         if (id == POINTS_LOADER) {
+            Log.d(LOG_TAG, "POINTS_LOADER onCreateLoader");
             String[] projectionForPoint = {
                     ProgramContract.ProgramEntry.COLUMN_PROGRAM_ID,
                     ProgramContract.ProgramEntry._ID,
@@ -276,9 +267,9 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
                     ProgramContract.ProgramEntry.COLUMN_TIME
             );
         }
-        if (id == A_PROGRAMS_LOADER){
+        if (id == A_PROGRAMS_LOADER) {
 
-            Log.d(LOG_TAG, "init A_Program_Loader");
+            Log.d(LOG_TAG, "A_PROGRAMS_LOADER onCreate");
             String[] projectionForAProgram = {
                     ProgramContract.ProgramEntry._ID,
             };
@@ -293,7 +284,8 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
                     null,
                     sortOrder
             );
-        } else return null;
+        }
+        else return null;
     }
 
 
@@ -301,6 +293,7 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         switch (loader.getId()) {
             case EXISTING_PROGRAM_ID_LOADER:
+                Log.d(LOG_TAG, "EXISTING_PROGRAM_ID_LOADER onLoadFinished");
                 // Bail early if the cursor is null or there is less than 1 row in the cursor
                 if (cursor == null || cursor.getCount() < 1) {
                     return;
@@ -315,11 +308,15 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
                     setTitle(mCurrentProgramName);
                 }
                 addArchiveProgram();
+
+
+
                 initArchiveProgramLoader();
                 break;
 
 
             case POINTS_LOADER:
+                Log.d(LOG_TAG, "POINTS_LOADER onLoaderFinished");
                 if (cursor == null || cursor.getCount() < 1) {
                     return;
                 }
@@ -438,9 +435,11 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
 
                 Log.d(LOG_TAG, "init service");
                 startService(controlServiceIntent);
+
                 break;
 
             case A_PROGRAMS_LOADER:
+                Log.d(LOG_TAG, "A_PROGRAMS_LOADER onLoaderFinished");
                 deleteArchiveProgram(cursor);
                 break;
         }
@@ -531,21 +530,21 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
         Log.d(LOG_TAG, "archive program id " + aProgramId);
     }
 
-    private void deleteArchiveProgram (Cursor cursor){
-        if (cursor.getCount() > AppProperties.MAX_ARCHIVE_PROGRAMS_AMOUNT){
+    private void deleteArchiveProgram(Cursor cursor) {
+        if (cursor.getCount() > AppProperties.MAX_ARCHIVE_PROGRAMS_AMOUNT) {
 
-           cursor.move(AppProperties.MAX_ARCHIVE_PROGRAMS_AMOUNT );
+            cursor.move(AppProperties.MAX_ARCHIVE_PROGRAMS_AMOUNT);
 
-            while (cursor.moveToNext()){
+            while (cursor.moveToNext()) {
                 int archiveProgramIdColumnIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry._ID);
                 int archiveProgramId = cursor.getInt(archiveProgramIdColumnIndex);
 
                 // delete points
-                String selection = ProgramContract.ProgramEntry.COLUMN_A_PROGRAM_ID +"=?";
-                String [] selectionArgs = {Integer.toString(archiveProgramId)};
+                String selection = ProgramContract.ProgramEntry.COLUMN_A_PROGRAM_ID + "=?";
+                String[] selectionArgs = {Integer.toString(archiveProgramId)};
 
                 Uri pointsUri = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_A_POINTS);
-                int deletePoints = getContentResolver().delete(pointsUri,selection,selectionArgs);
+                int deletePoints = getContentResolver().delete(pointsUri, selection, selectionArgs);
 
                 if (deletePoints == -1) {
                     //If the  new content URI is null, then there was a
@@ -555,19 +554,20 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
 
                 //delete program
                 String selectionProgram = ProgramContract.ProgramEntry._ID + "=?";
-                String [] selectionProgramArg = {Integer.toString(archiveProgramId)};
+                String[] selectionProgramArg = {Integer.toString(archiveProgramId)};
 
                 Uri programUri = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_A_PROGRAMS);
-                int deleteProgram = getContentResolver().delete(programUri,selectionProgram,selectionProgramArg);
+                int deleteProgram = getContentResolver().delete(programUri, selectionProgram, selectionProgramArg);
                 if (deleteProgram == -1) {
                     //If the  new content URI is null, then there was a
                     // n error with insertion
                     Log.i(LOG_TAG, "Error with delete archive program");
                 }
+                initPointLoader();
             }
 
         }
-        initPointLoader();
+
     }
 
 }
