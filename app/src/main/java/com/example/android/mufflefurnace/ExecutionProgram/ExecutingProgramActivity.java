@@ -311,7 +311,7 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
 
 
 
-                initArchiveProgramLoader();
+                initPointLoader();
                 break;
 
 
@@ -435,7 +435,7 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
 
                 Log.d(LOG_TAG, "init service");
                 startService(controlServiceIntent);
-
+                initArchiveProgramLoader();
                 break;
 
             case A_PROGRAMS_LOADER:
@@ -563,7 +563,7 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
                     // n error with insertion
                     Log.i(LOG_TAG, "Error with delete archive program");
                 }
-                initPointLoader();
+
             }
 
         }
