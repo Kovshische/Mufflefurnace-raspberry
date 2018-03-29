@@ -28,6 +28,21 @@ dependencies {
     compile 'com.jjoe64:graphview:4.0.1'
     testCompile 'junit:junit:4.12'
 
+    compile 'com.github.mjdev:libaums:0.5.5'
+
+
+
+
+
+    compile 'com.google.android.gms:play-services-auth:11.8.0'
+    compile 'pub.devrel:easypermissions:0.3.0'
+    compile('com.google.api-client:google-api-client-android:1.23.0') {
+        exclude group: 'org.apache.httpcomponents'
+    }
+    compile('com.google.apis:google-api-services-gmail:v1-rev83-1.23.0') {
+        exclude group: 'org.apache.httpcomponents'
+    }
+
 
 
     provided 'com.google.android.things:androidthings:0.5.1-devpreview'

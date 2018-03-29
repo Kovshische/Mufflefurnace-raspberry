@@ -66,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
 /*
                 Intent intent = new Intent(Intent.ACTION_MAIN, null);
                 intent.addCategory(Intent.CATEGORY_LAUNCHER);
@@ -101,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
 
          sendUpdatesToUI = new Runnable() {
             public void run() {
-              getSensorTemp();
+                getSensorTemp();
                 currentTime = Calendar.getInstance().getTime();
                 SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
                 timeString = sdf.format(currentTime );

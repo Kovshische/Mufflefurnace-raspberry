@@ -1,11 +1,17 @@
 package com.example.android.mufflefurnace;
 
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.hardware.usb.UsbDevice;
+import android.hardware.usb.UsbManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -14,12 +20,19 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.android.mufflefurnace.Data.ProgramContract;
+import com.github.mjdev.libaums.UsbMassStorageDevice;
+import com.github.mjdev.libaums.fs.FileSystem;
+import com.github.mjdev.libaums.fs.UsbFile;
+import com.github.mjdev.libaums.fs.UsbFileInputStream;
+import com.github.mjdev.libaums.fs.UsbFileOutputStream;
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
@@ -27,6 +40,9 @@ import com.jjoe64.graphview.series.DataPointInterface;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.jjoe64.graphview.series.PointsGraphSeries;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 
 /**
@@ -52,6 +68,11 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
     ArrayList<DataPoint> ventOpenPointArrayList = new ArrayList<DataPoint>();
     ArrayList<DataPoint> ventClosePointArrayList = new ArrayList<DataPoint>();
     ArrayList<DataPoint> aDataPointArrayList = new ArrayList<DataPoint>();
+
+    private static final String ACTION_USB_PERMISSION =
+            "com.android.example.USB_PERMISSION";
+
+    UsbDevice device;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +133,9 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
         }
 
         getSupportLoaderManager().initLoader(A_TARGET_POINT_LOADER, null, this);
+
+
+
     }
 
     @Override
@@ -333,4 +357,138 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
     private void initPointLoader() {
         getSupportLoaderManager().initLoader(A_POINT_LOADER, null, this);
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu options from the res/menu/menu_catalog.xml file.
+        // This adds menu items to the app bar.
+        getMenuInflater().inflate(R.menu.menu_archive_program_view, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch (item.getItemId()){
+            case R.id.action_send:
+
+                Log.d(LOG_TAG, "Send options is chosen");
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("text/*");
+                intent.putExtra(Intent.EXTRA_EMAIL, "addresses");
+                intent.putExtra(Intent.EXTRA_SUBJECT, "subject");
+//                intent.putExtra(Intent.EXTRA_STREAM, attachment);
+
+                if (intent.resolveActivity(getPackageManager()) != null) {
+//                    startActivity(intent);
+                    Log.d(LOG_TAG, "intentEmail");
+            } else {
+                    Log.d(LOG_TAG, "intentEmail not supported");
+                }
+
+/*
+                Intent mailClient = new Intent(Intent.ACTION_VIEW);
+                mailClient.setClassName("com.google.android.gm", "com.google.android.gm.ConversationListActivity");
+                startActivity(mailClient);
+*/
+
+//                 Intent mailIntent = new Intent(ArchiveProgramViewActivity.this, MailActivity.class);
+//                 startActivity(mailIntent);
+
+                //Works with file manager 111
+                Intent intentM = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+//                intentM.addCategory(Intent.CATEGORY_OPENABLE);
+//                intentM.setType("*/*");
+//                startActivityForResult(intentM, 42);
+
+                Intent intentT = new Intent(Intent.ACTION_GET_CONTENT);
+                intentT.setType("*/*");
+                startActivityForResult(Intent.createChooser(intentT, "Open with ..."), 42);
+                return true;
+
+
+            case R.id.action_test:
+
+                UsbManager mUsbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
+
+
+
+                PendingIntent mPermissionIntent = PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0);
+                IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
+                registerReceiver(mUsbReceiver, filter);
+
+                mUsbManager.requestPermission(device, mPermissionIntent);
+
+
+                UsbMassStorageDevice[] devices = UsbMassStorageDevice.getMassStorageDevices(this );
+
+                for(UsbMassStorageDevice device: devices) {
+
+                    // before interacting with a device you need to call init()!
+                    try {
+                        device.init();
+
+                        // Only uses the first partition on the device
+                        FileSystem currentFs = device.getPartitions().get(0).getFileSystem();
+                        Log.d(LOG_TAG, "Capacity: " + currentFs.getCapacity());
+                        Log.d(LOG_TAG, "Occupied Space: " + currentFs.getOccupiedSpace());
+                        Log.d(LOG_TAG, "Free Space: " + currentFs.getFreeSpace());
+                        Log.d(LOG_TAG, "Chunk size: " + currentFs.getChunkSize());
+
+                        UsbFile root = currentFs.getRootDirectory();
+
+                        UsbFile[] files = root.listFiles();
+                        for(UsbFile file: files) {
+                            Log.d(LOG_TAG, file.getName());
+                            if(file.isDirectory()) {
+//                                Log.d(LOG_TAG, Long.toString(file.getLength()));
+                            }
+                        }
+
+                        UsbFile newDir = root.createDirectory("foo");
+                        UsbFile file = newDir.createFile("bar.txt");
+
+// write to a file
+                        OutputStream os = new UsbFileOutputStream(file);
+
+                        os.write("hello".getBytes());
+                        os.close();
+
+// read from a file
+                        InputStream is = new UsbFileInputStream(file);
+                        byte[] buffer = new byte[currentFs.getChunkSize()];
+                        is.read(buffer);
+
+                    } catch (IOException e) {
+                        Log.d(LOG_TAG, "Can not get access to the usb");
+                        e.printStackTrace();
+                    }
+
+
+                }
+
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
+
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (ACTION_USB_PERMISSION.equals(action)) {
+                synchronized (this) {
+                    UsbDevice device = (UsbDevice)intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
+
+                    if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
+                        if(device != null){
+                            //call method to set up device communication
+                        }
+                    }
+                    else {
+                        Log.d(LOG_TAG, "permission denied for device " + device);
+                    }
+                }
+            }
+        }
+    };
 }

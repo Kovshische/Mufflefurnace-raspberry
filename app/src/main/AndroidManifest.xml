@@ -10,18 +10,25 @@
         android:required="true" />
     <uses-permission
         android:name="android.permission.ACCESS_NETWORK_STATE"
-        android:required="true"/>
+        android:required="true" />
     <uses-permission
         android:name="android.permission.ACCESS_FINE_LOCATION"
-        android:required="true"/>
+        android:required="true" />
 
     <uses-permission
         android:name="android.permission.INTERNET"
         android:required="true" />
 
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
 
     <uses-feature android:name="android.hardware.wifi" />
+    <uses-feature android:name="android.hardware.usb.host" />
+
 
     <application
         android:allowBackup="true"
@@ -32,26 +39,25 @@
         android:theme="@style/AppTheme">
         <uses-library
             android:name="com.google.android.things"
-            android:required="false"
-             />
+            android:required="false" />
 
         <activity android:name=".MainActivity">
+
 
             <!-- Launch activity automatically on boot -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
             <!-- Launch activity automatically on boot -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.IOT_LAUNCHER" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".SettingsActivityOld"
             android:label="@string/main_menu_settings"
@@ -95,15 +101,31 @@
             android:parentActivityName=".ProgramEditActivity" />
         <activity
             android:name=".ExecutionProgram.ExecutingProgramActivity"
-            android:parentActivityName=".ProgramViewActivity"/>
+            android:parentActivityName=".ProgramViewActivity" />
         <activity
             android:name=".ArchiveProgramViewActivity"
             android:parentActivityName=".ArchiveProgramsActivity" />
-
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".MainActivity"/>
+
+
+        <meta-data android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+            android:resource="@xml/device_filter" />
+
+
+
+        <activity
+                android:name=".MailActivity"
+                android:label="Gmail API Android Quickstart" >
+
+                <intent-filter>
+                    <action android:name="android.intent.action.MAIN" />
+                    <category android:name="android.intent.category.LAUNCHER" />
+                    <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+                </intent-filter>
+
         </activity>
 
 
