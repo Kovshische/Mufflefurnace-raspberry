@@ -101,7 +101,10 @@ public class MainActivity extends AppCompatActivity {
          sendUpdatesToUI = new Runnable() {
             public void run() {
                 getSensorTemp();
+
+
                 currentTime = Calendar.getInstance().getTime();
+
                 SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
                 timeString = sdf.format(currentTime );
 
@@ -142,5 +145,7 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+
 
 }

@@ -31,7 +31,6 @@ import com.example.android.mufflefurnace.Data.ProgramContract;
 import com.github.mjdev.libaums.UsbMassStorageDevice;
 import com.github.mjdev.libaums.fs.FileSystem;
 import com.github.mjdev.libaums.fs.UsbFile;
-import com.github.mjdev.libaums.fs.UsbFileInputStream;
 import com.github.mjdev.libaums.fs.UsbFileOutputStream;
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
@@ -41,7 +40,6 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import com.jjoe64.graphview.series.PointsGraphSeries;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
@@ -73,6 +71,7 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
             "com.android.example.USB_PERMISSION";
 
     UsbDevice device;
+    private String fileName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -385,11 +384,11 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
                     Log.d(LOG_TAG, "intentEmail not supported");
                 }
 
-/*
-                Intent mailClient = new Intent(Intent.ACTION_VIEW);
-                mailClient.setClassName("com.google.android.gm", "com.google.android.gm.ConversationListActivity");
-                startActivity(mailClient);
-*/
+
+//                Intent mailClient = new Intent(Intent.ACTION_VIEW);
+//                mailClient.setClassName("com.google.android.gm", "com.google.android.gm.ConversationListActivity");
+//                startActivity(mailClient);
+
 
 //                 Intent mailIntent = new Intent(ArchiveProgramViewActivity.this, MailActivity.class);
 //                 startActivity(mailIntent);
@@ -410,14 +409,11 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
 
                 UsbManager mUsbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
 
-
-
                 PendingIntent mPermissionIntent = PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0);
                 IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
                 registerReceiver(mUsbReceiver, filter);
 
                 mUsbManager.requestPermission(device, mPermissionIntent);
-
 
                 UsbMassStorageDevice[] devices = UsbMassStorageDevice.getMassStorageDevices(this );
 
@@ -452,12 +448,12 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
 
                         os.write("hello".getBytes());
                         os.close();
-
+/*
 // read from a file
                         InputStream is = new UsbFileInputStream(file);
                         byte[] buffer = new byte[currentFs.getChunkSize()];
                         is.read(buffer);
-
+*/
                     } catch (IOException e) {
                         Log.d(LOG_TAG, "Can not get access to the usb");
                         e.printStackTrace();

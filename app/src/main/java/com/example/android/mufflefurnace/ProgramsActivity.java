@@ -83,7 +83,7 @@ public class ProgramsActivity extends AppCompatActivity implements LoaderManager
         String[] projection = {
                 ProgramContract.ProgramEntry._ID,
                 ProgramContract.ProgramEntry.COLUMN_PROGRAM_NAME,
-                ProgramContract.ProgramEntry.COLUMN_CREATED_AT};
+                ProgramContract.ProgramEntry.COLUMN_CREATED_AT };
         // This loader will execute the ContentProvider's query method on a background thread
 
         return new CursorLoader(this, //parent activity content

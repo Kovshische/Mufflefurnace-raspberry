@@ -37,6 +37,7 @@ public class ControlService extends Service {
     public static final String PROGRAM_STATUS = "programStatus";
     public static final String VENT_STATUS = "ventStatus";
     public static final int PROGRAM_END = 1;
+    public static final int PROGRAM_WAIT_FOR_START = 2;
     public static final String INTENT_DATA_POINTS_ARRAY_LIST = "intentDataPointsArrayList";
     public static final String INTENT_VENT_ARRAY_LIST = "intentVentArrayList";
     public static final String START_TIME = "setStartTime";
@@ -257,19 +258,22 @@ public class ControlService extends Service {
 //        Log.d(LOG_TAG, "startTimeString" + startTimeString);
     }
     private void saveToTheDB (){
-        Log.d(LOG_TAG, "Save to the db");
-        ContentValues valuesArchivePoint = new ContentValues();
-        valuesArchivePoint.put(ProgramContract.ProgramEntry.COLUMN_A_PROGRAM_ID, aProgramId);
-        valuesArchivePoint.put(ProgramContract.ProgramEntry.COLUMN_A_TIME, timeFromStartSec);
-        valuesArchivePoint.put(ProgramContract.ProgramEntry.COLUMN_A_TARGET_TEMPERATURE, targetTemp);
-        valuesArchivePoint.put(ProgramContract.ProgramEntry.COLUMN_A_SENSOR_TEMPERATURE, sensorTemp);
-        valuesArchivePoint.put(ProgramContract.ProgramEntry.COLUMN_A_POWER, powerInstanceToInt(powerInstance));
-        valuesArchivePoint.put(ProgramContract.ProgramEntry.COLUMN_A_VENT, ventStatus);
+        if (waitToStart == false){
+            Log.d(LOG_TAG, "Save to the db");
+            ContentValues valuesArchivePoint = new ContentValues();
+            valuesArchivePoint.put(ProgramContract.ProgramEntry.COLUMN_A_PROGRAM_ID, aProgramId);
+            valuesArchivePoint.put(ProgramContract.ProgramEntry.COLUMN_A_TIME, timeFromStartSec);
+            valuesArchivePoint.put(ProgramContract.ProgramEntry.COLUMN_A_TARGET_TEMPERATURE, targetTemp);
+            valuesArchivePoint.put(ProgramContract.ProgramEntry.COLUMN_A_SENSOR_TEMPERATURE, sensorTemp);
+            valuesArchivePoint.put(ProgramContract.ProgramEntry.COLUMN_A_POWER, powerInstanceToInt(powerInstance));
+            valuesArchivePoint.put(ProgramContract.ProgramEntry.COLUMN_A_VENT, ventStatus);
 
-        Uri newUri = getContentResolver().insert(ProgramContract.ProgramEntry.CONTENT_URI_A_POINTS, valuesArchivePoint);
-        if (newUri == null){
-            Log.i(LOG_TAG, "Error with saving point to archive");
+            Uri newUri = getContentResolver().insert(ProgramContract.ProgramEntry.CONTENT_URI_A_POINTS, valuesArchivePoint);
+            if (newUri == null){
+                Log.i(LOG_TAG, "Error with saving point to archive");
+            }
         }
+
     }
 
 
