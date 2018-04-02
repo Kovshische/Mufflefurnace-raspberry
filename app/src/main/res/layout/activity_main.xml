@@ -116,6 +116,23 @@
         android:paddingTop="64dp"
         android:paddingLeft="64dp"
         tools:text="18:00"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/main_activity_errors"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="220dp"
+        android:paddingHorizontal="20dp"
+        tools:text="@string/executing_program_program_has_finished"
+        android:textAllCaps="true"
+        android:textSize="32dp"
+        android:textAlignment="center"
+        android:padding="12dp"
+
+        android:fontFamily="sans-serif-medium"
+        android:textColor="@color/black"
+        android:visibility="invisible"
+        android:background="@drawable/orange_rectangle"/>
 
 
 </RelativeLayout>

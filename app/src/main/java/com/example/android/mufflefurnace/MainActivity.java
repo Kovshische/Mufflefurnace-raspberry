@@ -26,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
     Runnable sendUpdatesToUI;
     Date currentTime;
     String timeString;
+    String thermocoupleErrors = null;
+    Max6675 max6675;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,24 +103,34 @@ public class MainActivity extends AppCompatActivity {
          sendUpdatesToUI = new Runnable() {
             public void run() {
                 getSensorTemp();
-
+                handler.postDelayed(sendUpdatesToUI, 1000); // 1 second
 
                 currentTime = Calendar.getInstance().getTime();
 
                 SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
                 timeString = sdf.format(currentTime );
 
-                TextView temperatureTextView = (TextView) findViewById(R.id.main_activity_temperature);
-                temperatureTextView.setText(String.valueOf(Math.round(sensorTemp))+ " °C");
-
                 TextView timeTextView = (TextView) findViewById(R.id.main_activity_time);
                 timeTextView.setText(timeString);
 
-                handler.postDelayed(this, 1000); // 1 second
+                TextView temperatureTextView = (TextView) findViewById(R.id.main_activity_temperature);
+                TextView errorsTextView = (TextView) findViewById(R.id.main_activity_errors);
+
+                if (thermocoupleErrors == null){
+                    errorsTextView.setVisibility(View.GONE);
+                    temperatureTextView.setText(String.valueOf(Math.round(sensorTemp))+ " °C");
+                } else {
+                    temperatureTextView.setText("Error");
+                    errorsTextView.setVisibility(View.VISIBLE);
+                    errorsTextView.setText(thermocoupleErrors);
+                }
+
+
             }
         };
-        handler.postDelayed(sendUpdatesToUI, 1000); // 1 second
+ //       handler.postDelayed(sendUpdatesToUI, 1000); // 1 second
 
+        handler.post(sendUpdatesToUI);
     }
 
     @Override
@@ -134,11 +146,12 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    Max6675 max6675;
+
     private void getSensorTemp() {
         try {
             max6675 = new Max6675();
             sensorTemp = max6675.getTemp();
+            thermocoupleErrors = null;
             Log.i(LOG_TAG, "SensorTemp: " + sensorTemp + " °C");
             max6675.close();
 
@@ -148,9 +161,14 @@ public class MainActivity extends AppCompatActivity {
                 max6675.close();
             } catch (IOException e1) {
                 e1.printStackTrace();
-                sensorTemp = 777;
+                thermocoupleErrors = e1.getMessage();
+                Log.d(LOG_TAG, thermocoupleErrors);
+                sensorTemp = 0;
             }
-            sensorTemp = 777;
+            sensorTemp = 0;
+ //           thermocoupleErrors = "No thermocouple connected";
+            thermocoupleErrors = e.getMessage();
+            Log.d(LOG_TAG, thermocoupleErrors);
         }
     }
 
