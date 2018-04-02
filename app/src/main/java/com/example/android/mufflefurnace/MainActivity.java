@@ -134,15 +134,23 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    Max6675 max6675;
     private void getSensorTemp() {
         try {
-            Max6675 max6675 = new Max6675();
+            max6675 = new Max6675();
             sensorTemp = max6675.getTemp();
             Log.i(LOG_TAG, "SensorTemp: " + sensorTemp + " °C");
             max6675.close();
 
         } catch (IOException e) {
             e.printStackTrace();
+            try {
+                max6675.close();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+                sensorTemp = 777;
+            }
+            sensorTemp = 777;
         }
     }
 
