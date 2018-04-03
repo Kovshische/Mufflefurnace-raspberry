@@ -41,6 +41,7 @@ public class ControlService extends Service {
     public static final String INTENT_DATA_POINTS_ARRAY_LIST = "intentDataPointsArrayList";
     public static final String INTENT_VENT_ARRAY_LIST = "intentVentArrayList";
     public static final String START_TIME = "setStartTime";
+    public static final String ERROR = "error";
     //GPIO
     private final static String GPIO_PIN_HEATING_POWER = "BCM21";
     static long startDate;
@@ -76,8 +77,7 @@ public class ControlService extends Service {
     Timer t;
     TimerTask timerTask;
 
-
-
+    private String error;
 
 
     @Override
@@ -192,15 +192,28 @@ public class ControlService extends Service {
 
     private void getSensorTemp() {
         try {
-            Max6675 max6675 = new Max6675();
+            max6675 = new Max6675();
             sensorTempDouble = max6675.getTemp();
             sensorTemp = (int)Math.round(sensorTempDouble);
 //            Log.i(LOG_TAG, "SensorTemp: " + sensorTemp + " °C");
             max6675.close();
+            error = null;
 
         } catch (IOException e) {
             e.printStackTrace();
             Log.d(LOG_TAG, e.toString());
+            try {
+                max6675.close();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+                error = e1.getMessage();
+                Log.d(LOG_TAG, error);
+                sensorTemp = 0;
+            }
+            sensorTemp = 0;
+            //           thermocoupleErrors = "No thermocouple connected";
+            error = e.getMessage();
+            Log.d(LOG_TAG, error);
         }
     }
 
@@ -219,17 +232,21 @@ public class ControlService extends Service {
         intent.putExtra(PROGRAM_STATUS, programStatus);
         intent.putExtra(VENT_STATUS, ventStatus);
         intent.putExtra(START_TIME, startTimeString);
+        intent.putExtra(ERROR, error);
 
 
         sendBroadcast(intent);
     }
 
     private void controlPower(double sensorTemp, int targetTemp) {
-        if (sensorTemp < targetTemp) {
-            heatingPowerWrapper.turnOn();
-        } else {
-            heatingPowerWrapper.turnOff();
-        }
+        if (error == null){
+            if (sensorTemp < targetTemp) {
+                heatingPowerWrapper.turnOn();
+            } else {
+                heatingPowerWrapper.turnOff();
+            }
+        } else heatingPowerWrapper.turnOff();
+
     }
 
     private void controlVent(int ventStatus){

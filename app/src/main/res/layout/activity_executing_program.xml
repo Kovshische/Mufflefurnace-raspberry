@@ -165,6 +165,22 @@
         android:visibility="invisible"
         android:background="@drawable/orange_rectangle"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/executing_program_error"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="164dp"
+        android:paddingHorizontal="20dp"
+        tools:text="@string/executing_program_program_has_finished"
+        android:textAllCaps="true"
+        android:textSize="32dp"
+        android:textAlignment="center"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="@color/black"
+        android:visibility="invisible"
+        android:background="@drawable/orange_rectangle"/>
+
     <android.support.design.widget.AppBarLayout
 
         android:layout_width="match_parent"

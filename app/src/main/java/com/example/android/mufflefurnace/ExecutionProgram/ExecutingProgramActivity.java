@@ -161,6 +161,7 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
         programStatus = intent.getIntExtra(ControlService.PROGRAM_STATUS, 0);
         Integer ventStatus = intent.getIntExtra(ControlService.VENT_STATUS, ProgramContract.ProgramEntry.VENT_CLOSE);
         String startTime = intent.getStringExtra(ControlService.START_TIME);
+        String error = intent.getStringExtra(ControlService.ERROR);
 
         Log.d(LOG_TAG, time);
         Log.d(LOG_TAG, targetTemp);
@@ -203,6 +204,13 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
             programStatusTextView.setText(getString(R.string.executing_program_program_has_finished));
             programStatusTextView.setVisibility(View.VISIBLE);
         }
+
+        TextView errorTextView = (TextView) findViewById(R.id.executing_program_error);
+        if (error != null){
+            errorTextView.setText(error);
+            errorTextView.setVisibility(View.VISIBLE);
+        } else
+            errorTextView.setVisibility(View.GONE);
 
         //graph in real time
         double timeDouble = (double) timeInt / 3600;
