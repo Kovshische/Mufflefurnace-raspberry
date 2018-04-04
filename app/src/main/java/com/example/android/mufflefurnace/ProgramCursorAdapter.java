@@ -11,6 +11,12 @@ import android.widget.TextView;
 
 import com.example.android.mufflefurnace.Data.ProgramContract;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
+
 /**
  * Created by admin on 7/21/2017.
  */
@@ -40,10 +46,11 @@ public class ProgramCursorAdapter extends CursorAdapter {
         String name = cursor.getString(cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_PROGRAM_NAME));
         //String created = cursor.getInt(cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_CREATED_AT));
         String created  = cursor.getString(cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_CREATED_AT));
+        created = convertDate(created);
 
 
-        int i = cursor.getInt(cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_CREATED_AT));
-        Log.d(LOG_TAG, Integer.toString(i));
+//        int i = cursor.getInt(cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_CREATED_AT));
+//        Log.d(LOG_TAG, Integer.toString(i));
 
 
         final int program_id = cursor.getInt(cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry._ID));
@@ -55,6 +62,25 @@ public class ProgramCursorAdapter extends CursorAdapter {
 
     }
 
+    public static String convertDate (String dataSQL){
+        String dateTime ="";
+        Date date;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        try {
+            date = sdf.parse(dataSQL);
+        } catch (ParseException e) {
+            date = null;
+            e.printStackTrace();
+            Log.d(LOG_TAG, "incorrect data time format " + dataSQL);
+        }
 
+        SimpleDateFormat sdf2 = new SimpleDateFormat("dd-MM-yyyy   HH:mm");
+        Calendar calendar = Calendar.getInstance();
+        sdf2.setTimeZone(calendar.getTimeZone());
+        dateTime = sdf2.format(date);
+
+        return dateTime;
+    }
 
 }

@@ -39,7 +39,7 @@ public class ArchiveProgramCursorAdapter extends CursorAdapter {
         String name = cursor.getString(cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_A_PROGRAM_NAME));
         //String created = cursor.getInt(cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_CREATED_AT));
         String created  = cursor.getString(cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_STARTED_AT));
-
+        created = ProgramCursorAdapter.convertDate(created);
 
         final int program_id = cursor.getInt(cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry._ID));
 

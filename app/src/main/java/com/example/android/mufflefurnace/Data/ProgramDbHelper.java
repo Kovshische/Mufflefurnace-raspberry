@@ -6,6 +6,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.android.mufflefurnace.Data.ProgramContract.ProgramEntry;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.TimeZone;
+
 /**
  * Created by admin on 7/17/2017.
  */
@@ -27,6 +32,7 @@ public class ProgramDbHelper extends SQLiteOpenHelper {
                 + ProgramEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + ProgramEntry.COLUMN_PROGRAM_NAME + " TEXT NOT NULL, "
                 + ProgramEntry.COLUMN_CREATED_AT + " DATETIME DEFAULT CURRENT_TIMESTAMP" +");";
+//                + ProgramEntry.COLUMN_CREATED_AT + " DATETIME DEFAULT CURRENT_TIMESTAMP" +");";
       //  + ProgramEntry.COLUMN_CREATED_AT + " DATETIME CURRENT_TIMESTAMP " +");";
         db.execSQL(SQL_CREATE_PROGRAMS_TABLE);
 
@@ -70,6 +76,15 @@ public class ProgramDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+    }
 
+    private String getCurrentTime (){
+        String currentTime = "";
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yy HH:mm");
+        Calendar calendar = Calendar.getInstance();
+        currentTime = dateFormat.format(calendar.getTime());
+
+        TimeZone timeZone = calendar.getTimeZone();
+        return currentTime;
     }
 }
