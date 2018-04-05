@@ -56,10 +56,10 @@ public class ArchiveProgramsActivity extends AppCompatActivity implements Loader
                 // {@link ProgramEntry#CONTENT_URI}
                 // for example, the URI would be "content://com.example.android.programs/program/2"
                 //if the pet with ID 2 was clicked on
-                Uri currentProgramUri = ContentUris.withAppendedId(ProgramContract.ProgramEntry.CONTENT_URI_PROGRAMS, id);
+                Uri currentAProgramUri = ContentUris.withAppendedId(ProgramContract.ProgramEntry.CONTENT_URI_A_PROGRAMS, id);
 
                 //Set the URI on the data field of the intent
-                intent.setData(currentProgramUri);
+                intent.setData(currentAProgramUri);
 
                 // Launch the activity to display the data
                 startActivity(intent);

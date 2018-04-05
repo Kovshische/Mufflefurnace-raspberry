@@ -225,10 +225,10 @@ public class ProgramViewActivity extends AppCompatActivity implements LoaderMana
                     return;
                 }
                 if (cursor.moveToFirst()) {
-                    int currentProgramIDIndex = cursor.getColumnIndex(ProgramContract.ProgramEntry.COLUMN_PROGRAM_NAME);
+                    int currentProgramNameIndex = cursor.getColumnIndex(ProgramContract.ProgramEntry.COLUMN_PROGRAM_NAME);
                     int currentProgramIdIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry._ID);
 
-                    mCurrentProgramName = cursor.getString(currentProgramIDIndex);
+                    mCurrentProgramName = cursor.getString(currentProgramNameIndex);
                     mCurrentProgramId = cursor.getInt(currentProgramIdIndex);
 
                     setTitle(mCurrentProgramName);

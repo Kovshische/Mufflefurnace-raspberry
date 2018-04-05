@@ -51,13 +51,17 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
 
     private final String LOG_TAG = ArchiveProgramViewActivity.class.getSimpleName();
 
-    private Uri currentProgramUri;
+    private Uri currentAProgramUri;
     private GraphView graph;
     private SharedPreferences sharedPreferences;
     private boolean ifVentEnabled;
     private static final int A_TARGET_POINT_LOADER = 1;
     private static final int A_POINT_LOADER = 2;
+    private static final int A_PROGRAM_LOADER = 3;
     private int currentProgramId;
+    private String aProgramName;
+    private String aProgramStartedAt;
+
     ArchivePointCursorAdapter mPointCursorAdapter;
 
     private TextView graphInfoTextView;
@@ -82,8 +86,8 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
 
 
         Intent intent = getIntent();
-        currentProgramUri = intent.getData();
-        currentProgramId = parsIdFromUri(currentProgramUri);
+        currentAProgramUri = intent.getData();
+        currentProgramId = parsIdFromUri(currentAProgramUri);
 
         ListView pointListView = (ListView) findViewById(R.id.list_view_a_points);
         pointListView.setFocusable(false);
@@ -188,7 +192,27 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
                     null,
                     ProgramContract.ProgramEntry.COLUMN_A_TIME
             );
-        } else {
+        } else if (id == A_PROGRAM_LOADER){
+
+            if (currentAProgramUri == null) {
+                return null;
+            }
+            Log.d(LOG_TAG, "A_PROGRAMS_LOADER onCreate");
+            String[] projectionForAProgram = {
+                    ProgramContract.ProgramEntry._ID,
+                    ProgramContract.ProgramEntry.COLUMN_A_PROGRAM_NAME,
+                    ProgramContract.ProgramEntry.COLUMN_STARTED_AT
+            };
+
+            return new CursorLoader(this,
+                    currentAProgramUri,
+                    projectionForAProgram,
+                    null,
+                    null,
+                    null
+            );
+        }
+            else {
             return null;
         }
     }
@@ -335,6 +359,22 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
                 LineGraphSeries<DataPoint> seriesAPoints = new LineGraphSeries<>(aDataPoint);
                 seriesAPoints.setColor(Color.RED);
                 graph.addSeries(seriesAPoints);
+                initAProgramLoader();
+                break;
+
+            case A_PROGRAM_LOADER:
+                if (cursor == null || cursor.getCount() < 1) {
+                    return;
+                }
+                if (cursor.moveToFirst()) {
+                    int currentAProgramNameIndex = cursor.getColumnIndex(ProgramContract.ProgramEntry.COLUMN_A_PROGRAM_NAME);
+                    int currentAProgramStartedIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_STARTED_AT);
+
+                    aProgramName  = cursor.getString(currentAProgramNameIndex);
+                    aProgramStartedAt = cursor.getString(currentAProgramStartedIndex);
+                    aProgramStartedAt = ProgramCursorAdapter.convertDate(aProgramStartedAt);
+                }
+                setTitle(aProgramName + "  " + aProgramStartedAt);
                 break;
         }
     }
@@ -355,6 +395,10 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
 
     private void initPointLoader() {
         getSupportLoaderManager().initLoader(A_POINT_LOADER, null, this);
+    }
+
+    private void initAProgramLoader() {
+        getSupportLoaderManager().initLoader(A_PROGRAM_LOADER, null, this);
     }
 
     @Override
@@ -440,13 +484,14 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
                             }
                         }
 
-                        UsbFile newDir = root.createDirectory("foo");
+                        UsbFile newDir = root.createDirectory("HotSpace");
                         UsbFile file = newDir.createFile("bar.txt");
+                        UsbFile fileExcel = newDir.createFile("");
 
 // write to a file
                         OutputStream os = new UsbFileOutputStream(file);
 
-                        os.write("hello".getBytes());
+//                        os.write("hello".getBytes());
                         os.close();
 /*
 // read from a file
