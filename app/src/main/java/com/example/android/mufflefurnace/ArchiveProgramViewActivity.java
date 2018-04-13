@@ -14,6 +14,7 @@ import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -39,8 +40,12 @@ import com.jjoe64.graphview.series.DataPointInterface;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.jjoe64.graphview.series.PointsGraphSeries;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 /**
@@ -76,6 +81,8 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
 
     UsbDevice device;
     private String fileName;
+
+    File excelFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -483,22 +490,75 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
 //                                Log.d(LOG_TAG, Long.toString(file.getLength()));
                             }
                         }
-
+/*
                         UsbFile newDir = root.createDirectory("HotSpace");
-                        UsbFile file = newDir.createFile("bar.txt");
-                        UsbFile fileExcel = newDir.createFile("");
+                        UsbFile usbFile = newDir.createFile("bar.txt");
+                        UsbFile usbFileExcel = newDir.createFile(aProgramName + aProgramStartedAt + ".xls");
+
+*/
+
 
 // write to a file
-                        OutputStream os = new UsbFileOutputStream(file);
 
-//                        os.write("hello".getBytes());
+/*
+                        OutputStream os = new UsbFileOutputStream(usbFileExcel);
+                        os.write("hello".getBytes());
+
                         os.close();
+*/
+
 /*
 // read from a file
                         InputStream is = new UsbFileInputStream(file);
                         byte[] buffer = new byte[currentFs.getChunkSize()];
                         is.read(buffer);
 */
+
+                    // My test
+
+
+                        //File file = new File("testSheet.xls");
+/*
+                        ExcelHelper excelHelper = new ExcelHelper();
+                        File file = null;
+                        try {
+                            file = excelHelper.createExcelFile();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Log.d(LOG_TAG, e.toString());
+                        }
+*/
+
+
+                        File file = new File(this.getFilesDir(),"testSheet.xls");
+
+                        try {
+                            OutputStream outputStream = openFileOutput("testSheet.xls", Context.MODE_PRIVATE);
+//                            outputStream.write(fileContents.getBytes());
+                            outputStream.close();
+                            Log.d(LOG_TAG, "File created");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+
+
+                        InputStream inputStream = new FileInputStream(file);
+                        ByteBuffer buffer = ByteBuffer.allocate(4096);
+                            int len;
+                            UsbFile newDir1 = root.createDirectory("HotSpace");
+                            UsbFile usbFile1 = newDir1.createFile("testSheet.xls");
+                            UsbFileOutputStream usbFileOutputStream = new UsbFileOutputStream( usbFile1);
+
+                            while ((len = inputStream.read(buffer.array()))>0){
+                                usbFileOutputStream.write(buffer.array());
+                                Log.d(LOG_TAG, "usbFileOutputStream.write");
+                            }
+
+                            inputStream.close();
+                            usbFileOutputStream.close();
+
+
                     } catch (IOException e) {
                         Log.d(LOG_TAG, "Can not get access to the usb");
                         e.printStackTrace();
@@ -532,4 +592,14 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
             }
         }
     };
+
+    public File getPublicAlbumStorageDir (String albumName) {
+        // Get the directory for the user's public pictures directory.
+        File file = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), albumName);
+        if (!file.mkdirs()) {
+            Log.e(LOG_TAG, "Directory not created");
+        }
+        return file;
+    }
 }
