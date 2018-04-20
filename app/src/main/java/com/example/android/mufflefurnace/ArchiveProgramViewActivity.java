@@ -29,6 +29,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.android.mufflefurnace.Data.ProgramContract;
+import com.example.android.mufflefurnace.ExcelConvert.ExcelHelper;
 import com.github.mjdev.libaums.UsbMassStorageDevice;
 import com.github.mjdev.libaums.fs.FileSystem;
 import com.github.mjdev.libaums.fs.UsbFile;
@@ -67,6 +68,8 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
     private String aProgramName;
     private String aProgramStartedAt;
 
+    private int aProgramId;
+
     ArchivePointCursorAdapter mPointCursorAdapter;
 
     private TextView graphInfoTextView;
@@ -88,6 +91,7 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_archive_program_view);
+
 
         graphInfoTextView = (TextView) findViewById(R.id.archive_program_view_Info_graph_text);
 
@@ -370,18 +374,25 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
                 break;
 
             case A_PROGRAM_LOADER:
+
                 if (cursor == null || cursor.getCount() < 1) {
                     return;
                 }
                 if (cursor.moveToFirst()) {
+                    int currentAProgramIdIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry._ID);
                     int currentAProgramNameIndex = cursor.getColumnIndex(ProgramContract.ProgramEntry.COLUMN_A_PROGRAM_NAME);
                     int currentAProgramStartedIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_STARTED_AT);
+
 
                     aProgramName  = cursor.getString(currentAProgramNameIndex);
                     aProgramStartedAt = cursor.getString(currentAProgramStartedIndex);
                     aProgramStartedAt = ProgramCursorAdapter.convertDate(aProgramStartedAt);
+
+                    aProgramId = cursor.getInt(currentAProgramIdIndex);
                 }
                 setTitle(aProgramName + "  " + aProgramStartedAt);
+
+
                 break;
         }
     }
@@ -532,8 +543,18 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
 
                         File file = new File(this.getFilesDir(),"testSheet.xls");
 
+
+                        ExcelHelper excelHelper = new ExcelHelper(this, currentAProgramUri, currentProgramId);
+
                         try {
-                            OutputStream outputStream = openFileOutput("testSheet.xls", Context.MODE_PRIVATE);
+                            excelFile = excelHelper.createExcelFile();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        String fileName = excelHelper.getFileName();
+
+                        try {
+                            OutputStream outputStream = openFileOutput(fileName, Context.MODE_PRIVATE);
 //                            outputStream.write(fileContents.getBytes());
                             outputStream.close();
                             Log.d(LOG_TAG, "File created");
@@ -543,11 +564,11 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
 
 
 
-                        InputStream inputStream = new FileInputStream(file);
+                        InputStream inputStream = new FileInputStream(excelFile);
                         ByteBuffer buffer = ByteBuffer.allocate(4096);
                             int len;
                             UsbFile newDir1 = root.createDirectory("HotSpace");
-                            UsbFile usbFile1 = newDir1.createFile("testSheet.xls");
+                            UsbFile usbFile1 = newDir1.createFile(fileName);
                             UsbFileOutputStream usbFileOutputStream = new UsbFileOutputStream( usbFile1);
 
                             while ((len = inputStream.read(buffer.array()))>0){

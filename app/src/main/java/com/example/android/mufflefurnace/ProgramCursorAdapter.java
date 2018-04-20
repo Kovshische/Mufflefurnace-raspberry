@@ -83,4 +83,25 @@ public class ProgramCursorAdapter extends CursorAdapter {
         return dateTime;
     }
 
+    public static String convertDateForFileName (String dataSQL){
+        String dateTime ="";
+        Date date;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        try {
+            date = sdf.parse(dataSQL);
+        } catch (ParseException e) {
+            date = null;
+            e.printStackTrace();
+            Log.d(LOG_TAG, "incorrect data time format " + dataSQL);
+        }
+
+        SimpleDateFormat sdf2 = new SimpleDateFormat("dd_MM_yyyy");
+        Calendar calendar = Calendar.getInstance();
+        sdf2.setTimeZone(calendar.getTimeZone());
+        dateTime = sdf2.format(date);
+
+        return dateTime;
+    }
+
 }
