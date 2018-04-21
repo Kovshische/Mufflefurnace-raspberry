@@ -27,6 +27,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.mufflefurnace.Data.ProgramContract;
 import com.example.android.mufflefurnace.ExcelConvert.ExcelHelper;
@@ -479,11 +480,16 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
 
                 UsbMassStorageDevice[] devices = UsbMassStorageDevice.getMassStorageDevices(this );
 
+                if (devices.length == 0){
+                    displayToast("There is no USB Flash connected");
+                }
+
                 for(UsbMassStorageDevice device: devices) {
 
                     // before interacting with a device you need to call init()!
                     try {
                         device.init();
+
 
                         // Only uses the first partition on the device
                         FileSystem currentFs = device.getPartitions().get(0).getFileSystem();
@@ -541,8 +547,6 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
 */
 
 
-                        File file = new File(this.getFilesDir(),"testSheet.xls");
-
 
                         ExcelHelper excelHelper = new ExcelHelper(this, currentAProgramUri, currentProgramId);
 
@@ -559,6 +563,7 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
                             outputStream.close();
                             Log.d(LOG_TAG, "File created");
                         } catch (Exception e) {
+                            Log.d(LOG_TAG, "Can not create OutputStream");
                             e.printStackTrace();
                         }
 
@@ -622,5 +627,21 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
             Log.e(LOG_TAG, "Directory not created");
         }
         return file;
+    }
+
+    //Show toast
+    void displayToast(String text) {
+
+        Toast toast = Toast.makeText(this, text, Toast.LENGTH_LONG);
+        toast.show();
+        Log.i(LOG_TAG, "toast displayed");
+        // toast.setGravity(Gravity.BOTTOM,0,0);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        unregisterReceiver(mUsbReceiver);
+        Log.i(LOG_TAG, "unregister receiver");
     }
 }

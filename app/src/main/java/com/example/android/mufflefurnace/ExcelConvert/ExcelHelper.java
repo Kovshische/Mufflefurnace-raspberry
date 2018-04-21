@@ -58,25 +58,61 @@ public class ExcelHelper implements LoaderManager.LoaderCallbacks<Cursor> {
         currentAProgramUri = uri;
         currentProgramId = id;
 //        getProgramName();
+
+        String[] projectionForAProgram = {
+                ProgramContract.ProgramEntry._ID,
+                ProgramContract.ProgramEntry.COLUMN_A_PROGRAM_NAME,
+                ProgramContract.ProgramEntry.COLUMN_STARTED_AT
+        };
+
+        programDbHelper = new ProgramDbHelper(context);
+        SQLiteDatabase db = programDbHelper.getReadableDatabase();
+
+        ProgramProvider programProvider = new ProgramProvider();
+        Cursor cursor =  db.query(
+                ProgramContract.ProgramEntry.TABLE_A_PROGRAMS,
+                projectionForAProgram,
+                null,
+                null,
+                null,
+                null,
+                null);
+
+
+        if (cursor == null || cursor.getCount() < 1) {
+            return;
+        }
+        if (cursor.moveToFirst()) {
+            int currentAProgramNameIndex = cursor.getColumnIndex(ProgramContract.ProgramEntry.COLUMN_A_PROGRAM_NAME);
+            int currentAProgramStartedIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_STARTED_AT);
+
+            aProgramName = cursor.getString(currentAProgramNameIndex);
+            aProgramStartedAt = cursor.getString(currentAProgramStartedIndex);
+            aProgramStartedAt = ProgramCursorAdapter.convertDateForFileName(aProgramStartedAt);
+
+            fileName = aProgramName + ".xls";
+
+        }
     }
 
 
     public File createExcelFile() throws Exception {
         HSSFWorkbook workbook = new HSSFWorkbook();
 
-        HSSFSheet sheet1 = workbook.createSheet("sheet_1");
+        HSSFSheet sheet1 = workbook.createSheet("sheet_test");
 //    writeToSheet(testData(), sheet1);
 
-        HSSFRow row = sheet1.createRow(0);
-        HSSFCell nameCell = row.createCell(0);
+        HSSFRow row = sheet1.createRow(1);
+        HSSFCell nameCell = row.createCell(1);
         nameCell.setCellType(Cell.CELL_TYPE_STRING);
         nameCell.setCellValue("test");
 
 
-        getProgramName();
 //        File file = new File(fileName);
 
         File file1 = new File(context.getFilesDir(), fileName);
+
+
         FileOutputStream fileOutputStream = new FileOutputStream(file1);
         workbook.write(fileOutputStream);
         fileOutputStream.close();
