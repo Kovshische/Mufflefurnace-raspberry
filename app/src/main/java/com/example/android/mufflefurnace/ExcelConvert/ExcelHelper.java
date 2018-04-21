@@ -38,7 +38,7 @@ public class ExcelHelper implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String LOG_TAG = ExcelHelper.class.getSimpleName();
     private Uri currentAProgramUri;
-    private Integer currentProgramId;
+    private Integer currentAProgramId;
     private UsbFile usbFile;
     private File file;
     UsbDevice device;
@@ -56,7 +56,8 @@ public class ExcelHelper implements LoaderManager.LoaderCallbacks<Cursor> {
     public ExcelHelper(Context context, Uri uri, Integer id) {
         this.context = context;
         currentAProgramUri = uri;
-        currentProgramId = id;
+        currentAProgramId = id;
+
 //        getProgramName();
 
         String[] projectionForAProgram = {
@@ -65,24 +66,29 @@ public class ExcelHelper implements LoaderManager.LoaderCallbacks<Cursor> {
                 ProgramContract.ProgramEntry.COLUMN_STARTED_AT
         };
 
+        String[] selectionArgs = {
+                String.valueOf(currentAProgramId)
+        };
+        Log.d(LOG_TAG, "Current program id " + String.valueOf(currentAProgramId));
+
         programDbHelper = new ProgramDbHelper(context);
         SQLiteDatabase db = programDbHelper.getReadableDatabase();
 
-        ProgramProvider programProvider = new ProgramProvider();
+//        ProgramProvider programProvider = new ProgramProvider();
+
         Cursor cursor =  db.query(
                 ProgramContract.ProgramEntry.TABLE_A_PROGRAMS,
                 projectionForAProgram,
-                null,
-                null,
+                ProgramContract.ProgramEntry._ID + "=?",
+                selectionArgs,
                 null,
                 null,
                 null);
 
 
         if (cursor == null || cursor.getCount() < 1) {
-            return;
-        }
-        if (cursor.moveToFirst()) {
+            Log.d(LOG_TAG, "cursor is NOT valid");
+        } else if (cursor.moveToFirst()) {
             int currentAProgramNameIndex = cursor.getColumnIndex(ProgramContract.ProgramEntry.COLUMN_A_PROGRAM_NAME);
             int currentAProgramStartedIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_STARTED_AT);
 
@@ -115,6 +121,7 @@ public class ExcelHelper implements LoaderManager.LoaderCallbacks<Cursor> {
 
         FileOutputStream fileOutputStream = new FileOutputStream(file1);
         workbook.write(fileOutputStream);
+        fileOutputStream.flush();
         fileOutputStream.close();
 
         return file1;
