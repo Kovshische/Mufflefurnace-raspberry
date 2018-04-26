@@ -44,9 +44,9 @@ import com.jjoe64.graphview.series.PointsGraphSeries;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
@@ -150,6 +150,13 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
         getSupportLoaderManager().initLoader(A_TARGET_POINT_LOADER, null, this);
 
 
+
+        //Check if storage is available
+        if (!isExternalStorageAvailable() || isExternalStorageReadOnly()) {
+            Log.d(LOG_TAG, "Storage not available or read only");
+        } else {
+            Log.d(LOG_TAG, "Storage is available");
+        }
 
     }
 
@@ -552,13 +559,14 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
 
                         try {
                             excelFile = excelHelper.createExcelFile();
+                            Log.d(LOG_TAG, "Excel file created successful");
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                         String fileName = excelHelper.getFileName();
 
                         try {
-                            OutputStream outputStream = openFileOutput(fileName, Context.MODE_PRIVATE);
+                            FileOutputStream outputStream = openFileOutput(fileName, Context.MODE_PRIVATE);
 //                            outputStream.write(fileContents.getBytes());
                             outputStream.close();
                             Log.d(LOG_TAG, "File created");
@@ -643,5 +651,23 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
         super.onPause();
         unregisterReceiver(mUsbReceiver);
         Log.i(LOG_TAG, "unregister receiver");
+    }
+
+
+    //Check if storage is available
+    public static boolean isExternalStorageReadOnly() {
+        String extStorageState = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(extStorageState)) {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isExternalStorageAvailable() {
+        String extStorageState = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(extStorageState)) {
+            return true;
+        }
+        return false;
     }
 }

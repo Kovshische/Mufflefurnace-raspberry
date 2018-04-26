@@ -44,10 +44,12 @@ public class ControlService extends Service {
     public static final String ERROR = "error";
     //GPIO
     private final static String GPIO_PIN_HEATING_POWER = "BCM21";
+    private final static String GPIO_PIN_VENT_POWER = "BCM16";
     static long startDate;
     static long currentDate;
     static Integer timeFromStartSec;
     static boolean powerInstance;
+    static boolean ventPowerInstance;
     static int programStatus;
     private final String LOG_TAG = ControlService.class.getSimpleName();
     private final Handler handler = new Handler();
@@ -61,6 +63,7 @@ public class ControlService extends Service {
     double sensorTempDouble;
     Intent myIntent;
     private HeatingPowerWrapper heatingPowerWrapper;
+    private HeatingPowerWrapper ventPowerWrapper;
     private Integer ventStatus = ProgramContract.ProgramEntry.VENT_CLOSE;
 
     private PointManager pointManager;
@@ -86,7 +89,7 @@ public class ControlService extends Service {
         super.onCreate();
         intent = new Intent(ControlService.BROADCAST_ACTION);
         heatingPowerWrapper = new HeatingPowerWrapper(GPIO_PIN_HEATING_POWER);
-
+        ventPowerWrapper = new HeatingPowerWrapper(GPIO_PIN_VENT_POWER);
 
     }
 
@@ -149,6 +152,8 @@ public class ControlService extends Service {
 //        t = null;
         heatingPowerWrapper.turnOff();
         heatingPowerWrapper.onDestroy();
+        ventPowerWrapper.turnOff();
+        ventPowerWrapper.onDestroy();
         handler.removeCallbacks(sendUpdateUI);
         handlerControlInstance.removeCallbacks(controlInstance);
     }
@@ -163,14 +168,13 @@ public class ControlService extends Service {
             //when program end
             targetTemp = 0;
             heatingPowerWrapper.turnOff();
+            ventPowerWrapper.turnOff();
         }
 
 
     }
 
     private void calculateVentStatus(){
-
-
         try {
             ventStatus = ventPointManager.getVentStatus(timeFromStartSec);
         } catch (IllegalArgumentException e){
@@ -221,6 +225,10 @@ public class ControlService extends Service {
         powerInstance = heatingPowerWrapper.getPowerInstance();
     }
 
+    private void getVentPowerInstance(){
+        ventPowerInstance = ventPowerWrapper.getPowerInstance();
+    }
+
     private void sendProgramParam() {
         Log.d(LOG_TAG, "entered DisplayInfo");
 
@@ -240,7 +248,7 @@ public class ControlService extends Service {
 
     private void controlPower(double sensorTemp, int targetTemp) {
         if (error == null){
-            if (sensorTemp < targetTemp) {
+            if (sensorTemp < targetTemp && programStatus == PointManager.PROGRAM_EXECUTING) {
                 heatingPowerWrapper.turnOn();
             } else {
                 heatingPowerWrapper.turnOff();
@@ -250,7 +258,13 @@ public class ControlService extends Service {
     }
 
     private void controlVent(int ventStatus){
-
+        if (error == null){
+            if (ventStatus == ProgramContract.ProgramEntry.VENT_OPEN && programStatus == PointManager.PROGRAM_EXECUTING){
+                ventPowerWrapper.turnOn();
+            } else {
+                ventPowerWrapper.turnOff();
+            }
+        } else ventPowerWrapper.turnOff();
     }
 
     private void getProgramStatus() {
@@ -376,7 +390,7 @@ public class ControlService extends Service {
     private Runnable controlInstance = new Runnable() {
         @Override
         public void run() {
-            handlerControlInstance.postDelayed(controlInstance, 150); // 0.1 second
+            handlerControlInstance.postDelayed(controlInstance, 150); // 0.15 second
             Log.d(LOG_TAG, "controlInstance");
             calculateTimeToStart();
             calculateTimeFromStart();
@@ -389,6 +403,7 @@ public class ControlService extends Service {
             getProgramStatus();
             //control power
             controlPower(sensorTemp, targetTemp);
+            controlVent(ventStatus);
 //            getPowerInstance();
 //            sendProgramParam();
 //            saveToTheDB();

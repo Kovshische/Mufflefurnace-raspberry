@@ -22,9 +22,13 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -95,6 +99,7 @@ public class ExcelHelper implements LoaderManager.LoaderCallbacks<Cursor> {
             aProgramName = cursor.getString(currentAProgramNameIndex);
             aProgramStartedAt = cursor.getString(currentAProgramStartedIndex);
             aProgramStartedAt = ProgramCursorAdapter.convertDateForFileName(aProgramStartedAt);
+            aProgramName = aProgramName + "_" + aProgramStartedAt;
 
             fileName = aProgramName + ".xls";
 
@@ -103,28 +108,65 @@ public class ExcelHelper implements LoaderManager.LoaderCallbacks<Cursor> {
 
 
     public File createExcelFile() throws Exception {
+        Workbook workbook = new HSSFWorkbook();
+
+        Sheet sheet1 = workbook.createSheet("test");
+//    writeToSheet(testData(), sheet1);
+
+        Row row = sheet1.createRow(1);
+        Cell cell = row.createCell(1);
+//        nameCell.setCellType(Cell.CELL_TYPE_STRING);
+        cell.setCellValue("test");
+
+
+//        File file = new File(fileName);
+
+
+        File file = new File(context.getExternalFilesDir(null), fileName);
+        File file1 = new File(context.getFilesDir(), fileName);
+
+
+        try{
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            workbook.write(fileOutputStream);
+            fileOutputStream.flush();
+            fileOutputStream.close();
+            Log.d(LOG_TAG, "Success");
+        } catch (IOException e){
+            Log.d(LOG_TAG, e.toString());
+        } catch (Exception e){
+            Log.d(LOG_TAG, e.toString());
+        }
+
+
+
+        return file;
+    }
+
+    public void writeExcelFile(FileOutputStream os) throws Exception {
         HSSFWorkbook workbook = new HSSFWorkbook();
 
-        HSSFSheet sheet1 = workbook.createSheet("sheet_test");
+        HSSFSheet sheet1 = workbook.createSheet("test");
 //    writeToSheet(testData(), sheet1);
 
         HSSFRow row = sheet1.createRow(1);
         HSSFCell nameCell = row.createCell(1);
-        nameCell.setCellType(Cell.CELL_TYPE_STRING);
+//        nameCell.setCellType(Cell.CELL_TYPE_STRING);
         nameCell.setCellValue("test");
 
 
 //        File file = new File(fileName);
 
+        File file = new File(context.getExternalFilesDir(null), fileName);
         File file1 = new File(context.getFilesDir(), fileName);
 
 
-        FileOutputStream fileOutputStream = new FileOutputStream(file1);
+        FileOutputStream fileOutputStream = os;
         workbook.write(fileOutputStream);
         fileOutputStream.flush();
         fileOutputStream.close();
 
-        return file1;
+
     }
 
     private void getProgramName() {
