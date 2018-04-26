@@ -649,8 +649,16 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
     @Override
     public void onPause() {
         super.onPause();
-        unregisterReceiver(mUsbReceiver);
-        Log.i(LOG_TAG, "unregister receiver");
+        boolean isUsbReceiverExist = mUsbReceiver.isInitialStickyBroadcast();
+        Log.d(LOG_TAG, " isUsbReceiverExist " + isUsbReceiverExist );
+        if (isUsbReceiverExist == true){
+            try {
+                unregisterReceiver(mUsbReceiver);
+                Log.i(LOG_TAG, "unregister receiver");
+            } catch (Exception e){
+                Log.d(LOG_TAG,e.toString());
+            }
+        }
     }
 
 
