@@ -64,6 +64,7 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
     private GraphView graph;
     private SharedPreferences sharedPreferences;
     private boolean ifVentEnabled;
+    private boolean ifDoorEnabled;
     private static final int A_TARGET_POINT_LOADER = 1;
     private static final int A_POINT_LOADER = 2;
     private static final int A_PROGRAM_LOADER = 3;
@@ -142,12 +143,22 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
         });
 */
         //set Vent visibility
-        TextView ventTextView = (TextView) findViewById(R.id.archive_program_view_vent);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        TextView ventTextView = (TextView) findViewById(R.id.archive_program_view_vent);
         ifVentEnabled = sharedPreferences.getBoolean(getString(R.string.settings_vent_options_key), false);
         if (ifVentEnabled == false) {
             ventTextView.setVisibility(View.GONE);
         }
+
+        TextView doorTextView = (TextView) findViewById(R.id.archive_program_view_door);
+        ifDoorEnabled = sharedPreferences.getBoolean(getString(R.string.settings_door_options_key),false);
+        if (ifDoorEnabled == false){
+            doorTextView.setVisibility(View.GONE);
+        }
+
+
+
 
         getSupportLoaderManager().initLoader(A_TARGET_POINT_LOADER, null, this);
 

@@ -1,20 +1,24 @@
 package com.example.android.mufflefurnace.ExcelConvert;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.hardware.usb.UsbDevice;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.util.Log;
 
+import com.example.android.mufflefurnace.ArchivePointCursorAdapter;
 import com.example.android.mufflefurnace.Data.ProgramContract;
 import com.example.android.mufflefurnace.Data.ProgramDbHelper;
 import com.example.android.mufflefurnace.Data.ProgramProvider;
 import com.example.android.mufflefurnace.ProgramCursorAdapter;
+import com.example.android.mufflefurnace.R;
 import com.github.mjdev.libaums.fs.UsbFile;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -39,6 +43,16 @@ import java.util.List;
  */
 
 public class ExcelHelper implements LoaderManager.LoaderCallbacks<Cursor> {
+    private static final String PROGRAM_NAME = "Program:";
+    private static final String STARTED_AT = "Started at:";
+
+    private static final String TIME = "Time";
+    private static final String TARGET_T = "Target T";
+    private static final String SENSOR_T = "Sensor T";
+    private static final String POWER = "Power";
+    private static final String VENT = "Vent";
+    private static final String DOOR = "Door";
+
 
     private static final String LOG_TAG = ExcelHelper.class.getSimpleName();
     private Uri currentAProgramUri;
@@ -52,15 +66,21 @@ public class ExcelHelper implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final int A_PROGRAM_LOADER = 1;
 
     private String aProgramName;
+    private String aProgramNameWithTime;
     private String aProgramStartedAt;
     private String fileName;
 
     private ProgramDbHelper programDbHelper;
+    SQLiteDatabase db;
+
+    private SharedPreferences sharedPreferences;
 
     public ExcelHelper(Context context, Uri uri, Integer id) {
         this.context = context;
         currentAProgramUri = uri;
         currentAProgramId = id;
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
 //        getProgramName();
 
@@ -76,7 +96,7 @@ public class ExcelHelper implements LoaderManager.LoaderCallbacks<Cursor> {
         Log.d(LOG_TAG, "Current program id " + String.valueOf(currentAProgramId));
 
         programDbHelper = new ProgramDbHelper(context);
-        SQLiteDatabase db = programDbHelper.getReadableDatabase();
+        db = programDbHelper.getReadableDatabase();
 
 //        ProgramProvider programProvider = new ProgramProvider();
 
@@ -99,10 +119,9 @@ public class ExcelHelper implements LoaderManager.LoaderCallbacks<Cursor> {
             aProgramName = cursor.getString(currentAProgramNameIndex);
             aProgramStartedAt = cursor.getString(currentAProgramStartedIndex);
             aProgramStartedAt = ProgramCursorAdapter.convertDateForFileName(aProgramStartedAt);
-            aProgramName = aProgramName + "_" + aProgramStartedAt;
+            aProgramNameWithTime = aProgramName + "_" + aProgramStartedAt;
 
-            fileName = aProgramName + ".xls";
-
+            fileName = aProgramNameWithTime + ".xls";
         }
     }
 
@@ -113,19 +132,97 @@ public class ExcelHelper implements LoaderManager.LoaderCallbacks<Cursor> {
         Sheet sheet1 = workbook.createSheet("test");
 //    writeToSheet(testData(), sheet1);
 
-        Row row = sheet1.createRow(1);
-        Cell cell = row.createCell(1);
+        //Set program Name, started at
+        Row row1 = sheet1.createRow(1);
+        Cell cell_1_A = row1.createCell(1);
 //        nameCell.setCellType(Cell.CELL_TYPE_STRING);
-        cell.setCellValue("test");
+        cell_1_A.setCellValue(PROGRAM_NAME);
+        Cell cell_1_B = row1.createCell(2);
+        cell_1_B.setCellValue(aProgramName);
+
+        Row row2 = sheet1.createRow(2);
+        Cell cell_2_A = row2.createCell(1);
+        cell_2_A.setCellValue(STARTED_AT);
+        Cell call_2_B = row2.createCell(2);
+        call_2_B.setCellValue(aProgramStartedAt);
+
+        Row row4 = sheet1.createRow(4);
+        row4.createCell(1).setCellValue(TIME);
+        row4.createCell(2).setCellValue(TARGET_T);
+        row4.createCell(3).setCellValue(SENSOR_T);
+        row4.createCell(4).setCellValue(POWER);
 
 
-//        File file = new File(fileName);
+        int i = 5;
+        boolean ifVentEnabled;
+        ifVentEnabled = sharedPreferences.getBoolean(context.getString(R.string.settings_vent_options_key), false);
+        if (ifVentEnabled == true){
+            row4.createCell(i).setCellValue(VENT);
+            i++;
+        }
+        boolean ifDoorEnabled;
+        ifDoorEnabled = sharedPreferences.getBoolean(context.getString(R.string.settings_door_options_key), false);
+        if (ifDoorEnabled == true){
+            row4.createCell(i).setCellValue(DOOR);
+        }
+
+
+
+        //Add points
+        String[] projectionForAPoint = {
+                ProgramContract.ProgramEntry._ID,
+                ProgramContract.ProgramEntry.COLUMN_A_PROGRAM_ID,
+                ProgramContract.ProgramEntry.COLUMN_A_TIME,
+                ProgramContract.ProgramEntry.COLUMN_A_TARGET_TEMPERATURE,
+                ProgramContract.ProgramEntry.COLUMN_A_SENSOR_TEMPERATURE,
+                ProgramContract.ProgramEntry.COLUMN_A_VENT,
+                ProgramContract.ProgramEntry.COLUMN_A_DOOR,
+                ProgramContract.ProgramEntry.COLUMN_A_POWER
+        };
+
+        String[] selectionArgs = {
+                String.valueOf(currentAProgramId)
+        };
+
+        Cursor cursor =  db.query(
+                ProgramContract.ProgramEntry.TABLE_A_POINTS,
+                projectionForAPoint,
+                ProgramContract.ProgramEntry.COLUMN_A_PROGRAM_ID + "=?",
+                selectionArgs,
+                null,
+                null,
+                ProgramContract.ProgramEntry.COLUMN_A_TIME);
+
+        if (cursor == null || cursor.getCount() < 1) {
+            Log.d(LOG_TAG, "cursor 2 is NOT valid");
+        } else if (cursor.moveToFirst()) {
+            int timeColumnIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_A_TIME);
+            int targetTemperatureColumnIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_A_TARGET_TEMPERATURE);
+            int sensorTemperatureColumnIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_A_SENSOR_TEMPERATURE);
+            int powerColumnIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_A_POWER);
+            int ventColumnIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_A_VENT);
+            int doorColumnIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_A_DOOR);
+
+            int rowCounter = 5;
+            while (cursor.moveToNext()) {
+                Row row = sheet1.createRow(rowCounter);
+
+                int time = cursor.getInt(timeColumnIndex);
+//                double timeDouble = (double) time / 60;
+                String timeString = ArchivePointCursorAdapter.mTimeToString(time);
+                row.createCell(1).setCellValue(timeString);
+
+                rowCounter++;
+            }
+        }
+
+
+
+
+
 
 
         File file = new File(context.getExternalFilesDir(null), fileName);
-        File file1 = new File(context.getFilesDir(), fileName);
-
-
 
         try{
             FileOutputStream fileOutputStream = new FileOutputStream(file);

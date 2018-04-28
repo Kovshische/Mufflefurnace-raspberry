@@ -96,7 +96,7 @@ public class ProgramCursorAdapter extends CursorAdapter {
             Log.d(LOG_TAG, "incorrect data time format " + dataSQL);
         }
 
-        SimpleDateFormat sdf2 = new SimpleDateFormat("dd_MM_yyyy");
+        SimpleDateFormat sdf2 = new SimpleDateFormat("dd_MM_yyyy_HH;mm");
         Calendar calendar = Calendar.getInstance();
         sdf2.setTimeZone(calendar.getTimeZone());
         dateTime = sdf2.format(date);

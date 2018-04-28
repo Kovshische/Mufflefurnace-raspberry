@@ -20,11 +20,13 @@
     <string name="settings_max_heating_rate">Max heating rate</string>
     <string name="settings_max_cooling_rate">Max cooling rate</string>
     <string name="settings_vent_options">Vent control</string>
+    <string name="settings_door_options">Door control</string>
 
     <string name="settings_max_temperature_key">MAX_TEMPERATURE_KEY</string>
     <string name="settings_max_heating_rate_key">MAX_HEATING_KEY</string>
     <string name="settings_max_cooling_rate_key">MAX_COOLING_KEY</string>
     <string name="settings_vent_options_key">VENT_OPTIONS_KEY</string>
+    <string name="settings_door_options_key">DOOR_OPTIONS_KEY</string>
 
     <string name="settings_max_temperature_default">1200</string>
     <string name="settings_max_heating_rate_default">500</string>

@@ -29,7 +29,8 @@ public class SettingsActivity extends AppCompatActivity {
                 String preferenceString = preferences.getString(preference.getKey(),"");
                 onPreferenceChange(preference,preferenceString);
             }
-            if (preferenceSorter.equals(getString(R.string.settings_vent_options_key))){
+            if (preferenceSorter.equals(getString(R.string.settings_vent_options_key)) ||
+                    preferenceSorter.equals(getString(R.string.settings_door_options_key))  ){
                 Boolean preferenceBoolean = preferences.getBoolean(preference.getKey(), false);
                 onPreferenceChange(preference,preferenceBoolean);
             }
@@ -52,6 +53,9 @@ public class SettingsActivity extends AppCompatActivity {
 
             Preference ventControl = findPreference(getString(R.string.settings_vent_options_key));
             bindPreferenceSummaryToValue(ventControl);
+
+            Preference doorControl = findPreference(getString(R.string.settings_door_options_key));
+            bindPreferenceSummaryToValue(doorControl);
 
         }
 

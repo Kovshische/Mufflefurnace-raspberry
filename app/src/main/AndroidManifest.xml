@@ -59,19 +59,6 @@
         </activity>
 
         <activity
-            android:name=".SettingsActivityOld"
-            android:label="@string/main_menu_settings"
-            android:parentActivityName=".MainActivity" />
-        <activity
-            android:name=".SettingValueHeatingActivity"
-            android:label="@string/settings_max_heating_rate"
-            android:parentActivityName=".SettingsActivityOld"
-            android:windowSoftInputMode="stateAlwaysVisible" />
-        <activity
-            android:name=".SettingValueCoolingActivity"
-            android:label="@string/settings_max_cooling_rate"
-            android:parentActivityName=".SettingsActivityOld" />
-        <activity
             android:name=".ProgramsActivity"
             android:label="@string/main_menu_programs"
             android:parentActivityName=".MainActivity" />

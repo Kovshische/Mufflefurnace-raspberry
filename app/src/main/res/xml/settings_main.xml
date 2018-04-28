@@ -16,6 +16,13 @@
         android:summaryOn="Enabled"
         android:summaryOff="Disabled"
         />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="@string/settings_door_options_key"
+        android:title="@string/settings_door_options"
+        android:summaryOn="Enabled"
+        android:summaryOff="Disabled"
+        />
     <EditTextPreference
         android:defaultValue="@string/settings_max_heating_rate_default"
         android:inputType="numberSigned"

@@ -83,7 +83,7 @@
                     android:text="@string/program_view_edit_vent" />
 
                 <TextView
-                    android:id="@+id/program_view_door"
+                    android:id="@+id/archive_program_view_door"
                     style="@style/Program_view_edit_time_temperature"
                     android:layout_height="wrap_content"
                     android:text="door" />

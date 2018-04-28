@@ -24,6 +24,7 @@ public class ArchivePointCursorAdapter extends CursorAdapter {
 
     private SharedPreferences sharedPreferences;
     private boolean ifVentEnabled;
+    private boolean ifDoorEnabled;
 
 
     public ArchivePointCursorAdapter(Context context, Cursor cursor) {
@@ -71,9 +72,15 @@ public class ArchivePointCursorAdapter extends CursorAdapter {
         String powerString = PointCursorAdapter.powerToString(powerInt);
         powerTextView.setText(powerString);
 
-        Integer doorInt = cursor.getInt(cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_A_DOOR));
-        String doorString = PointCursorAdapter.doorToString(doorInt);
-        doorTextView.setText(doorString);
+        ifDoorEnabled = sharedPreferences.getBoolean(context.getString(R.string.settings_door_options_key),false);
+        if (ifDoorEnabled == true){
+            Integer doorInt = cursor.getInt(cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_A_DOOR));
+            String doorString = PointCursorAdapter.doorToString(doorInt);
+            doorTextView.setText(doorString);
+        } else {
+            doorTextView.setVisibility(View.GONE);
+        }
+
 
     }
 
