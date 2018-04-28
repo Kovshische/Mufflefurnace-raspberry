@@ -5,12 +5,9 @@
         tools:context=".ArchiveProgramViewActivity">
 
 
-        <item
-            android:id="@+id/action_send"
-            android:title="@string/archive_program_view_menu_email"
-            app:showAsAction="never" />
+
     <item
-        android:id="@+id/action_test"
-        android:title="TEST"
+        android:id="@+id/action_save_to_usb"
+        android:title="Save to USB flash"
         app:showAsAction="never" />
     </menu>

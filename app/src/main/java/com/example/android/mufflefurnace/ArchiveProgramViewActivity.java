@@ -58,6 +58,8 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
 
     private final String LOG_TAG = ArchiveProgramViewActivity.class.getSimpleName();
 
+    private static final String HOT_SPACE_FOLDER = "Hot_Space";
+
     private Uri currentAProgramUri;
     private GraphView graph;
     private SharedPreferences sharedPreferences;
@@ -438,6 +440,7 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         switch (item.getItemId()){
+/*
             case R.id.action_send:
 
                 Log.d(LOG_TAG, "Send options is chosen");
@@ -466,16 +469,16 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
                 //Works with file manager 111
                 Intent intentM = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
 //                intentM.addCategory(Intent.CATEGORY_OPENABLE);
-//                intentM.setType("*/*");
+//                intentM.setType("");
 //                startActivityForResult(intentM, 42);
 
                 Intent intentT = new Intent(Intent.ACTION_GET_CONTENT);
-                intentT.setType("*/*");
+                intentT.setType("*");
                 startActivityForResult(Intent.createChooser(intentT, "Open with ..."), 42);
                 return true;
+*/
 
-
-            case R.id.action_test:
+            case R.id.action_save_to_usb:
 
                 UsbManager mUsbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
 
@@ -486,6 +489,9 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
                 mUsbManager.requestPermission(device, mPermissionIntent);
 
                 UsbMassStorageDevice[] devices = UsbMassStorageDevice.getMassStorageDevices(this );
+
+                //folder abd file
+                UsbFile hotSpaceFolder = null;
 
                 if (devices.length == 0){
                     displayToast("There is no USB Flash connected");
@@ -511,7 +517,11 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
                         for(UsbFile file: files) {
                             Log.d(LOG_TAG, file.getName());
                             if(file.isDirectory()) {
-//                                Log.d(LOG_TAG, Long.toString(file.getLength()));
+                               Log.d(LOG_TAG, file.getName() + " - is directory");
+                                if (file.getName().equals(HOT_SPACE_FOLDER)){
+                                    hotSpaceFolder = file;
+                                    Log.d(LOG_TAG, "Folder " + HOT_SPACE_FOLDER + " present" );
+                                }
                             }
                         }
 /*
@@ -579,11 +589,15 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
 
                         InputStream inputStream = new FileInputStream(excelFile);
                         ByteBuffer buffer = ByteBuffer.allocate(4096);
-                            int len;
-                            UsbFile newDir1 = root.createDirectory("HotSpace");
-                            UsbFile usbFile1 = newDir1.createFile(fileName);
+
+                            if (hotSpaceFolder == null){
+                                hotSpaceFolder = root.createDirectory(HOT_SPACE_FOLDER);
+                            }
+
+                            UsbFile usbFile1 = hotSpaceFolder.createFile(fileName);
                             UsbFileOutputStream usbFileOutputStream = new UsbFileOutputStream( usbFile1);
 
+                        int len;
                             while ((len = inputStream.read(buffer.array()))>0){
                                 usbFileOutputStream.write(buffer.array());
                                 Log.d(LOG_TAG, "usbFileOutputStream.write");
