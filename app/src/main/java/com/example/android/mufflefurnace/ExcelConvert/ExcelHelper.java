@@ -160,12 +160,14 @@ public class ExcelHelper implements LoaderManager.LoaderCallbacks<Cursor> {
         int i = 5;
         boolean ifVentEnabled;
         ifVentEnabled = sharedPreferences.getBoolean(context.getString(R.string.settings_vent_options_key), false);
+        Log.d(LOG_TAG, "vent enabled " + ifVentEnabled);
         if (ifVentEnabled == true){
             row4.createCell(i).setCellValue(VENT);
             i++;
         }
         boolean ifDoorEnabled;
         ifDoorEnabled = sharedPreferences.getBoolean(context.getString(R.string.settings_door_options_key), false);
+        Log.d(LOG_TAG, "door enabled " + ifDoorEnabled);
         if (ifDoorEnabled == true){
             row4.createCell(i).setCellValue(DOOR);
         }
@@ -249,7 +251,7 @@ public class ExcelHelper implements LoaderManager.LoaderCallbacks<Cursor> {
                     String ventString = PointCursorAdapter.ventToString(vent);
                     c = row.createCell(ii);
                     c.setCellValue(ventString);
-                    i ++;
+                    ii ++;
                 }
 
                 //door
