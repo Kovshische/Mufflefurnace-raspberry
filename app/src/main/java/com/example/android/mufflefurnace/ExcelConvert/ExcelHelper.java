@@ -17,6 +17,7 @@ import com.example.android.mufflefurnace.ArchivePointCursorAdapter;
 import com.example.android.mufflefurnace.Data.ProgramContract;
 import com.example.android.mufflefurnace.Data.ProgramDbHelper;
 import com.example.android.mufflefurnace.Data.ProgramProvider;
+import com.example.android.mufflefurnace.PointCursorAdapter;
 import com.example.android.mufflefurnace.ProgramCursorAdapter;
 import com.example.android.mufflefurnace.R;
 import com.github.mjdev.libaums.fs.UsbFile;
@@ -26,6 +27,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -73,7 +75,9 @@ public class ExcelHelper implements LoaderManager.LoaderCallbacks<Cursor> {
     private ProgramDbHelper programDbHelper;
     SQLiteDatabase db;
 
+
     private SharedPreferences sharedPreferences;
+    private CellStyle csTemperature;
 
     public ExcelHelper(Context context, Uri uri, Integer id) {
         this.context = context;
@@ -207,10 +211,54 @@ public class ExcelHelper implements LoaderManager.LoaderCallbacks<Cursor> {
             while (cursor.moveToNext()) {
                 Row row = sheet1.createRow(rowCounter);
 
+                //Time
                 int time = cursor.getInt(timeColumnIndex);
-//                double timeDouble = (double) time / 60;
                 String timeString = ArchivePointCursorAdapter.mTimeToString(time);
                 row.createCell(1).setCellValue(timeString);
+
+                //Target T
+                int targetT = cursor.getInt(targetTemperatureColumnIndex);
+                String targetTString = Integer.toString(targetT);
+
+//                csTemperature = workbook.createCellStyle();
+//                csTemperature.setFillForegroundColor(HSSFColor.LIME.index);
+//                csTemperature.setDataFormat(workbook.createDataFormat().getFormat("###"));
+
+                Cell c = null;
+                c = row.createCell(2);
+                c.setCellValue(targetT);
+//                c.setCellStyle(csTemperature);
+
+                //Sensor T
+                int sensorT = cursor.getInt(sensorTemperatureColumnIndex);
+                String sensorTString = Integer.toString(sensorT);
+                c = row.createCell(3);
+                c.setCellValue(sensorT);
+
+
+                //Power
+                int power = cursor.getInt(powerColumnIndex);
+                String powerString = PointCursorAdapter.powerToString(power);
+                c = row.createCell(4);
+                c.setCellValue(powerString);
+
+                //vent
+                int ii = 5;
+                if (ifVentEnabled == true){
+                    int vent = cursor.getInt(ventColumnIndex);
+                    String ventString = PointCursorAdapter.ventToString(vent);
+                    c = row.createCell(ii);
+                    c.setCellValue(ventString);
+                    i ++;
+                }
+
+                //door
+                if (ifDoorEnabled == true){
+                    int door = cursor.getInt(doorColumnIndex);
+                    String doorString = PointCursorAdapter.doorToString(door);
+                    c = row.createCell(ii);
+                    c.setCellValue(doorString);
+                }
 
                 rowCounter++;
             }
