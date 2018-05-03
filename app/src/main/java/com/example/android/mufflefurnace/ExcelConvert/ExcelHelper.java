@@ -28,9 +28,23 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Chart;
+import org.apache.poi.ss.usermodel.ClientAnchor;
+import org.apache.poi.ss.usermodel.Drawing;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.charts.AxisCrosses;
+import org.apache.poi.ss.usermodel.charts.AxisPosition;
+import org.apache.poi.ss.usermodel.charts.ChartAxis;
+import org.apache.poi.ss.usermodel.charts.ChartDataSource;
+import org.apache.poi.ss.usermodel.charts.ChartLegend;
+import org.apache.poi.ss.usermodel.charts.DataSources;
+import org.apache.poi.ss.usermodel.charts.LegendPosition;
+import org.apache.poi.ss.usermodel.charts.LineChartData;
+import org.apache.poi.ss.usermodel.charts.ValueAxis;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -80,6 +94,10 @@ public class ExcelHelper implements LoaderManager.LoaderCallbacks<Cursor> {
     private CellStyle csTemperature;
 
     public ExcelHelper(Context context, Uri uri, Integer id) {
+        System.setProperty("org.apache.poi.javax.xml.stream.XMLInputFactory", "com.fasterxml.aalto.stax.InputFactoryImpl");
+        System.setProperty("org.apache.poi.javax.xml.stream.XMLOutputFactory", "com.fasterxml.aalto.stax.OutputFactoryImpl");
+        System.setProperty("org.apache.poi.javax.xml.stream.XMLEventFactory", "com.fasterxml.aalto.stax.EventFactoryImpl");
+
         this.context = context;
         currentAProgramUri = uri;
         currentAProgramId = id;
@@ -131,7 +149,9 @@ public class ExcelHelper implements LoaderManager.LoaderCallbacks<Cursor> {
 
 
     public File createExcelFile() throws Exception {
-        Workbook workbook = new HSSFWorkbook();
+
+
+        Workbook workbook = new XSSFWorkbook();
 
         Sheet sheet1 = workbook.createSheet("test");
 //    writeToSheet(testData(), sheet1);
@@ -268,6 +288,35 @@ public class ExcelHelper implements LoaderManager.LoaderCallbacks<Cursor> {
 
 
 
+            //Add graph
+            // Create a drawing canvas on the worksheet
+            Drawing drawing = sheet1.createDrawingPatriarch();
+            // Define anchor points in the worksheet to position the chart
+            ClientAnchor anchor = drawing.createAnchor(0,0,0,0,8,1,18,11);
+             // Create the chart object based on the anchor point
+            Chart chart = drawing.createChart(anchor);
+             // Define legends for the line chart and set the position of the legend
+            ChartLegend legend = chart.getOrCreateLegend();
+            legend.setPosition(LegendPosition.BOTTOM);
+             // Create data for the chart
+            LineChartData data = chart.getChartDataFactory().createLineChartData();
+            // Define chart AXIS
+            ChartAxis bottomAxis = chart.getChartAxisFactory().createCategoryAxis(AxisPosition.BOTTOM);
+            ValueAxis leftAxis = chart.getChartAxisFactory().createValueAxis(AxisPosition.LEFT);
+            leftAxis.setCrosses(AxisCrosses.AUTO_ZERO);
+            // Define Data sources for the chart
+            // Set the right cell range that contain values for the chart
+            // Pass the worksheet and cell range address as inputs
+            // Cell Range Address is defined as First row, last row, first column, last column
+            ChartDataSource<Number> xs = DataSources.fromNumericCellRange(sheet1, new CellRangeAddress(5,15,1,1));
+            ChartDataSource<Number> ysTargetT = DataSources.fromNumericCellRange(sheet1, new CellRangeAddress(5,15,2,2));
+            // Add chart data sources as data to the chart
+            data.addSeries(xs,ysTargetT);
+            // Plot the chart with the inputs from data and chart axis
+            chart.plot(data,new ChartAxis[]{bottomAxis,leftAxis});
+
+
+
 
 
 
@@ -291,13 +340,13 @@ public class ExcelHelper implements LoaderManager.LoaderCallbacks<Cursor> {
     }
 
     public void writeExcelFile(FileOutputStream os) throws Exception {
-        HSSFWorkbook workbook = new HSSFWorkbook();
+        Workbook workbook = new HSSFWorkbook();
 
-        HSSFSheet sheet1 = workbook.createSheet("test");
+        Sheet sheet1 = workbook.createSheet("test");
 //    writeToSheet(testData(), sheet1);
 
-        HSSFRow row = sheet1.createRow(1);
-        HSSFCell nameCell = row.createCell(1);
+        Row row = sheet1.createRow(1);
+        Cell nameCell = row.createCell(1);
 //        nameCell.setCellType(Cell.CELL_TYPE_STRING);
         nameCell.setCellValue("test");
 

@@ -597,8 +597,13 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
                         }
 
 
+                        InputStream inputStream = null;
+                        try {
+                            inputStream = new FileInputStream(excelFile);
+                        } catch (NullPointerException e){
+                            Log.d(LOG_TAG,e.toString());
+                        }
 
-                        InputStream inputStream = new FileInputStream(excelFile);
                         ByteBuffer buffer = ByteBuffer.allocate(4096);
 
                             if (hotSpaceFolder == null){

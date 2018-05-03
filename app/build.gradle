@@ -50,6 +50,7 @@ dependencies {
     provided 'com.google.android.things:androidthings:0.5.1-devpreview'
 
 
+    implementation 'com.fasterxml:aalto-xml:1.0.0'
 
 
 }
