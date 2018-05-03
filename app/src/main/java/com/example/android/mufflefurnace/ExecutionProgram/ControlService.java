@@ -289,7 +289,7 @@ public class ControlService extends Service {
 //        Log.d(LOG_TAG, "startTimeString" + startTimeString);
     }
     private void saveToTheDB (){
-        if (waitToStart == false){
+        if (waitToStart == false && programStatus == PointManager.PROGRAM_EXECUTING){
             Log.d(LOG_TAG, "Save to the db");
             ContentValues valuesArchivePoint = new ContentValues();
             valuesArchivePoint.put(ProgramContract.ProgramEntry.COLUMN_A_PROGRAM_ID, aProgramId);
