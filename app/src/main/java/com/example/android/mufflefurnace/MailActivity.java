@@ -3,7 +3,6 @@ package com.example.android.mufflefurnace;
 import android.Manifest;
 import android.accounts.AccountManager;
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -21,12 +20,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
-import com.google.api.client.googleapis.extensions.android.gms.auth.GooglePlayServicesAvailabilityIOException;
-import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
@@ -42,6 +37,9 @@ import java.util.List;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
+
+//import com.google.android.gms.common.ConnectionResult;
+//import com.google.android.gms.common.GoogleApiAvailability;
 
 //import 	com.google.android.things.device.ScreenManager;
 
@@ -91,7 +89,7 @@ public class MailActivity extends Activity
             public void onClick(View v) {
                 mCallApiButton.setEnabled(false);
                 mOutputText.setText("");
-                getResultsFromApi();
+//                getResultsFromApi();
                 mCallApiButton.setEnabled(true);
             }
         });
@@ -126,6 +124,7 @@ public class MailActivity extends Activity
      * of the preconditions are not satisfied, the app will prompt the user as
      * appropriate.
      */
+    /*
     private void getResultsFromApi() {
         if (! isGooglePlayServicesAvailable()) {
             acquireGooglePlayServices();
@@ -137,6 +136,7 @@ public class MailActivity extends Activity
             new MakeRequestTask(mCredential).execute();
         }
     }
+    */
 
     /**
      * Attempts to set the account used with the API credentials. If an account
@@ -156,7 +156,7 @@ public class MailActivity extends Activity
                     .getString(PREF_ACCOUNT_NAME, null);
             if (accountName != null) {
                 mCredential.setSelectedAccountName(accountName);
-                getResultsFromApi();
+ //               getResultsFromApi();
             } else {
                 // Start a dialog from which the user can choose an account
                 startActivityForResult(
@@ -194,7 +194,7 @@ public class MailActivity extends Activity
                             "This app requires Google Play Services. Please install " +
                                     "Google Play Services on your device and relaunch this app.");
                 } else {
-                    getResultsFromApi();
+ //                   getResultsFromApi();
                 }
                 break;
             case REQUEST_ACCOUNT_PICKER:
@@ -209,13 +209,13 @@ public class MailActivity extends Activity
                         editor.putString(PREF_ACCOUNT_NAME, accountName);
                         editor.apply();
                         mCredential.setSelectedAccountName(accountName);
-                        getResultsFromApi();
+//                        getResultsFromApi();
                     }
                 }
                 break;
             case REQUEST_AUTHORIZATION:
                 if (resultCode == RESULT_OK) {
-                    getResultsFromApi();
+//                    getResultsFromApi();
                 }
                 break;
         }
@@ -278,6 +278,8 @@ public class MailActivity extends Activity
      * @return true if Google Play Services is available and up to
      *     date on this device; false otherwise.
      */
+
+    /*
     private boolean isGooglePlayServicesAvailable() {
         GoogleApiAvailability apiAvailability =
                 GoogleApiAvailability.getInstance();
@@ -285,11 +287,14 @@ public class MailActivity extends Activity
                 apiAvailability.isGooglePlayServicesAvailable(this);
         return connectionStatusCode == ConnectionResult.SUCCESS;
     }
+    */
 
     /**
      * Attempt to resolve a missing, out-of-date, invalid or disabled Google
      * Play Services installation via a user dialog, if possible.
      */
+
+    /*
     private void acquireGooglePlayServices() {
         GoogleApiAvailability apiAvailability =
                 GoogleApiAvailability.getInstance();
@@ -299,7 +304,7 @@ public class MailActivity extends Activity
             showGooglePlayServicesAvailabilityErrorDialog(connectionStatusCode);
         }
     }
-
+*/
 
     /**
      * Display an error dialog showing that Google Play Services is missing
@@ -307,6 +312,8 @@ public class MailActivity extends Activity
      * @param connectionStatusCode code describing the presence (or lack of)
      *     Google Play Services on this device.
      */
+
+    /*
     void showGooglePlayServicesAvailabilityErrorDialog(
             final int connectionStatusCode) {
         GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
@@ -316,6 +323,7 @@ public class MailActivity extends Activity
                 REQUEST_GOOGLE_PLAY_SERVICES);
         dialog.show();
     }
+*/
 
     /**
      * An asynchronous task that handles the Gmail API call.
@@ -386,6 +394,7 @@ public class MailActivity extends Activity
 
         @Override
         protected void onCancelled() {
+            /*
             mProgress.hide();
             if (mLastError != null) {
                 if (mLastError instanceof GooglePlayServicesAvailabilityIOException) {
@@ -403,6 +412,7 @@ public class MailActivity extends Activity
             } else {
                 mOutputText.setText("Request cancelled.");
             }
+            */
         }
     }
 }

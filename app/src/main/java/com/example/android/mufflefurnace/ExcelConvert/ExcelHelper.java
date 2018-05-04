@@ -94,10 +94,11 @@ public class ExcelHelper implements LoaderManager.LoaderCallbacks<Cursor> {
     private CellStyle csTemperature;
 
     public ExcelHelper(Context context, Uri uri, Integer id) {
+        /*
         System.setProperty("org.apache.poi.javax.xml.stream.XMLInputFactory", "com.fasterxml.aalto.stax.InputFactoryImpl");
         System.setProperty("org.apache.poi.javax.xml.stream.XMLOutputFactory", "com.fasterxml.aalto.stax.OutputFactoryImpl");
         System.setProperty("org.apache.poi.javax.xml.stream.XMLEventFactory", "com.fasterxml.aalto.stax.EventFactoryImpl");
-
+*/
         this.context = context;
         currentAProgramUri = uri;
         currentAProgramId = id;
@@ -143,7 +144,7 @@ public class ExcelHelper implements LoaderManager.LoaderCallbacks<Cursor> {
             aProgramStartedAt = ProgramCursorAdapter.convertDateForFileName(aProgramStartedAt);
             aProgramNameWithTime = aProgramName + "_" + aProgramStartedAt;
 
-            fileName = aProgramNameWithTime + ".xls";
+            fileName = aProgramNameWithTime + ".xlsx";
         }
     }
 
@@ -151,6 +152,8 @@ public class ExcelHelper implements LoaderManager.LoaderCallbacks<Cursor> {
     public File createExcelFile() throws Exception {
 
 
+//        Workbook workbook = new SXSSFWorkbook();
+//       Workbook workbook = new HSSFWorkbook();
         Workbook workbook = new XSSFWorkbook();
 
         Sheet sheet1 = workbook.createSheet("test");
@@ -218,6 +221,8 @@ public class ExcelHelper implements LoaderManager.LoaderCallbacks<Cursor> {
                 null,
                 null,
                 ProgramContract.ProgramEntry.COLUMN_A_TIME);
+
+        int rowCount = cursor.getCount();
 
         if (cursor == null || cursor.getCount() < 1) {
             Log.d(LOG_TAG, "cursor 2 is NOT valid");
@@ -292,7 +297,7 @@ public class ExcelHelper implements LoaderManager.LoaderCallbacks<Cursor> {
             // Create a drawing canvas on the worksheet
             Drawing drawing = sheet1.createDrawingPatriarch();
             // Define anchor points in the worksheet to position the chart
-            ClientAnchor anchor = drawing.createAnchor(0,0,0,0,8,1,18,11);
+            ClientAnchor anchor = drawing.createAnchor(0,0,0,0,8,1,25,25);
              // Create the chart object based on the anchor point
             Chart chart = drawing.createChart(anchor);
              // Define legends for the line chart and set the position of the legend
@@ -308,10 +313,14 @@ public class ExcelHelper implements LoaderManager.LoaderCallbacks<Cursor> {
             // Set the right cell range that contain values for the chart
             // Pass the worksheet and cell range address as inputs
             // Cell Range Address is defined as First row, last row, first column, last column
-            ChartDataSource<Number> xs = DataSources.fromNumericCellRange(sheet1, new CellRangeAddress(5,15,1,1));
-            ChartDataSource<Number> ysTargetT = DataSources.fromNumericCellRange(sheet1, new CellRangeAddress(5,15,2,2));
+        rowCount = rowCount + 3;
+            ChartDataSource<Number> xs = DataSources.fromNumericCellRange(sheet1, new CellRangeAddress(5,rowCount,1,1));
+            ChartDataSource<Number> ysTargetT = DataSources.fromNumericCellRange(sheet1, new CellRangeAddress(5,rowCount,2,2));
+            ChartDataSource<Number> ysSensorT = DataSources.fromNumericCellRange(sheet1, new CellRangeAddress(5,rowCount,3,3));
             // Add chart data sources as data to the chart
-            data.addSeries(xs,ysTargetT);
+            data.addSeries(xs, ysTargetT);
+            data.addSeries(xs, ysSensorT).setTitle("Sensor T");
+
             // Plot the chart with the inputs from data and chart axis
             chart.plot(data,new ChartAxis[]{bottomAxis,leftAxis});
 
