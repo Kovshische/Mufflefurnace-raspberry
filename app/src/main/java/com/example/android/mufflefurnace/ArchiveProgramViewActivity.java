@@ -1,6 +1,7 @@
 package com.example.android.mufflefurnace;
 
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.graphics.Paint;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -152,16 +154,13 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
         }
 
         TextView doorTextView = (TextView) findViewById(R.id.archive_program_view_door);
-        ifDoorEnabled = sharedPreferences.getBoolean(getString(R.string.settings_door_options_key),false);
-        if (ifDoorEnabled == false){
+        ifDoorEnabled = sharedPreferences.getBoolean(getString(R.string.settings_door_options_key), false);
+        if (ifDoorEnabled == false) {
             doorTextView.setVisibility(View.GONE);
         }
 
 
-
-
         getSupportLoaderManager().initLoader(A_TARGET_POINT_LOADER, null, this);
-
 
 
         //Check if storage is available
@@ -199,7 +198,7 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
                     null,
                     ProgramContract.ProgramEntry.COLUMN_TIME
             );
-        } else if(id == A_POINT_LOADER){
+        } else if (id == A_POINT_LOADER) {
 
             String[] projectionForPoint = {
                     ProgramContract.ProgramEntry._ID,
@@ -224,7 +223,7 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
                     null,
                     ProgramContract.ProgramEntry.COLUMN_A_TIME
             );
-        } else if (id == A_PROGRAM_LOADER){
+        } else if (id == A_PROGRAM_LOADER) {
 
             if (currentAProgramUri == null) {
                 return null;
@@ -243,8 +242,7 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
                     null,
                     null
             );
-        }
-            else {
+        } else {
             return null;
         }
     }
@@ -342,7 +340,7 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
             case A_POINT_LOADER:
                 mPointCursorAdapter.swapCursor(cursor);
 
-                Integer aPointsAmount= cursor.getCount();
+                Integer aPointsAmount = cursor.getCount();
                 Integer sensorTemp = null;
                 if (cursor == null || cursor.getCount() < 1) {
                     return;
@@ -350,15 +348,15 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
 
                 int aTimeColumnIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_A_TIME);
                 int aSensorTempColumnIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_A_SENSOR_TEMPERATURE);
- //               int aVentColumnIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_VENT);
+                //               int aVentColumnIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_VENT);
 
                 //add every second if overall time < 60 minutes
-                if (aPointsAmount <= 360){
-                    while (cursor.moveToNext()){
+                if (aPointsAmount <= 360) {
+                    while (cursor.moveToNext()) {
                         int time = cursor.getInt(aTimeColumnIndex);
-                        double aTimeDouble = (double) time / (60 *60);
+                        double aTimeDouble = (double) time / (60 * 60);
 
-                        if (!cursor.isNull(aSensorTempColumnIndex)){
+                        if (!cursor.isNull(aSensorTempColumnIndex)) {
                             sensorTemp = cursor.getInt(aSensorTempColumnIndex);
                             aDataPointArrayList.add(new DataPoint(aTimeDouble, sensorTemp));
                         }
@@ -405,7 +403,7 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
                     int currentAProgramStartedIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_STARTED_AT);
 
 
-                    aProgramName  = cursor.getString(currentAProgramNameIndex);
+                    aProgramName = cursor.getString(currentAProgramNameIndex);
                     aProgramStartedAt = cursor.getString(currentAProgramStartedIndex);
                     aProgramStartedAt = ProgramCursorAdapter.convertDate(aProgramStartedAt);
 
@@ -449,8 +447,8 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item){
-        switch (item.getItemId()){
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
 /*
             case R.id.action_send:
 
@@ -490,146 +488,8 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
 */
 
             case R.id.action_save_to_usb:
-
-                UsbManager mUsbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
-
-                PendingIntent mPermissionIntent = PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0);
-                IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
-                registerReceiver(mUsbReceiver, filter);
-
-                mUsbManager.requestPermission(device, mPermissionIntent);
-
-                UsbMassStorageDevice[] devices = UsbMassStorageDevice.getMassStorageDevices(this );
-
-                //folder abd file
-                UsbFile hotSpaceFolder = null;
-
-                if (devices.length == 0){
-                    displayToast("There is no USB Flash connected");
-                }
-
-                for(UsbMassStorageDevice device: devices) {
-
-                    // before interacting with a device you need to call init()!
-                    try {
-                        device.init();
-
-
-                        // Only uses the first partition on the device
-                        FileSystem currentFs = device.getPartitions().get(0).getFileSystem();
-                        Log.d(LOG_TAG, "Capacity: " + currentFs.getCapacity());
-                        Log.d(LOG_TAG, "Occupied Space: " + currentFs.getOccupiedSpace());
-                        Log.d(LOG_TAG, "Free Space: " + currentFs.getFreeSpace());
-                        Log.d(LOG_TAG, "Chunk size: " + currentFs.getChunkSize());
-
-                        UsbFile root = currentFs.getRootDirectory();
-
-                        UsbFile[] files = root.listFiles();
-                        for(UsbFile file: files) {
-                            Log.d(LOG_TAG, file.getName());
-                            if(file.isDirectory()) {
-                               Log.d(LOG_TAG, file.getName() + " - is directory");
-                                if (file.getName().equals(HOT_SPACE_FOLDER)){
-                                    hotSpaceFolder = file;
-                                    Log.d(LOG_TAG, "Folder " + HOT_SPACE_FOLDER + " present" );
-                                }
-                            }
-                        }
-/*
-                        UsbFile newDir = root.createDirectory("HotSpace");
-                        UsbFile usbFile = newDir.createFile("bar.txt");
-                        UsbFile usbFileExcel = newDir.createFile(aProgramName + aProgramStartedAt + ".xls");
-
-*/
-
-
-// write to a file
-
-/*
-                        OutputStream os = new UsbFileOutputStream(usbFileExcel);
-                        os.write("hello".getBytes());
-
-                        os.close();
-*/
-
-/*
-// read from a file
-                        InputStream is = new UsbFileInputStream(file);
-                        byte[] buffer = new byte[currentFs.getChunkSize()];
-                        is.read(buffer);
-*/
-
-                    // My test
-
-
-                        //File file = new File("testSheet.xls");
-/*
-                        ExcelHelper excelHelper = new ExcelHelper();
-                        File file = null;
-                        try {
-                            file = excelHelper.createExcelFile();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            Log.d(LOG_TAG, e.toString());
-                        }
-*/
-
-
-
-                        ExcelHelper excelHelper = new ExcelHelper(this, currentAProgramUri, currentProgramId);
-
-                        try {
-                            excelFile = excelHelper.createExcelFile();
-                            Log.d(LOG_TAG, "Excel file created successful");
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        String fileName = excelHelper.getFileName();
-
-                        try {
-                            FileOutputStream outputStream = openFileOutput(fileName, Context.MODE_PRIVATE);
-//                            outputStream.write(fileContents.getBytes());
-                            outputStream.close();
-                            Log.d(LOG_TAG, "File created");
-                        } catch (Exception e) {
-                            Log.d(LOG_TAG, "Can not create OutputStream");
-                            e.printStackTrace();
-                        }
-
-
-                        InputStream inputStream = null;
-                        try {
-                            inputStream = new FileInputStream(excelFile);
-                        } catch (NullPointerException e){
-                            Log.d(LOG_TAG,e.toString());
-                        }
-
-                        ByteBuffer buffer = ByteBuffer.allocate(4096);
-
-                            if (hotSpaceFolder == null){
-                                hotSpaceFolder = root.createDirectory(HOT_SPACE_FOLDER);
-                            }
-
-                            UsbFile usbFile1 = hotSpaceFolder.createFile(fileName);
-                            UsbFileOutputStream usbFileOutputStream = new UsbFileOutputStream( usbFile1);
-
-                        int len;
-                            while ((len = inputStream.read(buffer.array()))>0){
-                                usbFileOutputStream.write(buffer.array());
-                                Log.d(LOG_TAG, "usbFileOutputStream.write");
-                            }
-
-                            inputStream.close();
-                            usbFileOutputStream.close();
-
-
-                    } catch (IOException e) {
-                        Log.d(LOG_TAG, "Can not get access to the usb");
-                        e.printStackTrace();
-                    }
-
-
-                }
+                SaveFile saveFile = new SaveFile();
+                saveFile.execute();
 
         }
 
@@ -642,14 +502,13 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
             String action = intent.getAction();
             if (ACTION_USB_PERMISSION.equals(action)) {
                 synchronized (this) {
-                    UsbDevice device = (UsbDevice)intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
+                    UsbDevice device = (UsbDevice) intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
 
                     if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
-                        if(device != null){
+                        if (device != null) {
                             //call method to set up device communication
                         }
-                    }
-                    else {
+                    } else {
                         Log.d(LOG_TAG, "permission denied for device " + device);
                     }
                 }
@@ -657,7 +516,7 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
         }
     };
 
-    public File getPublicAlbumStorageDir (String albumName) {
+    public File getPublicAlbumStorageDir(String albumName) {
         // Get the directory for the user's public pictures directory.
         File file = new File(Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES), albumName);
@@ -680,13 +539,13 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
     public void onPause() {
         super.onPause();
         boolean isUsbReceiverExist = mUsbReceiver.isInitialStickyBroadcast();
-        Log.d(LOG_TAG, " isUsbReceiverExist " + isUsbReceiverExist );
-        if (isUsbReceiverExist == true){
+        Log.d(LOG_TAG, " isUsbReceiverExist " + isUsbReceiverExist);
+        if (isUsbReceiverExist == true) {
             try {
                 unregisterReceiver(mUsbReceiver);
                 Log.i(LOG_TAG, "unregister receiver");
-            } catch (Exception e){
-                Log.d(LOG_TAG,e.toString());
+            } catch (Exception e) {
+                Log.d(LOG_TAG, e.toString());
             }
         }
     }
@@ -707,5 +566,148 @@ public class ArchiveProgramViewActivity extends AppCompatActivity implements Loa
             return true;
         }
         return false;
+    }
+
+    class SaveFile extends AsyncTask<Void, Void, Void>{
+
+        ProgressDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+//            dialog = ProgressDialog.show(ArchiveProgramViewActivity.this, "Excel file is saving", "Please wait", true);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+
+            UsbManager mUsbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
+
+            PendingIntent mPermissionIntent = PendingIntent.getBroadcast(ArchiveProgramViewActivity.this, 0, new Intent(ACTION_USB_PERMISSION), 0);
+            IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
+            registerReceiver(mUsbReceiver, filter);
+
+            mUsbManager.requestPermission(device, mPermissionIntent);
+
+            UsbMassStorageDevice[] devices = UsbMassStorageDevice.getMassStorageDevices(ArchiveProgramViewActivity.this);
+
+            //folder abd file
+            UsbFile hotSpaceFolder = null;
+
+            if (devices.length == 0) {
+//                dialog.cancel();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        displayToast("There is no USB Flash connected");
+                    }
+                });
+            } else {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        dialog = ProgressDialog.show(ArchiveProgramViewActivity.this, "Excel file is saving", "Please wait", true);
+                    }
+                });
+            }
+
+
+            for (UsbMassStorageDevice device : devices) {
+
+                // before interacting with a device you need to call init()!
+                try {
+                    device.init();
+
+
+                    // Only uses the first partition on the device
+                    FileSystem currentFs = device.getPartitions().get(0).getFileSystem();
+                    Log.d(LOG_TAG, "Capacity: " + currentFs.getCapacity());
+                    Log.d(LOG_TAG, "Occupied Space: " + currentFs.getOccupiedSpace());
+                    Log.d(LOG_TAG, "Free Space: " + currentFs.getFreeSpace());
+                    Log.d(LOG_TAG, "Chunk size: " + currentFs.getChunkSize());
+
+                    UsbFile root = currentFs.getRootDirectory();
+
+                    UsbFile[] files = root.listFiles();
+                    for (UsbFile file : files) {
+                        Log.d(LOG_TAG, file.getName());
+                        if (file.isDirectory()) {
+                            Log.d(LOG_TAG, file.getName() + " - is directory");
+                            if (file.getName().equals(HOT_SPACE_FOLDER)) {
+                                hotSpaceFolder = file;
+                                Log.d(LOG_TAG, "Folder " + HOT_SPACE_FOLDER + " present");
+                            }
+                        }
+                    }
+
+
+                    ExcelHelper excelHelper = new ExcelHelper(ArchiveProgramViewActivity.this, currentAProgramUri, currentProgramId);
+
+                    try {
+                        excelFile = excelHelper.createExcelFile();
+                        Log.d(LOG_TAG, "Excel file created successful");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    String fileName = excelHelper.getFileName();
+
+                    try {
+                        FileOutputStream outputStream = openFileOutput(fileName, Context.MODE_PRIVATE);
+//                            outputStream.write(fileContents.getBytes());
+                        outputStream.close();
+                        Log.d(LOG_TAG, "File created");
+                    } catch (Exception e) {
+                        Log.d(LOG_TAG, "Can not create OutputStream");
+                        e.printStackTrace();
+                    }
+
+
+                    InputStream inputStream = null;
+                    try {
+                        inputStream = new FileInputStream(excelFile);
+                    } catch (NullPointerException e) {
+                        Log.d(LOG_TAG, e.toString());
+                    }
+
+                    ByteBuffer buffer = ByteBuffer.allocate(4096);
+
+                    if (hotSpaceFolder == null) {
+                        hotSpaceFolder = root.createDirectory(HOT_SPACE_FOLDER);
+                    }
+
+                    UsbFile usbFile1 = hotSpaceFolder.createFile(fileName);
+                    UsbFileOutputStream usbFileOutputStream = new UsbFileOutputStream(usbFile1);
+
+                    int len;
+                    while ((len = inputStream.read(buffer.array())) > 0) {
+                        usbFileOutputStream.write(buffer.array());
+                        Log.d(LOG_TAG, "usbFileOutputStream.write");
+                    }
+
+                    inputStream.close();
+                    usbFileOutputStream.close();
+
+
+                } catch (IOException e) {
+                    Log.d(LOG_TAG, "Can not get access to the usb");
+                    e.printStackTrace();
+                }
+            }
+
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            try{
+                dialog.dismiss();
+            } catch (NullPointerException e){
+
+            }
+
+        }
     }
 }

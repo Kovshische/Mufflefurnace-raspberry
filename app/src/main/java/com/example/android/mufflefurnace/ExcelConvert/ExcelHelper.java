@@ -62,6 +62,8 @@ public class ExcelHelper implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String PROGRAM_NAME = "Program:";
     private static final String STARTED_AT = "Started at:";
 
+
+
     private static final String TIME = "Time";
     private static final String TARGET_T = "Target T";
     private static final String SENSOR_T = "Sensor T";
@@ -92,6 +94,7 @@ public class ExcelHelper implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private SharedPreferences sharedPreferences;
     private CellStyle csTemperature;
+    private CellStyle csBold;
 
     public ExcelHelper(Context context, Uri uri, Integer id) {
         /*
@@ -158,6 +161,12 @@ public class ExcelHelper implements LoaderManager.LoaderCallbacks<Cursor> {
 
         Sheet sheet1 = workbook.createSheet("test");
 //    writeToSheet(testData(), sheet1);
+
+
+        //Cell style
+        csBold = workbook.createCellStyle();
+//        csBold.setFont(Font.);
+
 
         //Set program Name, started at
         Row row1 = sheet1.createRow(1);
@@ -247,9 +256,9 @@ public class ExcelHelper implements LoaderManager.LoaderCallbacks<Cursor> {
                 int targetT = cursor.getInt(targetTemperatureColumnIndex);
                 String targetTString = Integer.toString(targetT);
 
-//                csTemperature = workbook.createCellStyle();
-//                csTemperature.setFillForegroundColor(HSSFColor.LIME.index);
-//                csTemperature.setDataFormat(workbook.createDataFormat().getFormat("###"));
+                csTemperature = workbook.createCellStyle();
+//                csTemperature.setFillForegroundColor(XSSFColor.LIME.index);
+                csTemperature.setDataFormat(workbook.createDataFormat().getFormat("###"));
 
                 Cell c = null;
                 c = row.createCell(2);
@@ -318,8 +327,8 @@ public class ExcelHelper implements LoaderManager.LoaderCallbacks<Cursor> {
             ChartDataSource<Number> ysTargetT = DataSources.fromNumericCellRange(sheet1, new CellRangeAddress(5,rowCount,2,2));
             ChartDataSource<Number> ysSensorT = DataSources.fromNumericCellRange(sheet1, new CellRangeAddress(5,rowCount,3,3));
             // Add chart data sources as data to the chart
-            data.addSeries(xs, ysTargetT);
-            data.addSeries(xs, ysSensorT).setTitle("Sensor T");
+            data.addSeries(xs, ysTargetT).setTitle(TARGET_T);
+            data.addSeries(xs, ysSensorT).setTitle(SENSOR_T);
 
             // Plot the chart with the inputs from data and chart axis
             chart.plot(data,new ChartAxis[]{bottomAxis,leftAxis});
