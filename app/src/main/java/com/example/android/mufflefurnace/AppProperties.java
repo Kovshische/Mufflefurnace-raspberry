@@ -6,5 +6,5 @@ package com.example.android.mufflefurnace;
 
 public class AppProperties {
     public static final int MAX_TEMP = 1024;
-    public static final int MAX_ARCHIVE_PROGRAMS_AMOUNT = 5;
+    public static final int MAX_ARCHIVE_PROGRAMS_AMOUNT = 20;
 }

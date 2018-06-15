@@ -31,6 +31,7 @@ public class PointManager {
     private int startTemperature;
     private int finishTemperature;
     private int programStatus;
+    private int endTimeSeconds;
 //    private Integer ventVentStatus = ProgramContract.ProgramEntry.VENT_CLOSE;
 
     public static final int PROGRAM_END = 1;
@@ -95,5 +96,13 @@ public class PointManager {
     }
     public int getProgramStatus(){
         return programStatus;
+    }
+
+    public int getEndTimeSeconds (){
+
+        int i = dataPointArrayList.size();
+        endTimeSeconds = (int) (3600 * dataPointArrayList.get(i -1).getX());
+        return endTimeSeconds;
+
     }
 }

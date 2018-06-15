@@ -99,9 +99,9 @@ public class ControlService extends Service {
         return null;
     }
 
-// public void onStart (Intent intent, int startId)
+    // public void onStart (Intent intent, int startId)
     @Override
-    public int onStartCommand (Intent intent, int flag, int startId) {
+    public int onStartCommand(Intent intent, int flag, int startId) {
         Log.d(LOG_TAG, "Start ControlService");
         myIntent = intent;
 
@@ -119,7 +119,7 @@ public class ControlService extends Service {
 //        Log.i(LOG_TAG, "VentArrayList");
 
         startDate = Calendar.getInstance().getTimeInMillis();
-        if (setStartTime > startDate ){
+        if (setStartTime > startDate) {
             startDate = setStartTime;
         }
 
@@ -142,7 +142,7 @@ public class ControlService extends Service {
 
         t.scheduleAtFixedRate(timerTask, 1000, 1000);
 */
-         return Service.START_NOT_STICKY;
+        return Service.START_NOT_STICKY;
     }
 
     @Override
@@ -174,10 +174,10 @@ public class ControlService extends Service {
 
     }
 
-    private void calculateVentStatus(){
+    private void calculateVentStatus() {
         try {
             ventStatus = ventPointManager.getVentStatus(timeFromStartSec);
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             Log.d(LOG_TAG, e.toString());
         }
 
@@ -185,11 +185,11 @@ public class ControlService extends Service {
 
     private int calculateTimeFromStart() {
 
-            currentDate = Calendar.getInstance().getTimeInMillis();
-            long timeFromStart = currentDate - startDate;
-            timeFromStart = timeFromStart / 1000;
-            Long l = timeFromStart;
-            timeFromStartSec = Integer.valueOf(l.intValue());
+        currentDate = Calendar.getInstance().getTimeInMillis();
+        long timeFromStart = currentDate - startDate;
+        timeFromStart = timeFromStart / 1000;
+        Long l = timeFromStart;
+        timeFromStartSec = Integer.valueOf(l.intValue());
 
         return timeFromStartSec;
     }
@@ -198,7 +198,7 @@ public class ControlService extends Service {
         try {
             max6675 = new Max6675();
             sensorTempDouble = max6675.getTemp();
-            sensorTemp = (int)Math.round(sensorTempDouble);
+            sensorTemp = (int) Math.round(sensorTempDouble);
 //            Log.i(LOG_TAG, "SensorTemp: " + sensorTemp + " °C");
             max6675.close();
             error = null;
@@ -225,12 +225,13 @@ public class ControlService extends Service {
         powerInstance = heatingPowerWrapper.getPowerInstance();
     }
 
-    private void getVentPowerInstance(){
+    private void getVentPowerInstance() {
         ventPowerInstance = ventPowerWrapper.getPowerInstance();
     }
 
     private void sendProgramParam() {
         Log.d(LOG_TAG, "entered DisplayInfo");
+
 
         intent.putExtra(TIME, mTimeToString(timeFromStartSec));
         intent.putExtra(TIME_SEC, timeFromStartSec);
@@ -246,8 +247,9 @@ public class ControlService extends Service {
         sendBroadcast(intent);
     }
 
+
     private void controlPower(double sensorTemp, int targetTemp) {
-        if (error == null){
+        if (error == null) {
             if (sensorTemp < targetTemp && programStatus == PointManager.PROGRAM_EXECUTING) {
                 heatingPowerWrapper.turnOn();
             } else {
@@ -257,9 +259,9 @@ public class ControlService extends Service {
 
     }
 
-    private void controlVent(int ventStatus){
-        if (error == null){
-            if (ventStatus == ProgramContract.ProgramEntry.VENT_OPEN && programStatus == PointManager.PROGRAM_EXECUTING){
+    private void controlVent(int ventStatus) {
+        if (error == null) {
+            if (ventStatus == ProgramContract.ProgramEntry.VENT_OPEN && programStatus == PointManager.PROGRAM_EXECUTING) {
                 ventPowerWrapper.turnOn();
             } else {
                 ventPowerWrapper.turnOff();
@@ -275,7 +277,7 @@ public class ControlService extends Service {
 
         long currentTime = Calendar.getInstance().getTimeInMillis();
 
-        if (setStartTime > currentTime){
+        if (setStartTime > currentTime) {
             waitToStart = true;
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MMM HH:mm");
             startTimeString = simpleDateFormat.format(setStartTime);
@@ -288,8 +290,9 @@ public class ControlService extends Service {
 //        Log.d(LOG_TAG,"currentTime " + currentTime);
 //        Log.d(LOG_TAG, "startTimeString" + startTimeString);
     }
-    private void saveToTheDB (){
-        if (waitToStart == false && programStatus == PointManager.PROGRAM_EXECUTING){
+
+    private void saveToTheDB() {
+        if (waitToStart == false && programStatus == PointManager.PROGRAM_EXECUTING) {
             Log.d(LOG_TAG, "Save to the db");
             ContentValues valuesArchivePoint = new ContentValues();
             valuesArchivePoint.put(ProgramContract.ProgramEntry.COLUMN_A_PROGRAM_ID, aProgramId);
@@ -300,7 +303,7 @@ public class ControlService extends Service {
             valuesArchivePoint.put(ProgramContract.ProgramEntry.COLUMN_A_VENT, ventStatus);
 
             Uri newUri = getContentResolver().insert(ProgramContract.ProgramEntry.CONTENT_URI_A_POINTS, valuesArchivePoint);
-            if (newUri == null){
+            if (newUri == null) {
                 Log.i(LOG_TAG, "Error with saving point to archive");
             }
         }
@@ -314,7 +317,7 @@ public class ControlService extends Service {
         int hours;
         String timeString;
 
-        if (time >=0 ){
+        if (time >= 0) {
             if (time < 24 * 60 * 60) {
                 SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
                 sdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
@@ -335,7 +338,7 @@ public class ControlService extends Service {
                 SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
                 sdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
                 timeString = sdf.format(time * 1000);
-                timeString = "-" +timeString;
+                timeString = "-" + timeString;
             } else {
 
                 hours = time / (60 * 60);
@@ -345,16 +348,17 @@ public class ControlService extends Service {
                 timeString = sdf.format(time * 1000);
 
                 timeString = Integer.toString(hours) + timeString;
-                timeString = "-" +timeString;
+                timeString = "-" + timeString;
             }
         }
 
 
         return timeString;
     }
-    private Integer powerInstanceToInt (Boolean powerInstance){
+
+    private Integer powerInstanceToInt(Boolean powerInstance) {
         Integer powerInstanceInt = null;
-        if (powerInstance == true){
+        if (powerInstance == true) {
             powerInstanceInt = ProgramContract.ProgramEntry.POWER_ON;
         } else {
             powerInstanceInt = ProgramContract.ProgramEntry.POWER_OFF;
@@ -362,7 +366,7 @@ public class ControlService extends Service {
         return powerInstanceInt;
     }
 
-    private  Runnable sendUpdateUI = new Runnable() {
+    private Runnable sendUpdateUI = new Runnable() {
         @Override
         public void run() {
 
@@ -382,6 +386,7 @@ public class ControlService extends Service {
             //control power
             controlPower(sensorTemp, targetTemp);
             getPowerInstance();
+
             sendProgramParam();
             saveToTheDB();
         }

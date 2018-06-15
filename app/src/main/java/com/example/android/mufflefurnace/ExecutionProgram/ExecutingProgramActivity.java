@@ -80,6 +80,9 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
     private boolean ifVentEnabled;
     private Uri aProgramUri;
     private Integer aProgramId;
+    private int endTimeSeconds = 0;
+    private int i = 0;
+    private int a = 0;
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -214,8 +217,35 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
 
         //graph in real time
         double timeDouble = (double) timeInt / 3600;
-        archiveSeries.appendData(new DataPoint(timeDouble, sensorTemp), false, 100000000);
 
+        //Update archiveSeries 1 time per 10 seconds if end time > 3600 seconds, 1 time per 60 seconds if end time > 36000 seconds
+
+        if (endTimeSeconds < 360) {
+            archiveSeries.appendData(new DataPoint(timeDouble, sensorTemp), false, 100000000);
+        } else if (endTimeSeconds < 36000) {
+            Log.d(LOG_TAG, "End time is " +endTimeSeconds + "; i = " + i);
+            if (i == 0 || a < 2) {
+                archiveSeries.appendData(new DataPoint(timeDouble, sensorTemp), false, 100000000);
+                i++;
+                a++;
+            }
+            else {
+                if (i == 9) {
+                    i = 0;
+                } else  i++;
+            }
+        } else {
+            Log.d(LOG_TAG, "End time is " + endTimeSeconds + "; i = " + i);
+            if (i == 0 || a < 2) {
+                archiveSeries.appendData(new DataPoint(timeDouble, sensorTemp), false, 100000000);
+                i++;
+                a++;
+            } else {
+                if (i == 59) {
+                    i = 0;
+                } else i++;
+            }
+        }
     }
 
 
@@ -385,6 +415,9 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
 
 
                 LineGraphSeries<DataPoint> series = new LineGraphSeries<>(dataPoint);
+
+                int i = dataPointArrayList.size();
+                endTimeSeconds = (int) (3600 * dataPointArrayList.get(i -1).getX());
 
                 PointsGraphSeries<DataPoint> seriesOpenVent = new PointsGraphSeries<>(ventOpenPoint);
                 seriesOpenVent.setCustomShape(new PointsGraphSeries.CustomShape() {

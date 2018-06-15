@@ -136,6 +136,7 @@ public class ExcelHelper implements LoaderManager.LoaderCallbacks<Cursor> {
                 null);
 
 
+
         if (cursor == null || cursor.getCount() < 1) {
             Log.d(LOG_TAG, "cursor is NOT valid");
         } else if (cursor.moveToFirst()) {
@@ -175,6 +176,7 @@ public class ExcelHelper implements LoaderManager.LoaderCallbacks<Cursor> {
         cell_1_A.setCellValue(PROGRAM_NAME);
         Cell cell_1_B = row1.createCell(2);
         cell_1_B.setCellValue(aProgramName);
+
 
         Row row2 = sheet1.createRow(2);
         Cell cell_2_A = row2.createCell(1);
@@ -233,6 +235,7 @@ public class ExcelHelper implements LoaderManager.LoaderCallbacks<Cursor> {
 
         int rowCount = cursor.getCount();
 
+
         if (cursor == null || cursor.getCount() < 1) {
             Log.d(LOG_TAG, "cursor 2 is NOT valid");
         } else if (cursor.moveToFirst()) {
@@ -244,45 +247,74 @@ public class ExcelHelper implements LoaderManager.LoaderCallbacks<Cursor> {
             int doorColumnIndex = cursor.getColumnIndexOrThrow(ProgramContract.ProgramEntry.COLUMN_A_DOOR);
 
             int rowCounter = 5;
+            Integer aPointsAmount = cursor.getCount();
+            if (aPointsAmount <= 360){
+
+            }  else if (aPointsAmount <= 3600){
+
+            } else {
+
+            }
+            Row row;
+
+            int time;
+            String timeString;
+            int targetT;
+            String targetTString;
+            int sensorT;
+            String sensorTString;
+            int power;
+            String powerString;
+            int vent;
+            String ventString;
+            int door;
+            String doorString;
+
+
+            csTemperature = workbook.createCellStyle();
+            Cell c = null;
+
+
             while (cursor.moveToNext()) {
-                Row row = sheet1.createRow(rowCounter);
+                row = sheet1.createRow(rowCounter);
 
                 //Time
-                int time = cursor.getInt(timeColumnIndex);
-                String timeString = ArchivePointCursorAdapter.mTimeToString(time);
+                time = cursor.getInt(timeColumnIndex);
+                timeString = ArchivePointCursorAdapter.mTimeToString(time);
                 row.createCell(1).setCellValue(timeString);
 
                 //Target T
-                int targetT = cursor.getInt(targetTemperatureColumnIndex);
-                String targetTString = Integer.toString(targetT);
+                targetT = cursor.getInt(targetTemperatureColumnIndex);
+//                targetTString = Integer.toString(targetT);
 
-                csTemperature = workbook.createCellStyle();
 //                csTemperature.setFillForegroundColor(XSSFColor.LIME.index);
                 csTemperature.setDataFormat(workbook.createDataFormat().getFormat("###"));
 
-                Cell c = null;
+
                 c = row.createCell(2);
                 c.setCellValue(targetT);
 //                c.setCellStyle(csTemperature);
 
+
+
                 //Sensor T
-                int sensorT = cursor.getInt(sensorTemperatureColumnIndex);
-                String sensorTString = Integer.toString(sensorT);
+                sensorT = cursor.getInt(sensorTemperatureColumnIndex);
+//                sensorTString = Integer.toString(sensorT);
                 c = row.createCell(3);
                 c.setCellValue(sensorT);
 
 
                 //Power
-                int power = cursor.getInt(powerColumnIndex);
-                String powerString = PointCursorAdapter.powerToString(power);
+                power = cursor.getInt(powerColumnIndex);
+                powerString = PointCursorAdapter.powerToString(power);
                 c = row.createCell(4);
                 c.setCellValue(powerString);
 
                 //vent
                 int ii = 5;
                 if (ifVentEnabled == true){
-                    int vent = cursor.getInt(ventColumnIndex);
-                    String ventString = PointCursorAdapter.ventToString(vent);
+                    vent = cursor.getInt(ventColumnIndex);
+                    ventString = PointCursorAdapter.ventToString(vent);
                     c = row.createCell(ii);
                     c.setCellValue(ventString);
                     ii ++;
@@ -290,14 +322,16 @@ public class ExcelHelper implements LoaderManager.LoaderCallbacks<Cursor> {
 
                 //door
                 if (ifDoorEnabled == true){
-                    int door = cursor.getInt(doorColumnIndex);
-                    String doorString = PointCursorAdapter.doorToString(door);
+                    door = cursor.getInt(doorColumnIndex);
+                    doorString = PointCursorAdapter.doorToString(door);
                     c = row.createCell(ii);
                     c.setCellValue(doorString);
                 }
 
                 rowCounter++;
             }
+
+
         }
 
 
