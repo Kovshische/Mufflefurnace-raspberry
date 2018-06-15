@@ -43,7 +43,7 @@ public class PointManager {
 
     // currentTime should be in seconds
     //dataPointArrayList - time should ne in hours (doble)
-    public int getTemperature(int currentTimeSeconds) {
+    public final int getTemperature(int currentTimeSeconds) {
 
         //check that graph contain at least 2 points.
         int i = dataPointArrayList.size();

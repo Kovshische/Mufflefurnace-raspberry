@@ -30,33 +30,33 @@ public class HeatingPowerWrapper {
         }
     }
 
-    public void turnOn (){
+    public final void turnOn (){
         if (gpio == null){
             return;
         }
         try {
             gpio.setValue(true);
            // powerInstance = true;
-            Log.d(LOG_TAG, "turn power on");
+//            Log.d(LOG_TAG, "turn power on");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void turnOff (){
+    public final void turnOff (){
         if (gpio == null){
             return;
         }
         try {
             gpio.setValue(false);
            // powerInstance = false;
-            Log.d(LOG_TAG, "turn power off");
+//            Log.d(LOG_TAG, "turn power off");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void onDestroy(){
+    public final void onDestroy(){
         try {
             gpio.close();
         } catch (IOException e){
@@ -66,7 +66,7 @@ public class HeatingPowerWrapper {
         }
     }
 
-    public boolean getPowerInstance()  {
+    public final boolean getPowerInstance()  {
         try{
             powerInstance = gpio.getValue();
             return powerInstance;

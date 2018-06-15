@@ -158,7 +158,7 @@ public class ControlService extends Service {
         handlerControlInstance.removeCallbacks(controlInstance);
     }
 
-    private void calculateTemp() {
+    private final void calculateTemp() {
 //        dataPointArrayList = (ArrayList<DataPoint>) myIntent.getSerializableExtra(INTENT_DATA_POINTS_ARRAY_LIST);
         pointManager = new PointManager(dataPointArrayList);
         try {
@@ -174,7 +174,7 @@ public class ControlService extends Service {
 
     }
 
-    private void calculateVentStatus() {
+    private final void calculateVentStatus() {
         try {
             ventStatus = ventPointManager.getVentStatus(timeFromStartSec);
         } catch (IllegalArgumentException e) {
@@ -183,7 +183,7 @@ public class ControlService extends Service {
 
     }
 
-    private int calculateTimeFromStart() {
+    private final int calculateTimeFromStart() {
 
         currentDate = Calendar.getInstance().getTimeInMillis();
         long timeFromStart = currentDate - startDate;
@@ -194,7 +194,7 @@ public class ControlService extends Service {
         return timeFromStartSec;
     }
 
-    private void getSensorTemp() {
+    private final void getSensorTemp() {
         try {
             max6675 = new Max6675();
             sensorTempDouble = max6675.getTemp();
@@ -221,15 +221,15 @@ public class ControlService extends Service {
         }
     }
 
-    private void getPowerInstance() {
+    private final void getPowerInstance() {
         powerInstance = heatingPowerWrapper.getPowerInstance();
     }
 
-    private void getVentPowerInstance() {
+    private final void getVentPowerInstance() {
         ventPowerInstance = ventPowerWrapper.getPowerInstance();
     }
 
-    private void sendProgramParam() {
+    private final void sendProgramParam() {
         Log.d(LOG_TAG, "entered DisplayInfo");
 
 
@@ -248,7 +248,7 @@ public class ControlService extends Service {
     }
 
 
-    private void controlPower(double sensorTemp, int targetTemp) {
+    private final void controlPower(double sensorTemp, int targetTemp) {
         if (error == null) {
             if (sensorTemp < targetTemp && programStatus == PointManager.PROGRAM_EXECUTING) {
                 heatingPowerWrapper.turnOn();
@@ -259,7 +259,7 @@ public class ControlService extends Service {
 
     }
 
-    private void controlVent(int ventStatus) {
+    private final void controlVent(int ventStatus) {
         if (error == null) {
             if (ventStatus == ProgramContract.ProgramEntry.VENT_OPEN && programStatus == PointManager.PROGRAM_EXECUTING) {
                 ventPowerWrapper.turnOn();
@@ -269,11 +269,11 @@ public class ControlService extends Service {
         } else ventPowerWrapper.turnOff();
     }
 
-    private void getProgramStatus() {
+    private final void getProgramStatus() {
         programStatus = pointManager.getProgramStatus();
     }
 
-    private void calculateTimeToStart() {
+    private final void calculateTimeToStart() {
 
         long currentTime = Calendar.getInstance().getTimeInMillis();
 
@@ -291,7 +291,7 @@ public class ControlService extends Service {
 //        Log.d(LOG_TAG, "startTimeString" + startTimeString);
     }
 
-    private void saveToTheDB() {
+    private final void saveToTheDB() {
         if (waitToStart == false && programStatus == PointManager.PROGRAM_EXECUTING) {
             Log.d(LOG_TAG, "Save to the db");
             ContentValues valuesArchivePoint = new ContentValues();
@@ -312,7 +312,7 @@ public class ControlService extends Service {
 
 
     //Get time in seconds - return time in format HH:MM:SS
-    public static String mTimeToString(int time) {
+    public final static String mTimeToString(int time) {
 
         int hours;
         String timeString;
@@ -356,7 +356,7 @@ public class ControlService extends Service {
         return timeString;
     }
 
-    private Integer powerInstanceToInt(Boolean powerInstance) {
+    private final Integer powerInstanceToInt(Boolean powerInstance) {
         Integer powerInstanceInt = null;
         if (powerInstance == true) {
             powerInstanceInt = ProgramContract.ProgramEntry.POWER_ON;
@@ -396,7 +396,7 @@ public class ControlService extends Service {
         @Override
         public void run() {
             handlerControlInstance.postDelayed(controlInstance, 150); // 0.15 second
-            Log.d(LOG_TAG, "controlInstance");
+//            Log.d(LOG_TAG, "controlInstance");
             calculateTimeToStart();
             calculateTimeFromStart();
             //CalculateTemp should be before get program status;
@@ -404,7 +404,7 @@ public class ControlService extends Service {
             calculateVentStatus();
 
             getSensorTemp();
-            Log.d(LOG_TAG, "controlInstance sensor temp " + sensorTempDouble);
+//            Log.d(LOG_TAG, "controlInstance sensor temp " + sensorTempDouble);
             getProgramStatus();
             //control power
             controlPower(sensorTemp, targetTemp);

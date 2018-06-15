@@ -49,7 +49,7 @@ public class Max6675 implements AutoCloseable{
     }
 
     // Get temperature (0.25 K accuracy, 0 °C ... 1023.75 °C)
-    public float getTemp() throws IOException {
+    public final float getTemp() throws IOException {
         byte[] buffer = new byte[2];
         mSpiDevice.read(buffer, 2);
         int tmp = (buffer[0] << 8) | (buffer[1] & 0xff);
