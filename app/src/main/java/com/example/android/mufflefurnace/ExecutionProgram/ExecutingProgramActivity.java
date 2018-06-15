@@ -220,7 +220,7 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
 
         //Update archiveSeries 1 time per 10 seconds if end time > 3600 seconds, 1 time per 60 seconds if end time > 36000 seconds
 
-        if (endTimeSeconds < 360) {
+        if (endTimeSeconds < 3600) {
             archiveSeries.appendData(new DataPoint(timeDouble, sensorTemp), false, 100000000);
         } else if (endTimeSeconds < 36000) {
             Log.d(LOG_TAG, "End time is " +endTimeSeconds + "; i = " + i);
