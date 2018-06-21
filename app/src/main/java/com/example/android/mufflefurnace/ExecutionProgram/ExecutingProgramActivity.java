@@ -153,7 +153,7 @@ public class ExecutingProgramActivity extends AppCompatActivity implements Loade
         }
     }
 
-    private void updateUI(Intent intent) {
+    private  void updateUI(Intent intent) {
 
         String time = intent.getStringExtra(ControlService.TIME);
         int timeInt = intent.getIntExtra(ControlService.TIME_SEC, 0);

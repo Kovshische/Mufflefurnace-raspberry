@@ -51,22 +51,22 @@ public class ControlService extends Service {
     static boolean powerInstance;
     static boolean ventPowerInstance;
     static int programStatus;
-    private final String LOG_TAG = ControlService.class.getSimpleName();
+    private static final String LOG_TAG = ControlService.class.getSimpleName();
     private final Handler handler = new Handler();
     private final Handler handlerControlInstance = new Handler();
     Intent intent;
     int counter = 0;
-    ArrayList<DataPoint> dataPointArrayList;
+    static ArrayList<DataPoint> dataPointArrayList;
     ArrayList<DataPoint> ventArrayList;
-    int targetTemp;
-    int sensorTemp;
+    static int targetTemp;
+    static int sensorTemp;
     double sensorTempDouble;
     Intent myIntent;
-    private HeatingPowerWrapper heatingPowerWrapper;
-    private HeatingPowerWrapper ventPowerWrapper;
+    private static HeatingPowerWrapper heatingPowerWrapper;
+    private static HeatingPowerWrapper ventPowerWrapper;
     private Integer ventStatus = ProgramContract.ProgramEntry.VENT_CLOSE;
 
-    private PointManager pointManager;
+    private static PointManager pointManager;
     private VentPointManager ventPointManager;
 
     private String startTimeString = "";
@@ -158,7 +158,7 @@ public class ControlService extends Service {
         handlerControlInstance.removeCallbacks(controlInstance);
     }
 
-    private final void calculateTemp() {
+    private static final void calculateTemp() {
 //        dataPointArrayList = (ArrayList<DataPoint>) myIntent.getSerializableExtra(INTENT_DATA_POINTS_ARRAY_LIST);
         pointManager = new PointManager(dataPointArrayList);
         try {
