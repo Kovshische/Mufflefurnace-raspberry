@@ -29,7 +29,10 @@ public class MainActivity extends AppCompatActivity {
     String dateString;
     String thermocoupleErrors = null;
     Max6675 max6675;
-    private TextView dateTextView;
+    TextView dateTextView;
+    TextView timeTextView;
+    TextView temperatureTextView;
+    TextView errorsTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +104,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
         dateTextView = (TextView) findViewById(R.id.main_activity_date);
+        timeTextView = (TextView) findViewById(R.id.main_activity_time);
+        temperatureTextView = (TextView) findViewById(R.id.main_activity_temperature);
+        errorsTextView = (TextView) findViewById(R.id.main_activity_errors);
+
         final SimpleDateFormat sdfDate = new SimpleDateFormat("MMM dd");
+        final SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm");
 
          sendUpdatesToUI = new Runnable() {
             public void run() {
@@ -110,17 +118,11 @@ public class MainActivity extends AppCompatActivity {
 
                 currentTime = Calendar.getInstance().getTime();
 
-                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-                timeString = sdf.format(currentTime );
+                timeString = sdfTime.format(currentTime );
                 dateString = sdfDate.format(currentTime);
-
-                TextView timeTextView = (TextView) findViewById(R.id.main_activity_time);
+                
                 timeTextView.setText(timeString);
-
                 dateTextView.setText(dateString);
-
-                TextView temperatureTextView = (TextView) findViewById(R.id.main_activity_temperature);
-                TextView errorsTextView = (TextView) findViewById(R.id.main_activity_errors);
 
                 if (thermocoupleErrors == null){
                     errorsTextView.setVisibility(View.GONE);
