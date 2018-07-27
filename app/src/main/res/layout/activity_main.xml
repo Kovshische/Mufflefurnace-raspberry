@@ -108,6 +108,7 @@
         android:layout_alignParentRight="true"
         tools:text="32 C"/>
 
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -116,6 +117,16 @@
         android:paddingTop="64dp"
         android:paddingLeft="64dp"
         tools:text="18:00"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/main_activity_date"
+        android:textSize="36dp"
+        android:paddingLeft="64dp"
+        android:layout_below="@id/main_activity_time"
+        tools:text="Mar 13"
+        />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

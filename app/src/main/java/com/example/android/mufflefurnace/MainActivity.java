@@ -26,8 +26,10 @@ public class MainActivity extends AppCompatActivity {
     Runnable sendUpdatesToUI;
     Date currentTime;
     String timeString;
+    String dateString;
     String thermocoupleErrors = null;
     Max6675 max6675;
+    private TextView dateTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +100,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+        dateTextView = (TextView) findViewById(R.id.main_activity_date);
+        final SimpleDateFormat sdfDate = new SimpleDateFormat("MMM dd");
 
          sendUpdatesToUI = new Runnable() {
             public void run() {
@@ -109,9 +112,12 @@ public class MainActivity extends AppCompatActivity {
 
                 SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
                 timeString = sdf.format(currentTime );
+                dateString = sdfDate.format(currentTime);
 
                 TextView timeTextView = (TextView) findViewById(R.id.main_activity_time);
                 timeTextView.setText(timeString);
+
+                dateTextView.setText(dateString);
 
                 TextView temperatureTextView = (TextView) findViewById(R.id.main_activity_temperature);
                 TextView errorsTextView = (TextView) findViewById(R.id.main_activity_errors);
