@@ -42,7 +42,8 @@ public class ControlService extends Service {
     public static final String INTENT_VENT_ARRAY_LIST = "intentVentArrayList";
     public static final String START_TIME = "setStartTime";
     public static final String ERROR = "error";
-    //GPIO
+
+    //GPIO pins
     private final static String GPIO_PIN_HEATING_POWER = "BCM21";
     private final static String GPIO_PIN_VENT_POWER = "BCM16";
     static long startDate;

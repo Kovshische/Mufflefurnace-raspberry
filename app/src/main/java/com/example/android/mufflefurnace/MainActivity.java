@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
 
                 timeString = sdfTime.format(currentTime );
                 dateString = sdfDate.format(currentTime);
-                
+
                 timeTextView.setText(timeString);
                 dateTextView.setText(dateString);
 
