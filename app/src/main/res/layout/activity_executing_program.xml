@@ -17,10 +17,12 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <!-- for 800 x400 -340dp -->
             <com.jjoe64.graphview.GraphView
                 android:id="@+id/executing_program_graph_view"
                 android:layout_width="match_parent"
-                android:layout_height="340dp" />
+                android:layout_height="440dp" />
+
 
 
         </LinearLayout>

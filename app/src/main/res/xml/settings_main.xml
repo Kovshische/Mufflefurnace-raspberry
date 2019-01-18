@@ -37,5 +37,4 @@
         android:selectAllOnFocus="true"
         android:title="@string/settings_max_cooling_rate"
         />
-
 </PreferenceScreen>
