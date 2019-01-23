@@ -1,5 +1,7 @@
 package com.example.android.mufflefurnace.ExecutionProgram;
 
+import android.util.Log;
+
 import com.google.android.things.pio.PeripheralManagerService;
 import com.google.android.things.pio.SpiDevice;
 
@@ -38,8 +40,8 @@ public class Max6675 implements AutoCloseable{
                 close();
             } catch (IOException ignored) {
                 // ignore
+                Log.d(TAG, ignored.getMessage());
             }
-
             throw e;
         }
     }

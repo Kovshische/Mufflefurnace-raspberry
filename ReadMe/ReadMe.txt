@@ -5,7 +5,7 @@ Connections According to the attached image
 Connect the thermocouple:
 
 GND - 25
-VCC - 19
+VCC - 17
 SCK - 23
 CS - 24
 SO - 21
